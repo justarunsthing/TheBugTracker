@@ -1,0 +1,12 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/TheBugTracker/obj
+/TheBugTracker/Properties/serviceDependencies.local.json
+/TheBugTracker/Properties/serviceDependencies.local.json.user
+/TheBugTracker/TheBugTracker.csproj.user
+/TheBugTracker.Client/obj
+/TheBugTracker/bin/Debug/net10.0
+/TheBugTracker.Client/bin/Debug/net10.0
