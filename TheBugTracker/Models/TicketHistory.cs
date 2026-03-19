@@ -2,19 +2,18 @@
 
 namespace TheBugTracker.Models
 {
-    public class TicketComment
+    public class TicketHistory
     {
         private DateTimeOffset _created;
 
         public int Id { get; set; }
 
         [Required]
-        public string? Content { get; set; }
-
-        public DateTimeOffset Created 
-        { 
-            get => _created; 
-            set => _created = value.ToUniversalTime(); 
+        public string? Description { get; set; }
+        public DateTimeOffset Created
+        {
+            get => _created;
+            set => _created = value.ToUniversalTime();
         }
 
         // Navigational Properties
