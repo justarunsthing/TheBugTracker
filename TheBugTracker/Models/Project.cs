@@ -44,5 +44,6 @@ namespace TheBugTracker.Models
         public int CompanyId { get; set; }
         public virtual Company? Company { get; set; }
         public virtual ICollection<ApplicationUser> Members { get; set; } = [];
+        public virtual ICollection<Ticket> Tickets { get; set; } = [];
     }
 }
