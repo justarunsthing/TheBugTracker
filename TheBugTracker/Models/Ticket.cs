@@ -42,5 +42,6 @@ namespace TheBugTracker.Models
         public virtual ApplicationUser? SubmitterUser { get; set; }
         public string? DeveloperUserId { get; set; }
         public virtual ApplicationUser? DeveloperUser { get; set; }
+        public virtual ICollection<TicketComment> Comments { get; set; } = [];
     }
 }
