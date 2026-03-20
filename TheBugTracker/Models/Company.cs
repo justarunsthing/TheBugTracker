@@ -15,5 +15,6 @@ namespace TheBugTracker.Models
         public virtual FileUpload? Image { get; set; }
         public virtual ICollection<ApplicationUser> Members { get; set; } = [];
         public virtual ICollection<Project> Projects { get; set; } = [];
+        public virtual ICollection<Invite> Invites { get; set; } = [];
     }
 }
