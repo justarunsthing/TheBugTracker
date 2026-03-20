@@ -12,7 +12,7 @@ namespace TheBugTracker.Models
         public Guid? ImageId { get; set; } // FK
 
         // Navigational Properties
-        public virtual ImageUpload? Image { get; set; }
+        public virtual FileUpload? Image { get; set; }
         public virtual ICollection<ApplicationUser> Members { get; set; } = [];
         public virtual ICollection<Project> Projects { get; set; } = [];
     }

@@ -13,6 +13,6 @@ namespace TheBugTracker.Models
         public string? LastName { get; set; }
 
         public Guid? ProfilePictureId { get; set; }
-        public virtual ImageUpload? ProfilePicture { get; set; }
+        public virtual FileUpload? ProfilePicture { get; set; }
     }
 }

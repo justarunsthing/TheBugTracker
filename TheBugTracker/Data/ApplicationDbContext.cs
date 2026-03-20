@@ -6,6 +6,6 @@ namespace TheBugTracker.Data
 {
     public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<ApplicationUser>(options)
     {
-        public DbSet<ImageUpload> Images { get; set; }
+        public DbSet<FileUpload> Images { get; set; }
     }
 }
