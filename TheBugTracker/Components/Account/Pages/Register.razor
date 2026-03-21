@@ -119,7 +119,7 @@
                 var profilePic = await ImageHelper.GetImageUploadAsync(Input.ProfilePicture);
                 user.ProfilePicture = profilePic;
 
-                Context.Images.Add(profilePic);
+                Context.Uploads.Add(profilePic);
                 Context.Users.Update(user);
 
                 await Context.SaveChangesAsync();

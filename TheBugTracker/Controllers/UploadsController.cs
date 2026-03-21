@@ -13,7 +13,7 @@ namespace TheBugTracker.Controllers
         [OutputCache(VaryByRouteValueNames = ["id"], Duration = 60 * 60 * 24)]
         public async Task<IActionResult> GetImageAsync(Guid id)
         {
-            var image = await context.Images.FirstOrDefaultAsync(i => i.Id == id);
+            var image = await context.Uploads.FirstOrDefaultAsync(i => i.Id == id);
 
             if (image == null)
             {

@@ -95,13 +95,13 @@
             try
             {
                 var newProfilePic = await ImageHelper.GetImageUploadAsync(Input.ProfilePicture);
-                DbContext.Images.Add(newProfilePic);
+                DbContext.Uploads.Add(newProfilePic);
 
-                var oldProfilePic = await DbContext.Images.FirstOrDefaultAsync(i => i.Id == user!.ProfilePictureId);
+                var oldProfilePic = await DbContext.Uploads.FirstOrDefaultAsync(i => i.Id == user!.ProfilePictureId);
 
                 if (oldProfilePic != null)
                 {
-                    DbContext.Images.Remove(oldProfilePic);
+                    DbContext.Uploads.Remove(oldProfilePic);
                 }
 
                 user!.ProfilePictureId = newProfilePic.Id;
