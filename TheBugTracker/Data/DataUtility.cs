@@ -24,7 +24,6 @@ namespace TheBugTracker.Data
 
         private static Faker faker = new();
 
-
         public static string? GetConnectionString(IConfiguration configuration)
         {
             var connectionString = configuration.GetConnectionString("DbConnection");
