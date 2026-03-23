@@ -1,9 +1,10 @@
-using TheBugTracker.Data;
-using TheBugTracker.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using MudBlazor.Services;
+using TheBugTracker.Components;
 using TheBugTracker.Components.Account;
-using Microsoft.AspNetCore.Components.Authorization;
+using TheBugTracker.Data;
 using TheBugTracker.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +21,7 @@ builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuth
 builder.Services.AddControllers();
 builder.Services.AddHttpClient();
 builder.Services.AddOutputCache();
+builder.Services.AddMudServices();
 
 builder.Services.AddAuthentication(options =>
     {
