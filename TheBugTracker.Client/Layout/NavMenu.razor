@@ -2,72 +2,72 @@
 
 @inject NavigationManager NavigationManager
 
-<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">TheBugTracker</a>
-    </div>
-</div>
-
-<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
-
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="nav flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="auth">
-                <span class="bi bi-lock-nav-menu" aria-hidden="true"></span> Auth Required
-            </NavLink>
-        </div>
-
+<MudNavMenu>
+    <MudNavGroup Title="Company" Expanded="true">
+        <MudNavLink Href="/dashboard" Icon="@Icons.Material.Filled.Dashboard">
+            Dashboard
+        </MudNavLink>
+        <MudNavLink Href="/company" Icon="@Icons.Material.Filled.Business">
+            Company Details
+        </MudNavLink>
+    </MudNavGroup>
+    <MudNavGroup Title="Projects" Expanded>
+        <MudNavLink Href="/projects" Icon="@Icons.Material.Filled.FolderCopy">
+            All Projects
+        </MudNavLink>
+        <MudNavLink Href="/projects/assigned" Icon="@Icons.Material.Filled.FolderShared">
+            My Projects
+        </MudNavLink>
+        <MudNavLink Href="/projects/archived" Icon="@Icons.Material.Filled.Archive">
+            Archived Projects
+        </MudNavLink>
+        <MudNavLink Href="/projects/create" Icon="@Icons.Material.Filled.CreateNewFolder">
+            Create Project
+        </MudNavLink>
+    </MudNavGroup>
+    <MudNavGroup Title="Tickets" Expanded>
+        <MudNavLink Href="/tickets" Icon="@Icons.Material.Filled.Assignment">
+            Open Tickets
+        </MudNavLink>
+        <MudNavLink Href="/tickets/assigned" Icon="@Icons.Material.Filled.AssignmentInd">
+            My Tickets
+        </MudNavLink>
+        <MudNavLink Href="/tickets/resolved" Icon="@Icons.Material.Filled.AssignmentReturned">
+            Resolved Tickets
+        </MudNavLink>
+        <MudNavLink Href="/tickets/archived" Icon="@Icons.Material.Filled.Archive">
+            Archived Tickets
+        </MudNavLink>
+        <MudNavLink Href="/tickets/create" Icon="@Icons.Material.Filled.AssignmentLate">
+            Submit Ticket
+        </MudNavLink>
+    </MudNavGroup>
+    <MudNavGroup Title="Account" Expanded>
         <AuthorizeView>
             <Authorized>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="Account/Manage">
-                        <span class="bi bi-person-fill-nav-menu" aria-hidden="true"></span> @context.User.Identity?.Name
-                    </NavLink>
-                </div>
-                <div class="nav-item px-3">
-                    <form action="Account/Logout" method="post">
-                        <AntiforgeryToken />
-                        <input type="hidden" name="ReturnUrl" value="@currentUrl" />
-                        <button type="submit" class="nav-link">
-                            <span class="bi bi-arrow-bar-left-nav-menu" aria-hidden="true"></span> Logout
-                        </button>
-                    </form>
-                </div>
+                <MudNavLink Href="/account/manage" Icon="@Icons.Material.Filled.Person">
+                    @context.User.Identity!.Name
+                </MudNavLink>
+                <MudNavLink Href="#" Icon="@Icons.Material.Filled.Logout">
+                    Logout
+                </MudNavLink>
             </Authorized>
             <NotAuthorized>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="Account/Register">
-                        <span class="bi bi-person-nav-menu" aria-hidden="true"></span> Register
-                    </NavLink>
-                </div>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="Account/Login">
-                        <span class="bi bi-person-badge-nav-menu" aria-hidden="true"></span> Login
-                    </NavLink>
-                </div>
+                <MudNavLink Href="/account/login" Icon="@Icons.Material.Filled.Login">
+                    Login
+                </MudNavLink>
+                <MudNavLink Href="/account/register" Icon="@Icons.Material.Filled.PersonAdd">
+                    Register
+                </MudNavLink>
             </NotAuthorized>
         </AuthorizeView>
-    </nav>
-</div>
+    </MudNavGroup>
+</MudNavMenu>
+
+<form action="Account/Logout" method="post">
+    <AntiforgeryToken />
+    <input type="hidden" name="ReturnUrl" value="@currentUrl" />
+</form>
 
 @code {
     private string? currentUrl;
@@ -89,4 +89,3 @@
         NavigationManager.LocationChanged -= OnLocationChanged;
     }
 }
-
