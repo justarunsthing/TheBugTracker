@@ -48,7 +48,9 @@
                 <MudNavLink Href="/account/manage" Icon="@Icons.Material.Filled.Person">
                     @context.User.Identity!.Name
                 </MudNavLink>
-                <MudNavLink Href="#" Icon="@Icons.Material.Filled.Logout">
+                <MudNavLink UserAttributes="@(new() { ["onclick"] = "logoutForm.submit()" })" 
+                            ActiveClass=""
+                            Icon="@Icons.Material.Filled.Logout">
                     Logout
                 </MudNavLink>
             </Authorized>
@@ -64,7 +66,7 @@
     </MudNavGroup>
 </MudNavMenu>
 
-<form action="Account/Logout" method="post">
+<form id="logoutForm" class="d-none" action="Account/Logout" method="post">
     <AntiforgeryToken />
     <input type="hidden" name="ReturnUrl" value="@currentUrl" />
 </form>
