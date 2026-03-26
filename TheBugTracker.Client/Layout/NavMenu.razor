@@ -3,45 +3,47 @@
 @inject NavigationManager NavigationManager
 
 <MudNavMenu>
-    <MudNavGroup Title="Company" Expanded="true">
-        <MudNavLink Href="/dashboard" Icon="@Icons.Material.Filled.Dashboard">
-            Dashboard
-        </MudNavLink>
-        <MudNavLink Href="/company" Icon="@Icons.Material.Filled.Business">
-            Company Details
-        </MudNavLink>
-    </MudNavGroup>
-    <MudNavGroup Title="Projects" Expanded>
-        <MudNavLink Href="/projects" Icon="@Icons.Material.Filled.FolderCopy">
-            All Projects
-        </MudNavLink>
-        <MudNavLink Href="/projects/assigned" Icon="@Icons.Material.Filled.FolderShared">
-            My Projects
-        </MudNavLink>
-        <MudNavLink Href="/projects/archived" Icon="@Icons.Material.Filled.Archive">
-            Archived Projects
-        </MudNavLink>
-        <MudNavLink Href="/projects/create" Icon="@Icons.Material.Filled.CreateNewFolder">
-            Create Project
-        </MudNavLink>
-    </MudNavGroup>
-    <MudNavGroup Title="Tickets" Expanded>
-        <MudNavLink Href="/tickets" Icon="@Icons.Material.Filled.Assignment">
-            Open Tickets
-        </MudNavLink>
-        <MudNavLink Href="/tickets/assigned" Icon="@Icons.Material.Filled.AssignmentInd">
-            My Tickets
-        </MudNavLink>
-        <MudNavLink Href="/tickets/resolved" Icon="@Icons.Material.Filled.AssignmentReturned">
-            Resolved Tickets
-        </MudNavLink>
-        <MudNavLink Href="/tickets/archived" Icon="@Icons.Material.Filled.Archive">
-            Archived Tickets
-        </MudNavLink>
-        <MudNavLink Href="/tickets/create" Icon="@Icons.Material.Filled.AssignmentLate">
-            Submit Ticket
-        </MudNavLink>
-    </MudNavGroup>
+    <AuthorizeView>
+        <MudNavGroup Title="Company" Expanded="true">
+            <MudNavLink Href="/dashboard" Icon="@Icons.Material.Filled.Dashboard">
+                Dashboard
+            </MudNavLink>
+            <MudNavLink Href="/company" Icon="@Icons.Material.Filled.Business">
+                Company Details
+            </MudNavLink>
+        </MudNavGroup>
+        <MudNavGroup Title="Projects" Expanded>
+            <MudNavLink Href="/projects" Icon="@Icons.Material.Filled.FolderCopy">
+                All Projects
+            </MudNavLink>
+            <MudNavLink Href="/projects/assigned" Icon="@Icons.Material.Filled.FolderShared">
+                My Projects
+            </MudNavLink>
+            <MudNavLink Href="/projects/archived" Icon="@Icons.Material.Filled.Archive">
+                Archived Projects
+            </MudNavLink>
+            <MudNavLink Href="/projects/create" Icon="@Icons.Material.Filled.CreateNewFolder">
+                Create Project
+            </MudNavLink>
+        </MudNavGroup>
+        <MudNavGroup Title="Tickets" Expanded>
+            <MudNavLink Href="/tickets" Icon="@Icons.Material.Filled.Assignment">
+                Open Tickets
+            </MudNavLink>
+            <MudNavLink Href="/tickets/assigned" Icon="@Icons.Material.Filled.AssignmentInd">
+                My Tickets
+            </MudNavLink>
+            <MudNavLink Href="/tickets/resolved" Icon="@Icons.Material.Filled.AssignmentReturned">
+                Resolved Tickets
+            </MudNavLink>
+            <MudNavLink Href="/tickets/archived" Icon="@Icons.Material.Filled.Archive">
+                Archived Tickets
+            </MudNavLink>
+            <MudNavLink Href="/tickets/create" Icon="@Icons.Material.Filled.AssignmentLate">
+                Submit Ticket
+            </MudNavLink>
+        </MudNavGroup>
+    </AuthorizeView>
     <MudNavGroup Title="Account" Expanded>
         <AuthorizeView>
             <Authorized>
@@ -53,6 +55,11 @@
                             Icon="@Icons.Material.Filled.Logout">
                     Logout
                 </MudNavLink>
+
+                <form id="logoutForm" class="d-none" action="Account/Logout" method="post">
+                    <AntiforgeryToken />
+                    <input type="hidden" name="ReturnUrl" value="@currentUrl" />
+                </form>
             </Authorized>
             <NotAuthorized>
                 <MudNavLink Href="/account/login" Icon="@Icons.Material.Filled.Login">
@@ -65,11 +72,6 @@
         </AuthorizeView>
     </MudNavGroup>
 </MudNavMenu>
-
-<form id="logoutForm" class="d-none" action="Account/Logout" method="post">
-    <AntiforgeryToken />
-    <input type="hidden" name="ReturnUrl" value="@currentUrl" />
-</form>
 
 @code {
     private string? currentUrl;
