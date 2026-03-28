@@ -1,7 +1,7 @@
 ﻿@inherits LayoutComponentBase
 
 @* Required *@
-<MudThemeProvider />
+<MudThemeProvider Theme="_theme" />
 <MudPopoverProvider />
 
 @* Needed for dialogs *@
@@ -36,6 +36,31 @@
 
 @code {
     bool _drawerOpen = true;
+
+    private static MudTheme _theme = new MudTheme()
+    {
+        PaletteLight = new PaletteLight()
+        {
+            Primary = "#1976D2",
+            PrimaryLighten = "#3083D6",
+            PrimaryDarken = "#166ABD",
+
+            Secondary = "#FF4081",
+            SecondaryLighten = "#FF538D",
+            SecondaryDarken = "#E53974",
+
+            Tertiary = "#00BFA5",
+            TertiaryLighten = "#19C5AE",
+            TertiaryDarken = "#00AB94",
+
+            AppbarBackground = "#1976D2",
+            Background = "#F8FAFC",
+            Surface = "#FFFFFF",
+            DrawerBackground = "#FFFFFF",
+            TextPrimary = "#263238",
+            TextSecondary = "#546E7A"
+        }
+    };
 
     void DrawerToggle()
     {
