@@ -40,7 +40,6 @@ namespace TheBugTracker.Client.Models
         public ProjectPriority Priority { get; set; }
         public bool IsArchived { get; set; } = false;
         public ICollection<TicketDTO> Tickets { get; set; } = [];
-
-        //public ICollection<ApplicationUser> Members { get; set; } = [];
+        public ICollection<UserDTO> Members { get; set; } = [];
     }
 }

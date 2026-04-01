@@ -65,9 +65,11 @@ namespace TheBugTracker.Models
                 Type = ticket.Type,
                 Status = ticket.Status,
                 ProjectId = ticket.ProjectId,
-                Project = ticket.Project?.ToProjectDTO(),
+                Project = ticket.Project?.ToDTO(),
                 SubmitterUserId = ticket.SubmitterUserId,
-                DeveloperUserId = ticket.DeveloperUserId
+                SubmitterUser = ticket.SubmitterUser?.ToDTO(),
+                DeveloperUserId = ticket.DeveloperUserId,
+                DeveloperUser = ticket.DeveloperUser?.ToDTO()
             };
         }
     }

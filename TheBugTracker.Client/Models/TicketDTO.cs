@@ -39,6 +39,8 @@ namespace TheBugTracker.Client.Models
 
         [Required]
         public string? SubmitterUserId { get; set; }
+        public UserDTO? SubmitterUser { get; set; }
         public string? DeveloperUserId { get; set; }
+        public UserDTO? DeveloperUser { get; set; }
     }
 }

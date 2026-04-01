@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
+using TheBugTracker.Client.Models;
 
 namespace TheBugTracker.Models
 {
@@ -19,5 +20,21 @@ namespace TheBugTracker.Models
         public int CompanyId { get; set; }
         public virtual Company? Company { get; set; }
         public virtual ICollection<Project> Projects { get; set; } = [];
+    }
+
+    public static class ApplicationUserExtensions
+    {
+        public static UserDTO ToDTO(this ApplicationUser user)
+        {
+            return new UserDTO
+            {
+                Id = user.Id,
+                FirstName = user.FirstName!,
+                LastName = user.LastName!,
+                ImageUrl = user.ProfilePictureId.HasValue 
+                    ? $"uploads/{user.ProfilePictureId}" 
+                    : $"https://api.dicebear.com/9.x/glass/svg?seed={user.Id}"
+            };
+        }
     }
 }

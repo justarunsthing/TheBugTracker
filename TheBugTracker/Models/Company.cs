@@ -27,8 +27,11 @@ namespace TheBugTracker.Models
             {
                 Name = company.Name,
                 Description = company.Description,
-                ImageUrl = company.ImageId.HasValue ? $"api/uploads/{company.ImageId}" : $"https://api.dicebear.com/9.x/glass/svg?seed={company.Name}",
-                Projects = [.. company.Projects.Select(p => p.ToProjectDTO())]
+                ImageUrl = company.ImageId.HasValue 
+                    ? $"uploads/{company.ImageId}" 
+                    : $"https://api.dicebear.com/9.x/glass/svg?seed={company.Name}",
+                Projects = [.. company.Projects.Select(p => p.ToDTO())],
+                Members = [.. company.Members.Select(m => m.ToDTO())]
             };
         }
     }

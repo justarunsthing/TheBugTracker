@@ -50,7 +50,7 @@ namespace TheBugTracker.Models
 
     public static class ProjectExtensions
     {
-        public static ProjectDTO ToProjectDTO(this Project project)
+        public static ProjectDTO ToDTO(this Project project)
         {
             foreach (var ticket in project.Tickets)
             {
@@ -67,7 +67,8 @@ namespace TheBugTracker.Models
                 EndDate = project.EndDate,
                 Priority = project.Priority,
                 IsArchived = project.IsArchived,
-                Tickets = [.. project.Tickets.Select(t => t.ToDTO())]
+                Tickets = [.. project.Tickets.Select(t => t.ToDTO())],
+                Members = [.. project.Members.Select(m => m.ToDTO())]
             };
         }
     }
