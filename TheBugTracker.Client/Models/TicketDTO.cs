@@ -42,5 +42,6 @@ namespace TheBugTracker.Client.Models
         public UserDTO? SubmitterUser { get; set; }
         public string? DeveloperUserId { get; set; }
         public UserDTO? DeveloperUser { get; set; }
+        public ICollection<TicketAttachmentDTO> Attachments { get; set; } = [];
     }
 }
