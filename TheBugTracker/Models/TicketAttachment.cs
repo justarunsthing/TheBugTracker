@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using TheBugTracker.Client.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace TheBugTracker.Models
 {
@@ -26,5 +27,23 @@ namespace TheBugTracker.Models
         [Required]
         public string? UserId { get; set; }
         public virtual ApplicationUser? User { get; set; }
+    }
+
+    public static class TicketAttachmentExtensions
+    {
+        public static TicketAttachmentDTO ToDTO(this TicketAttachment attachment)
+        {
+            return new TicketAttachmentDTO
+            {
+                Id = attachment.Id,
+                FileName = attachment.FileName,
+                Description = attachment.Description,
+                Created = attachment.Created,
+                AttachmentUrl = $"api/attachments/{attachment.UploadId}",
+                TicketId = attachment.TicketId,
+                UserId = attachment.UserId,
+                User = attachment.User?.ToDTO()
+            };
+        }
     }
 }
