@@ -44,5 +44,6 @@ namespace TheBugTracker.Client.Models
         public UserDTO? DeveloperUser { get; set; }
         public ICollection<TicketAttachmentDTO> Attachments { get; set; } = [];
         public ICollection<TicketCommentDTO> Comments { get; set; } = [];
+        public ICollection<TicketHistoryDTO> History { get; set; } = [];
     }
 }
