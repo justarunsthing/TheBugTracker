@@ -5,7 +5,9 @@ using MudBlazor.Services;
 using TheBugTracker.Components;
 using TheBugTracker.Components.Account;
 using TheBugTracker.Data;
+using TheBugTracker.Interfaces;
 using TheBugTracker.Models;
+using TheBugTracker.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,6 +49,7 @@ builder.Services.AddIdentityCore<ApplicationUser>(options =>
     .AddDefaultTokenProviders();
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
+builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 
 var app = builder.Build();
 
