@@ -1,0 +1,25 @@
+﻿@page "/projects"
+@attribute [Authorize]
+@inject IProjectDTOService ProjectService
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="py-4">
+    <MudText Typo="Typo.h1">All Projects</MudText>
+
+    <ul>
+        @foreach (var project in projects)
+        {
+            <li>
+                @project.Name
+            </li>
+        }
+    </ul>
+</MudContainer>
+
+@code {
+    private IEnumerable<ProjectDTO> projects = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        projects = await ProjectService.GetProjectsAsync();
+    }
+}
