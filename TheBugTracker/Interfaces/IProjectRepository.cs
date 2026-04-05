@@ -7,6 +7,6 @@ namespace TheBugTracker.Interfaces
         /// <summary>
         /// Retrieves all projects in the database
         /// </summary>
-        Task<IEnumerable<Project>> GetProjectsAsync();
+        Task<IEnumerable<Project>> GetProjectsAsync(string userId);
     }
 }

@@ -16,10 +16,15 @@
 </MudContainer>
 
 @code {
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthStateTask { get; set; } = default!;
+
     private IEnumerable<ProjectDTO> projects = [];
 
     protected override async Task OnInitializedAsync()
     {
-        projects = await ProjectService.GetProjectsAsync();
+        UserInfo? userInfo = await UserInfoHelper.GetUserInfoAsync(AuthStateTask);
+
+        projects = await ProjectService.GetProjectsAsync(userInfo!.UserId);
     }
 }
