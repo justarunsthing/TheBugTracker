@@ -39,7 +39,7 @@ namespace TheBugTracker.Client.Helpers
                 var lastName = user.FindFirst(nameof(UserInfo.LastName))!.Value;
                 var companyId = user.FindFirst(nameof(UserInfo.CompanyId))!.Value;
                 var profilePictureUrl = user.FindFirst(nameof(UserInfo.ProfilePictureUrl))!.Value;
-                var roles = user.FindAll(nameof(UserInfo.Roles)).Select(r => r.Value);
+                var roles = user.FindAll(ClaimTypes.Role).Select(r => r.Value);
 
                 return new UserInfo
                 {
