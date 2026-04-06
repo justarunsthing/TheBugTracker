@@ -5,6 +5,11 @@ namespace TheBugTracker.Client.Helpers
 {
     public static class UserInfoHelper
     {
+        // UserInfo comes from:
+        // - Task<AuthenticationState>
+        // - AuthenticationState
+        // - ClaimsPrincipal
+
         public static async Task<UserInfo?> GetUserInfoAsync(Task<AuthenticationState>? authStateTask)
         {
             if (authStateTask is null)
@@ -13,8 +18,19 @@ namespace TheBugTracker.Client.Helpers
             }
 
             AuthenticationState authState = await authStateTask;
+
+            return GetUserInfo(authState.User);
+        }
+
+        public static UserInfo? GetUserInfo(AuthenticationState authState)
+        {
             ClaimsPrincipal user = authState.User;
 
+            return GetUserInfo(user);
+        }
+
+        public static UserInfo? GetUserInfo(ClaimsPrincipal user)
+        {
             try
             {
                 var userId = user.FindFirst(ClaimTypes.NameIdentifier)!.Value;
