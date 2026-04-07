@@ -25,6 +25,6 @@
     {
         UserInfo? userInfo = await UserInfoHelper.GetUserInfoAsync(AuthStateTask);
 
-        projects = await ProjectService.GetProjectsAsync(userInfo!.UserId);
+        projects = await ProjectService.GetProjectsAsync(userInfo!);
     }
 }

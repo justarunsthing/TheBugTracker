@@ -1,12 +1,14 @@
-﻿using TheBugTracker.Models;
+﻿using TheBugTracker.Client;
+using TheBugTracker.Models;
 
 namespace TheBugTracker.Interfaces
 {
     public interface IProjectRepository
     {
         /// <summary>
-        /// Retrieves all projects in the database
+        /// Retrieves all active projects for the current user's company
         /// </summary>
-        Task<IEnumerable<Project>> GetProjectsAsync(string userId);
+        /// <param name="user>The current user's claims </param>
+        Task<IEnumerable<Project>> GetProjectsAsync(UserInfo user);
     }
 }
