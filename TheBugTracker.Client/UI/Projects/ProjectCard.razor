@@ -1,31 +1,52 @@
-﻿<MudCard Elevation="3">
-    <MudCardHeader>
-        <CardHeaderContent>
-            <MudLink Typo="Typo.body1" Href="#" Class="d-block">
-                Project Name
-            </MudLink>
-            <MudText Typo="Typo.caption">
-                01/01/2026 - 31/12/2026
-            </MudText>
-        </CardHeaderContent>
-    </MudCardHeader>
-    <MudCardContent>
-        <div class="h-100 d-flex align-items-center justify-content-center">
-            <MudText Typo="Typo.button" Color="Color.Tertiary">
-                No project members
-            </MudText>
-        </div>
-    </MudCardContent>
-    <MudCardActions>
-        <MudChip T="string" Color="Color.Error" Label="true" Variant="Variant.Text">
-            Priority: High
-        </MudChip>
-        <MudButton Class="ms-auto" Color="Color.Tertiary" Href="#" EndIcon="@Icons.Material.Filled.ArrowForward">
-            Details
-        </MudButton>
-    </MudCardActions>
-</MudCard>
+﻿@using TheBugTracker.Client.Enums
+@using TheBugTracker.Client.Extensions
+
+@if (Project is not null)
+{
+    <MudCard Elevation="3">
+        <MudCardHeader>
+            <CardHeaderContent>
+                <MudLink Typo="Typo.body1" Href="#" Class="d-block">
+                    @Project.Name
+                </MudLink>
+                <MudText Typo="Typo.caption">
+                    @Project.StartDate.ToString("d") - @Project.EndDate.ToString("d")
+                </MudText>
+            </CardHeaderContent>
+        </MudCardHeader>
+        <MudCardContent>
+            <div class="h-100 d-flex align-items-center justify-content-center">
+                <MudText Typo="Typo.button" Color="Color.Tertiary">
+                    No project members
+                </MudText>
+            </div>
+        </MudCardContent>
+        <MudCardActions>
+            <MudChip T="string" Color="priorityColor" Label="true" Variant="Variant.Text">
+                Priority: @Project.Priority.GetDisplayName()
+            </MudChip>
+            <MudButton Class="ms-auto" Color="Color.Tertiary" Href="#" EndIcon="@Icons.Material.Filled.ArrowForward">
+                Details
+            </MudButton>
+        </MudCardActions>
+    </MudCard>
+}
 
 @code {
+    [Parameter, EditorRequired]
+    public ProjectDTO? Project { get; set; }
 
+    private Color priorityColor = Color.Default;
+
+    protected override void OnParametersSet()
+    {
+        priorityColor = Project?.Priority switch
+        {
+            ProjectPriority.Low => Color.Success,
+            ProjectPriority.Medium => Color.Secondary,
+            ProjectPriority.High => Color.Error,
+            ProjectPriority.Urgent => Color.Dark,
+            _ => Color.Default
+        };
+    }
 }
