@@ -1,0 +1,31 @@
+﻿<MudCard Elevation="3">
+    <MudCardHeader>
+        <CardHeaderContent>
+            <MudLink Typo="Typo.body1" Href="#" Class="d-block">
+                Project Name
+            </MudLink>
+            <MudText Typo="Typo.caption">
+                01/01/2026 - 31/12/2026
+            </MudText>
+        </CardHeaderContent>
+    </MudCardHeader>
+    <MudCardContent>
+        <div class="h-100 d-flex align-items-center justify-content-center">
+            <MudText Typo="Typo.button" Color="Color.Tertiary">
+                No project members
+            </MudText>
+        </div>
+    </MudCardContent>
+    <MudCardActions>
+        <MudChip T="string" Color="Color.Error" Label="true" Variant="Variant.Text">
+            Priority: High
+        </MudChip>
+        <MudButton Class="ms-auto" Color="Color.Tertiary" Href="#" EndIcon="@Icons.Material.Filled.ArrowForward">
+            Details
+        </MudButton>
+    </MudCardActions>
+</MudCard>
+
+@code {
+
+}
