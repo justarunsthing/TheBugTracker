@@ -1,22 +1,50 @@
 ﻿@page "/projects"
+@using TheBugTracker.Client.Enums
 @using TheBugTracker.Client.UI.Projects
 @attribute [Authorize]
 @inject IProjectDTOService ProjectService
 
-<MudContainer MaxWidth="MaxWidth.Large" Class="py-4 vstack gap-3">
-    @foreach (var project in projects)
+<PageTitle>Active Projects | The Bug Tracker</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="py-4 page-container">
+    <MudBreadcrumbs Items="breadcrumbs" />
+
+    @if (projects.Count() > 0)
     {
-        <div class="py-3">
-            <ProjectCard Project="project" />
+        <div class="row g-3 row-cols-1 row-cols-md-2 row-cols-xl-3">
+            @foreach (var project in projects)
+            {
+                <div class="col">
+                    <ProjectCard Project="project" />
+                </div>
+            }
         </div>
     }
-    </MudContainer>
+    else
+    {
+        <div class="h-100 d-flex align-items-center justify-content-center">
+            <MudText Color="Color.Tertiary" Typo="Typo.button">
+                No Active Projects Found
+            </MudText>
+        </div>
+    }
+
+    <AuthorizeView Roles="@($"{nameof(Role.Admin)}, {nameof(Role.ProjectManager)}")">
+        <MudFab Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Add" Href="projects/create" Class="create-project-btn" />
+    </AuthorizeView>
+</MudContainer>
 
 @code {
     [CascadingParameter]
     public Task<AuthenticationState> AuthStateTask { get; set; } = default!;
 
     private IEnumerable<ProjectDTO> projects = [];
+    private static readonly List<BreadcrumbItem> breadcrumbs = new()
+    {
+        new BreadcrumbItem("Home", href: "/"),
+        new BreadcrumbItem("Projects", href: "/projects"),
+        new BreadcrumbItem("Active", href: null, disabled: true)
+    };
 
     protected override async Task OnInitializedAsync()
     {
