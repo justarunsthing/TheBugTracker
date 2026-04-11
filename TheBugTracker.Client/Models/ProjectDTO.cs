@@ -46,12 +46,14 @@ namespace TheBugTracker.Client.Models
 
         #region Helper properties
 
+        [Required]
         public DateTime? StartDateTime 
         { 
             get => StartDate?.DateTime;
             set => StartDate = value.HasValue ? DateTime.SpecifyKind(value.Value, DateTimeKind.Utc) : null;
         }
 
+        [Required]
         public DateTime? EndDateTime
         {
             get => EndDate?.DateTime;

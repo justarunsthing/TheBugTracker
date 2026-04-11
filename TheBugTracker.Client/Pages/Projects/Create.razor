@@ -16,22 +16,28 @@
             <DataAnnotationsValidator />
 
             <MudTextField @bind-Value="project.Name"
+                          For="() => project.Name"
                           Label="Project Name"
                           Variant="Variant.Outlined" />
 
             <MudTextField @bind-Value="project.Description"
+                          For="() => project.Description"
                           Label="Description"
                           Lines="5"
                           Variant="Variant.Outlined" />
 
-            <div class="hstack gap-3 align-items-start flex-wrap">
+            <div class="hstack gap-3 align-items-start flex-wrap align-items-start">
                 <MudDatePicker @bind-Date="project.StartDateTime" 
                                Label="Start Date"
-                               Variant="Variant.Outlined" />
+                               Variant="Variant.Outlined" 
+                               For="() => project.StartDateTime" 
+                               ErrorText="Please enter a valid start date" />
 
                 <MudDatePicker @bind-Date="project.EndDateTime"
                                Label="End Date"
-                               Variant="Variant.Outlined" />
+                               Variant="Variant.Outlined" 
+                               For="() => project.EndDateTime"
+                               ErrorText="Please enter a valid end date" />
             </div>
 
             <MudField Label="Project Priority" Variant="Variant.Outlined">
@@ -55,6 +61,7 @@
                     }
                 </MudChipSet>
             </MudField>
+            <ValidationMessage For="() => project.Priority" />
 
             <div class="d-flex">
                 <MudButton Variant="Variant.Text"
