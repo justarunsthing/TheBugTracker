@@ -41,5 +41,21 @@ namespace TheBugTracker.Client.Models
         public bool IsArchived { get; set; } = false;
         public ICollection<TicketDTO> Tickets { get; set; } = [];
         public ICollection<UserDTO> Members { get; set; } = [];
+
+        #region Helper properties
+
+        public DateTime StartDateTime 
+        { 
+            get => StartDate.DateTime;
+            set => StartDate = DateTime.SpecifyKind(value, DateTimeKind.Utc);
+        }
+
+        public DateTime EndDateTime
+        {
+            get => EndDate.DateTime;
+            set => EndDate = DateTime.SpecifyKind(value, DateTimeKind.Utc);
+        }
+
+        #endregion
     }
 }
