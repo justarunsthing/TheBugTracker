@@ -25,10 +25,12 @@
                           Variant="Variant.Outlined" />
 
             <div class="hstack gap-3 align-items-start flex-wrap">
-                <MudDatePicker Label="Start Date"
+                <MudDatePicker @bind-Date="project.StartDateTime" 
+                               Label="Start Date"
                                Variant="Variant.Outlined" />
 
-                <MudDatePicker Label="End Date"
+                <MudDatePicker @bind-Date="project.EndDateTime"
+                               Label="End Date"
                                Variant="Variant.Outlined" />
             </div>
 

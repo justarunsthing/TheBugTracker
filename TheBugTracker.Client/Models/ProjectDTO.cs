@@ -7,8 +7,8 @@ namespace TheBugTracker.Client.Models
     {
         // Fields
         private DateTimeOffset _created;
-        private DateTimeOffset _startDate;
-        private DateTimeOffset _endDate;
+        private DateTimeOffset? _startDate;
+        private DateTimeOffset? _endDate;
 
         public int Id { get; set; }
 
@@ -25,16 +25,18 @@ namespace TheBugTracker.Client.Models
             set => _created = value.ToUniversalTime();
         }
 
-        public DateTimeOffset StartDate
+        [Required]
+        public DateTimeOffset? StartDate
         {
             get => _startDate;
-            set => _startDate = value.ToUniversalTime();
+            set => _startDate = value?.ToUniversalTime();
         }
 
-        public DateTimeOffset EndDate
+        [Required]
+        public DateTimeOffset? EndDate
         {
             get => _endDate;
-            set => _endDate = value.ToUniversalTime();
+            set => _endDate = value?.ToUniversalTime();
         }
 
         public ProjectPriority Priority { get; set; }
@@ -44,16 +46,16 @@ namespace TheBugTracker.Client.Models
 
         #region Helper properties
 
-        public DateTime StartDateTime 
+        public DateTime? StartDateTime 
         { 
-            get => StartDate.DateTime;
-            set => StartDate = DateTime.SpecifyKind(value, DateTimeKind.Utc);
+            get => StartDate?.DateTime;
+            set => StartDate = value.HasValue ? DateTime.SpecifyKind(value.Value, DateTimeKind.Utc) : null;
         }
 
-        public DateTime EndDateTime
+        public DateTime? EndDateTime
         {
-            get => EndDate.DateTime;
-            set => EndDate = DateTime.SpecifyKind(value, DateTimeKind.Utc);
+            get => EndDate?.DateTime;
+            set => EndDate = value.HasValue ? DateTime.SpecifyKind(value.Value, DateTimeKind.Utc) : null;
         }
 
         #endregion
