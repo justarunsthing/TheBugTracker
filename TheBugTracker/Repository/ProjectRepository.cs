@@ -9,6 +9,21 @@ namespace TheBugTracker.Repository
 {
     public class ProjectRepository(IDbContextFactory<ApplicationDbContext> contextFactory) : IProjectRepository
     {
+        public async Task<Project?> GetProjectByIdAsync(int projectId, UserInfo user)
+        {
+            await using ApplicationDbContext context = contextFactory.CreateDbContext();
+
+            Project? project = await context.Projects
+                .Include(p => p.Tickets)
+                    .ThenInclude(t => t.SubmitterUser)
+                .Include(p => p.Tickets)
+                    .ThenInclude(t => t.DeveloperUser)
+                .Include(p => p.Members)
+                .FirstOrDefaultAsync(p => p.Id == projectId && p.CompanyId == user.CompanyId);
+
+            return project;
+        }
+
         public async Task<IEnumerable<Project>> GetProjectsAsync(UserInfo user)
         {
             await using ApplicationDbContext context = contextFactory.CreateDbContext();

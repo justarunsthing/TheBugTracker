@@ -8,6 +8,13 @@ namespace TheBugTracker.Services
 {
     public class ProjectDTOService(IProjectRepository repository) : IProjectDTOService
     {
+        public async Task<ProjectDTO?> GetProjectByIdAsync(int projectId, UserInfo user)
+        {
+            Project? project = await repository.GetProjectByIdAsync(projectId, user);
+
+            return project?.ToDTO();
+        }
+
         public async Task<IEnumerable<ProjectDTO>> GetProjectsAsync(UserInfo user)
         {
             IEnumerable<Project> projects = await repository.GetProjectsAsync(user);
