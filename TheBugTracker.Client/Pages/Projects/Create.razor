@@ -1,6 +1,8 @@
 ﻿@page "/projects/create"
-@using TheBugTracker.Client.Extensions
 @attribute [Authorize(Roles = $"{nameof(Role.Admin)}, {nameof(Role.ProjectManager)}")]
+@inject IProjectDTOService ProjectService
+@inject ISnackbar Snackbar
+@inject NavigationManager Nav
 
 <PageTitle>New Project - The Bug Tracker</PageTitle>
 
@@ -12,7 +14,7 @@
             Create a new project
         </MudText>
 
-        <EditForm Model="project" class="vstack gap-3">
+        <EditForm Model="project" class="vstack gap-3" OnValidSubmit="HandleSubmit">
             <DataAnnotationsValidator />
 
             <MudTextField @bind-Value="project.Name"
@@ -82,6 +84,11 @@
 </MudContainer>
 
 @code {
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthState { get; set; } = default!;
+
+    UserInfo? userInfo;
+
     private ProjectDTO project = new()
     {
         Created = DateTimeOffset.UtcNow
@@ -93,4 +100,24 @@
         new BreadcrumbItem("Projects", href: "/projects"),
         new BreadcrumbItem("New Project", href: null, disabled: true)
     };
+
+    private async Task HandleSubmit()
+    {
+        userInfo ??= await UserInfoHelper.GetUserInfoAsync(AuthState);
+
+        try
+        {
+            project = await ProjectService.CreateProjectAsync(project, userInfo!);
+            Snackbar.Add($"Project '{project.Name}' was created successfully!", Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            Snackbar.Add("An error occurred while creating the project!", Severity.Error);
+
+            return;
+        }
+
+        Nav.NavigateTo("/projects");
+    }
 }
