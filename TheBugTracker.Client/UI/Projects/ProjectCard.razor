@@ -6,7 +6,7 @@
     <MudCard Elevation="3" Class="h-100">
         <MudCardHeader>
             <CardHeaderContent>
-                <MudLink Typo="Typo.body1" Href="#" Class="d-block">
+                <MudLink Typo="Typo.body1" Href="@($"projects/{Project.Id}")" Class="d-block">
                     @Project.Name
                 </MudLink>
                 <MudText Typo="Typo.caption">
@@ -25,7 +25,7 @@
             <MudChip T="string" Color="priorityColor" Label="true" Variant="Variant.Text">
                 Priority: @Project.Priority.GetDisplayName()
             </MudChip>
-            <MudButton Class="ms-auto" Color="Color.Tertiary" Href="#" EndIcon="@Icons.Material.Filled.ArrowForward">
+            <MudButton Class="ms-auto" Color="Color.Tertiary" Href="@($"projects/{Project.Id}")" EndIcon="@Icons.Material.Filled.ArrowForward">
                 Details
             </MudButton>
         </MudCardActions>

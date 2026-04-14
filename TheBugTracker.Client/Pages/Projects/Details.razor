@@ -1,0 +1,41 @@
+﻿@page "/projects/{id:int}"
+@attribute [Authorize]
+@inject IProjectDTOService ProjectService
+@inject ISnackbar Snackbar
+
+@if (project is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <h3>@project.Name</h3>
+    <p>@project.Description</p>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthStateTask { get; set; } = default!;
+
+
+    private UserInfo? userInfo;
+    private ProjectDTO? project;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        userInfo ??= await UserInfoHelper.GetUserInfoAsync(AuthStateTask);
+
+        try
+        {
+            project = await ProjectService.GetProjectByIdAsync(Id, userInfo!);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            Snackbar.Add("An error occurred loading the project!", Severity.Error);
+        }
+    }
+}
