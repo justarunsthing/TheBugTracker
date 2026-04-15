@@ -23,8 +23,37 @@
     {
         <PageTitle>@project.Name | The Bug Tracker</PageTitle>
 
-        <h3>@project.Name</h3>
-        <p>@project.Description</p>
+        <div class="vstack gap-3">
+            <MudPaper Class="p-3">
+                <MudText Typo="Typo.h5" GutterBottom>
+                    @project.Name
+                </MudText>
+                <div>
+                    <MudChip T="string" 
+                             Label="true" 
+                             Color="project.Priority.GetColor()">
+                        Priority: @project.Priority.GetDisplayName()
+                    </MudChip>
+                    <MudChip T="string" 
+                             Variant="Variant.Text" 
+                             Label="true" Color="@(project.EndDate < DateTimeOffset.UtcNow ? Color.Error : Color.Default)">
+                        @project.StartDateTime?.ToShortDateString() - @project.EndDateTime?.ToShortDateString()
+                    </MudChip>
+                </div>
+            </MudPaper>
+
+            <MudPaper Class="p-3">
+                @project.Description
+            </MudPaper>
+
+            <MudPaper Class="p-3">
+                Members
+            </MudPaper>
+
+            <MudPaper Class="p-3">
+               Tickets
+            </MudPaper>
+        </div>
     }
 </MudContainer>
 

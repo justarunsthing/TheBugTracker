@@ -1,7 +1,4 @@
-﻿@using TheBugTracker.Client.Enums
-@using TheBugTracker.Client.Extensions
-
-@if (Project is not null)
+﻿@if (Project is not null)
 {
     <MudCard Elevation="3" Class="h-100">
         <MudCardHeader>
@@ -22,7 +19,7 @@
             </div>
         </MudCardContent>
         <MudCardActions>
-            <MudChip T="string" Color="priorityColor" Label="true" Variant="Variant.Text">
+            <MudChip T="string" Color="@Project.Priority.GetColor()" Label="true">
                 Priority: @Project.Priority.GetDisplayName()
             </MudChip>
             <MudButton Class="ms-auto" Color="Color.Tertiary" Href="@($"projects/{Project.Id}")" EndIcon="@Icons.Material.Filled.ArrowForward">
@@ -35,18 +32,4 @@
 @code {
     [Parameter, EditorRequired]
     public ProjectDTO? Project { get; set; }
-
-    private Color priorityColor = Color.Default;
-
-    protected override void OnParametersSet()
-    {
-        priorityColor = Project?.Priority switch
-        {
-            ProjectPriority.Low => Color.Success,
-            ProjectPriority.Medium => Color.Secondary,
-            ProjectPriority.High => Color.Error,
-            ProjectPriority.Urgent => Color.Dark,
-            _ => Color.Default
-        };
-    }
 }

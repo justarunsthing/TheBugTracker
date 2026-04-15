@@ -48,18 +48,9 @@
                             SelectionMode="SelectionMode.SingleSelection">
                     @foreach (var priority in Enum.GetValues<ProjectPriority>())
                     {
-                        var color = priority switch
-                        {
-                            ProjectPriority.Low => Color.Success,
-                            ProjectPriority.Medium => Color.Secondary,
-                            ProjectPriority.High => Color.Error,
-                            ProjectPriority.Urgent => Color.Dark,
-                            _ => Color.Default
-                        };
-
                         <MudChip Value="priority"
                                  Text="@priority.GetDisplayName()" 
-                                 Color="color" />
+                                 Color="priority.GetColor()" />
                     }
                 </MudChipSet>
             </MudField>
