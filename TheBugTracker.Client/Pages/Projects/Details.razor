@@ -3,26 +3,41 @@
 @inject IProjectDTOService ProjectService
 @inject ISnackbar Snackbar
 
-@if (project is null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <h3>@project.Name</h3>
-    <p>@project.Description</p>
-}
+<MudContainer MaxWidth="MaxWidth.Large" Class="h-100">
+    <MudBreadcrumbs Items="@breadcrumbs" />
 
-@code {
+    @if (project is null)
+    {
+        <PageTitle>Not Found | The Bug Tracker</PageTitle>
+
+        <div class="h-100 d-flex align-items-center justify-content-center text-center flex-column gap-2">
+            <MudText Color="Color.Tertiary" Typo="Typo.button" Style="font-size: 1.2rem">
+                Project not found
+            </MudText>
+            <MudButton Href="/projects" Variant="Variant.Text" StartIcon="@Icons.Material.Filled.ArrowBack" Size="Size.Small">
+                Back to projects
+            </MudButton>
+        </div>
+    }
+    else
+    {
+        <PageTitle>@project.Name | The Bug Tracker</PageTitle>
+
+        <h3>@project.Name</h3>
+        <p>@project.Description</p>
+    }
+</MudContainer>
+
+    @code {
     [Parameter]
     public int Id { get; set; }
 
     [CascadingParameter]
     public Task<AuthenticationState> AuthStateTask { get; set; } = default!;
 
-
     private UserInfo? userInfo;
     private ProjectDTO? project;
+    private List<BreadcrumbItem> breadcrumbs = [];
 
     protected override async Task OnParametersSetAsync()
     {
@@ -31,6 +46,25 @@ else
         try
         {
             project = await ProjectService.GetProjectByIdAsync(Id, userInfo!);
+
+            if (project is null)
+            {
+                breadcrumbs = 
+                [
+                    new BreadcrumbItem("Home", href: "/"),
+                    new BreadcrumbItem("Projects", href: "/projects"),
+                    new BreadcrumbItem("Not Found", href: null, disabled: true)
+                ];
+            }
+            else
+            {
+                breadcrumbs = 
+                [
+                    new BreadcrumbItem("Home", href: "/"),
+                    new BreadcrumbItem("Projects", href: "/projects"),
+                    new BreadcrumbItem(project.Name!, href: null, disabled: true)
+                ];
+            }
         }
         catch (Exception ex)
         {
