@@ -43,21 +43,74 @@
             </MudPaper>
 
             <MudPaper Class="p-3">
-                @project.Description
+                <MudText Typo="Typo.h6">
+                    Description
+                </MudText>
+                <MudText Typo="Typo.body1">
+                    @project.Description
+                </MudText>
             </MudPaper>
 
             <MudPaper Class="p-3">
-                Members
+                <MudText Typo="Typo.h6">
+                    Project Members
+                </MudText>
+
+                @if (project.Members.Count == 0)
+                {
+                    <div class="p-5 text-center">
+                        <MudText Typo="Typo.button" Color="Color.Tertiary">
+                            No members assigned
+                        </MudText>
+                    </div>
+                }
+                else
+                {
+                    
+                }
+
+                <MudButton Size="Size.Small" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Settings">
+                    Manage Team
+                </MudButton>
             </MudPaper>
 
             <MudPaper Class="p-3">
-               Tickets
+               <MudTabs>
+                   <MudTabPanel Text="Open Tickets">
+                       <table class="table table-striped">
+                           <thead>
+                               <tr>
+                                   <th>Title</th>
+                                   <th>Status</th>
+                               </tr>
+                           </thead>
+                           <tbody>
+                               @foreach (TicketDTO ticket in project.Tickets)
+                                {
+                                    <tr>
+                                        <td>@ticket.Title</td>
+                                        <td>@ticket.Status.GetDisplayName()</td>
+                                    </tr>
+                                }
+                            </tbody>
+                       </table>
+                   </MudTabPanel>
+                    <MudTabPanel Text="Resolved Tickets">
+                        Resolved tickets go here
+                    </MudTabPanel>
+                    <MudTabPanel Text="Archived Tickets">
+                        Archived tickets go here
+                    </MudTabPanel>
+               </MudTabs>
+               <MudButton Size="Size.Small" Color="Color.Primary" StartIcon="@Icons.Material.Filled.AddCircle">
+                   New Ticket
+               </MudButton>
             </MudPaper>
         </div>
     }
 </MudContainer>
 
-    @code {
+@code {
     [Parameter]
     public int Id { get; set; }
 
