@@ -32,5 +32,19 @@ namespace TheBugTracker.Client.Helpers
 
             return color;
         }
+
+        public static Color GetColor(this TicketStatus status)
+        {
+            Color color = status switch
+            {
+                TicketStatus.New => Color.Info,
+                TicketStatus.InDevelopment => Color.Primary,
+                TicketStatus.Testing => Color.Warning,
+                TicketStatus.Resolved => Color.Success,
+                _ => Color.Default
+            };
+
+            return color;
+        }
     }
 }
