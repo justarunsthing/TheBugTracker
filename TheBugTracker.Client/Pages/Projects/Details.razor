@@ -1,4 +1,5 @@
 ﻿@page "/projects/{id:int}"
+@using TheBugTracker.Client.UI.Projects
 @attribute [Authorize]
 @inject IProjectDTOService ProjectService
 @inject ISnackbar Snackbar
@@ -77,23 +78,7 @@
             <MudPaper Class="p-3">
                <MudTabs>
                    <MudTabPanel Text="Open Tickets">
-                       <table class="table table-striped">
-                           <thead>
-                               <tr>
-                                   <th>Title</th>
-                                   <th>Status</th>
-                               </tr>
-                           </thead>
-                           <tbody>
-                               @foreach (TicketDTO ticket in project.Tickets)
-                                {
-                                    <tr>
-                                        <td>@ticket.Title</td>
-                                        <td>@ticket.Status.GetDisplayName()</td>
-                                    </tr>
-                                }
-                            </tbody>
-                       </table>
+                       <ProjectTicketTable Tickets="project.Tickets" />
                    </MudTabPanel>
                     <MudTabPanel Text="Resolved Tickets">
                         Resolved tickets go here

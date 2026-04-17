@@ -1,0 +1,71 @@
+﻿<MudDataGrid Items="Tickets" Elevation="0" Dense="true" RowsPerPage="10">
+    <Columns>
+        <PropertyColumn Property="t => t.Title"/>
+        <PropertyColumn Property="t => t.Priority">
+            <CellTemplate>
+                <MudChip T="string" Size="Size.Small" Color="context.Item.Priority.GetColor()">
+                    @context.Item.Priority.GetDisplayName()
+                </MudChip>
+            </CellTemplate>
+        </PropertyColumn>
+        <PropertyColumn Property="t => t.Status">
+            <CellTemplate>
+                <MudChip T="string" Size="Size.Small" Color="context.Item.Status.GetColor()">
+                    @context.Item.Status.GetDisplayName()
+                </MudChip>
+            </CellTemplate>
+        </PropertyColumn>
+        <TemplateColumn Title="Submitter" Sortable="true" SortBy="t => t.SubmitterUser?.FullName" ShowColumnOptions="true">
+            <CellTemplate>
+                @if (context.Item.SubmitterUser is not null)
+                {
+                    <div class="hstack gap-2 align-items-center">
+                        <MudAvatar Size="Size.Small">
+                            <MudImage Src="@context.Item.SubmitterUser.ImageUrl" />
+                        </MudAvatar>
+                        @context.Item.SubmitterUser.FullName
+                    </div>
+                }
+                else
+                {
+                    <text>Unknown</text>
+                }
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn Title="Developer" Sortable="true" SortBy="t => t.DeveloperUser?.FullName" ShowColumnOptions="true">
+            <CellTemplate>
+                @if (context.Item.DeveloperUser is not null)
+                {
+                    <div class="hstack gap-2 align-items-center">
+                        <MudAvatar Size="Size.Small">
+                            <MudImage Src="@context.Item.DeveloperUser.ImageUrl" />
+                        </MudAvatar>
+                        @context.Item.DeveloperUser.FullName
+                    </div>
+                }
+                else
+                {
+                    <text>Unassigned</text>
+                }
+            </CellTemplate>
+        </TemplateColumn>
+        <PropertyColumn Property="t => t.Created" Format="g" />
+    </Columns>
+
+    <PagerContent>
+        <MudDataGridPager />
+    </PagerContent>
+
+    <NoRecordsContent>
+        <div class="text-center py-5">
+            <MudText Typo="Typo.button" Color="Color.Tertiary">
+                No Tickets Found
+            </MudText>
+        </div>
+    </NoRecordsContent>
+</MudDataGrid>
+
+@code {
+    [Parameter, EditorRequired]
+    public IEnumerable<TicketDTO> Tickets { get; set; } = [];
+}
