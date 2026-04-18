@@ -7,7 +7,16 @@
 <MudContainer MaxWidth="MaxWidth.Large" Class="h-100">
     <MudBreadcrumbs Items="@breadcrumbs" />
 
-    @if (project is null)
+    @if (isLoading)
+    {
+        <div class="h-100 d-flex flex-column align-items-center justify-content-center gap-3">
+            <MudProgressCircular Indeterminate="true" Color="Color.Primary" />
+            <MudText Typo="Typo.button">
+                Loading project...
+            </MudText>
+        </div>
+    }
+    else if (project is null)
     {
         <PageTitle>Not Found | The Bug Tracker</PageTitle>
 
@@ -95,7 +104,7 @@
     }
 </MudContainer>
 
-@code {
+    @code {
     [Parameter]
     public int Id { get; set; }
 
@@ -105,9 +114,11 @@
     private UserInfo? userInfo;
     private ProjectDTO? project;
     private List<BreadcrumbItem> breadcrumbs = [];
+    private bool isLoading = true;
 
     protected override async Task OnParametersSetAsync()
     {
+        isLoading = true;
         userInfo ??= await UserInfoHelper.GetUserInfoAsync(AuthStateTask);
 
         try
@@ -138,5 +149,7 @@
             Console.WriteLine(ex);
             Snackbar.Add("An error occurred loading the project!", Severity.Error);
         }
+
+        isLoading = false;
     }
 }
