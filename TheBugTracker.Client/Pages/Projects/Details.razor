@@ -78,13 +78,13 @@
             <MudPaper Class="p-3">
                <MudTabs>
                    <MudTabPanel Text="Open Tickets">
-                       <ProjectTicketTable Tickets="project.Tickets" />
+                       <ProjectTicketTable Tickets="project.Tickets.Where(t => !t.IsArchived && t.Status != TicketStatus.Resolved)" />
                    </MudTabPanel>
                     <MudTabPanel Text="Resolved Tickets">
-                        Resolved tickets go here
+                        <ProjectTicketTable Tickets="project.Tickets.Where(t => !t.IsArchived && t.Status == TicketStatus.Resolved)" />
                     </MudTabPanel>
                     <MudTabPanel Text="Archived Tickets">
-                        Archived tickets go here
+                        <ProjectTicketTable Tickets="project.Tickets.Where(t => t.IsArchived)" />
                     </MudTabPanel>
                </MudTabs>
                <MudButton Size="Size.Small" Color="Color.Primary" StartIcon="@Icons.Material.Filled.AddCircle">
