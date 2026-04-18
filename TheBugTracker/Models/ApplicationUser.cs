@@ -33,7 +33,7 @@ namespace TheBugTracker.Models
                 LastName = user.LastName!,
                 ImageUrl = user.ProfilePictureId.HasValue 
                     ? $"uploads/{user.ProfilePictureId}" 
-                    : $"https://api.dicebear.com/9.x/glass/svg?seed={user.Id}"
+                    : $"https://api.dicebear.com/9.x/glass/svg?seed={user.FirstName}{user.LastName}"
             };
         }
     }
