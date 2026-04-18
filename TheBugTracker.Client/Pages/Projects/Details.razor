@@ -100,6 +100,15 @@
                    New Ticket
                </MudButton>
             </MudPaper>
+
+            <div class="d-flex">
+                <MudButton Variant="Variant.Text" Color="Color.Primary" StartIcon="@Icons.Material.Filled.ArrowBack" Href="/projects">
+                    Back to Projects
+                </MudButton>
+                <MudButton Variant="Variant.Text" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Edit" Class="ms-auto" Href=@($"/projects/edit/{project.Id}")>
+                    Edit
+                </MudButton>
+            </div>
         </div>
     }
 </MudContainer>
