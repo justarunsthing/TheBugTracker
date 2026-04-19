@@ -62,6 +62,24 @@ namespace TheBugTracker.Repository
 
             return project;
         }
+
+        public async Task UpdateProjectAsync(Project project, UserInfo user)
+        {
+            bool canEditProject = await UserCanEditProject(project.Id, user);
+
+            if (canEditProject)
+            {
+                await using ApplicationDbContext context = contextFactory.CreateDbContext();
+
+                // Clear out navigation properties to avoid accidentally overwriting related data, i.e no tracking of related entities
+                project.Members = [];
+                project.Tickets = [];
+
+                context.Projects.Update(project);
+                await context.SaveChangesAsync();
+            }
+        }
+
         private async Task<bool> UserCanEditProject(int projectId, UserInfo user)
         {
             bool isAdmin = user.Roles.Any(r => r == nameof(Role.Admin));
