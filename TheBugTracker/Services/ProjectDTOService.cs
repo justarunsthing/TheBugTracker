@@ -41,5 +41,23 @@ namespace TheBugTracker.Services
 
             return dbProject.ToDTO();
         }
+
+        public async Task UpdateProjectAsync(ProjectDTO project, UserInfo user)
+        {
+            Project? dbProject = await repository.GetProjectByIdAsync(project.Id, user);
+
+            if (dbProject is null)
+            {
+                return;
+            }
+
+            dbProject.Name = project.Name;
+            dbProject.Description = project.Description;
+            dbProject.StartDate = project.StartDate ?? dbProject.StartDate;
+            dbProject.EndDate = project.EndDate ?? dbProject.EndDate;
+            dbProject.Priority = project.Priority;
+
+            await repository.UpdateProjectAsync(dbProject, user);
+        }
     }
 }

@@ -28,5 +28,15 @@ namespace TheBugTracker.Client.Interfaces
         /// <param name="user">The current user's claims</param>
         /// <returns>The created project's DTO after it has been saved in the database</returns>
         Task<ProjectDTO> CreateProjectAsync(ProjectDTO project, UserInfo user);
+
+        /// <summary>
+        /// Updates an existing project in the database for the user's company from a ProjectDTO
+        /// </summary>
+        /// <remarks>
+        /// Only project managers and admins roles can update projects, the project manager must be assigned to the project they are trying to update
+        /// </remarks>
+        /// <param name="project"></param>
+        /// <param name="user">The current user's claims</param>
+        Task UpdateProjectAsync(ProjectDTO project, UserInfo user);
     }
 }
