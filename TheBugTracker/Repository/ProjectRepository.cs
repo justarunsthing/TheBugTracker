@@ -62,5 +62,25 @@ namespace TheBugTracker.Repository
 
             return project;
         }
+        private async Task<bool> UserCanEditProject(int projectId, UserInfo user)
+        {
+            bool isAdmin = user.Roles.Any(r => r == nameof(Role.Admin));
+            bool isPm = user.Roles.Any(r => r == nameof(Role.ProjectManager));
+
+            if (!isAdmin && !isPm)
+            {
+                return false;
+            }
+
+            await using ApplicationDbContext context = contextFactory.CreateDbContext();
+
+            bool canEditProject = await context.Projects
+                // Project must exist and belong to the user's company
+                .Where(p => p.Id == projectId && p.CompanyId == user.CompanyId)
+                // User must be an admin or the project manager assigned to the project
+                .AnyAsync(p => isAdmin || p.Members.Any(m => m.Id == user.UserId));
+
+            return canEditProject;
+        }
     }
 }
