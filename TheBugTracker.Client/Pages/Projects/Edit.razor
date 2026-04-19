@@ -25,7 +25,7 @@
         }
         else
         {
-            <EditForm Model="project" class="vstack gap-3">
+            <EditForm Model="project" class="vstack gap-3" OnValidSubmit="HandleSubmit">
                 <DataAnnotationsValidator />
 
                 <MudTextField @bind-Value="project.Name"
@@ -139,5 +139,31 @@
         {
             Nav.NavigateTo("/projects");
         }
+    }
+
+
+    private async Task HandleSubmit()
+    {
+        if (project is null)
+        {
+            return;
+        }
+
+        userInfo ??= await UserInfoHelper.GetUserInfoAsync(AuthState);
+
+        try
+        {
+            await ProjectService.UpdateProjectAsync(project, userInfo!);
+            Snackbar.Add($"Project '{project.Name}' was updated successfully!", Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            Snackbar.Add("An error occurred while updating the project!", Severity.Error);
+
+            return;
+        }
+
+        Nav.NavigateTo($"/projects/{project.Id}");
     }
 }
