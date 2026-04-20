@@ -59,5 +59,10 @@ namespace TheBugTracker.Services
 
             await repository.UpdateProjectAsync(dbProject, user);
         }
+
+        public async Task ArchiveProjectAsync(int projectId, UserInfo user)
+        {
+            await repository.ArchiveProjectAsync(projectId, user);
+        }
     }
 }

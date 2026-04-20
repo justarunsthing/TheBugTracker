@@ -80,6 +80,39 @@ namespace TheBugTracker.Repository
             }
         }
 
+        public async Task ArchiveProjectAsync(int projectId, UserInfo user)
+        {
+            bool canEditProject = await UserCanEditProject(projectId, user);
+
+            if (!canEditProject)
+            {
+                return;
+            }
+
+            await using ApplicationDbContext context = contextFactory.CreateDbContext();
+
+            Project project = await context.Projects
+                .Include(p => p.Tickets)
+                .FirstAsync(p => p.Id == projectId && p.CompanyId == user.CompanyId);
+
+            project.IsArchived = true;
+
+            foreach (Ticket ticket in project.Tickets)
+            {
+                // If ticket.IsArchived == true, then the ticket was archived by a user
+                // If ticket.IsArchived == flase, then the ticket will be archived by the project
+                ticket.IsArchivedByProject = !ticket.IsArchived;
+                ticket.IsArchived = true;
+            }
+
+            await context.SaveChangesAsync();
+        }
+
+        /// <summary>
+        /// Checks that the project exists and belongs to the user's company, then checks that the user is either an admin or the project manager assigned to the project
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <param name="user"></param>
         private async Task<bool> UserCanEditProject(int projectId, UserInfo user)
         {
             bool isAdmin = user.Roles.Any(r => r == nameof(Role.Admin));
