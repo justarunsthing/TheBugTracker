@@ -39,13 +39,13 @@
                     @project.Name
                 </MudText>
                 <div>
-                    <MudChip T="string" 
-                             Label="true" 
+                    <MudChip T="string"
+                             Label="true"
                              Color="project.Priority.GetColor()">
                         Priority: @project.Priority.GetDisplayName()
                     </MudChip>
-                    <MudChip T="string" 
-                             Variant="Variant.Text" 
+                    <MudChip T="string"
+                             Variant="Variant.Text"
                              Label="true" Color="@(project.EndDate < DateTimeOffset.UtcNow ? Color.Error : Color.Default)">
                         @project.StartDateTime?.ToShortDateString() - @project.EndDateTime?.ToShortDateString()
                     </MudChip>
@@ -85,20 +85,20 @@
             </MudPaper>
 
             <MudPaper Class="p-3">
-               <MudTabs>
-                   <MudTabPanel Text="Open Tickets">
-                       <ProjectTicketTable Tickets="project.Tickets.Where(t => !t.IsArchived && t.Status != TicketStatus.Resolved)" />
-                   </MudTabPanel>
+                <MudTabs>
+                    <MudTabPanel Text="Open Tickets">
+                        <ProjectTicketTable Tickets="project.Tickets.Where(t => !t.IsArchived && t.Status != TicketStatus.Resolved)" />
+                    </MudTabPanel>
                     <MudTabPanel Text="Resolved Tickets">
                         <ProjectTicketTable Tickets="project.Tickets.Where(t => !t.IsArchived && t.Status == TicketStatus.Resolved)" />
                     </MudTabPanel>
                     <MudTabPanel Text="Archived Tickets">
                         <ProjectTicketTable Tickets="project.Tickets.Where(t => t.IsArchived)" />
                     </MudTabPanel>
-               </MudTabs>
-               <MudButton Size="Size.Small" Color="Color.Primary" StartIcon="@Icons.Material.Filled.AddCircle">
-                   New Ticket
-               </MudButton>
+                </MudTabs>
+                <MudButton Size="Size.Small" Color="Color.Primary" StartIcon="@Icons.Material.Filled.AddCircle">
+                    New Ticket
+                </MudButton>
             </MudPaper>
 
             <div class="d-flex">
@@ -108,8 +108,22 @@
                 <MudButton Variant="Variant.Text" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Edit" Class="ms-auto" Href=@($"/projects/edit/{project.Id}")>
                     Edit
                 </MudButton>
+                <MudButton Variant="Variant.Text" StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="ConfirmArchive">
+                    Archive
+                </MudButton>
             </div>
         </div>
+
+        <MudMessageBox @ref="archiveConfirmationBox" Title="Archive Project" CancelText="Cancel">
+            <MessageContent>
+                Are you sure you want to archive this project?
+            </MessageContent>
+            <YesButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Error" StartIcon="@Icons.Material.Filled.Delete" Class="ms-2">
+                    Archive
+                </MudButton>
+            </YesButton>
+        </MudMessageBox>
     }
 </MudContainer>
 
@@ -124,6 +138,7 @@
     private ProjectDTO? project;
     private List<BreadcrumbItem> breadcrumbs = [];
     private bool isLoading = true;
+    private MudMessageBox? archiveConfirmationBox;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -136,7 +151,7 @@
 
             if (project is null)
             {
-                breadcrumbs = 
+                breadcrumbs =
                 [
                     new BreadcrumbItem("Home", href: "/"),
                     new BreadcrumbItem("Projects", href: "/projects"),
@@ -145,7 +160,7 @@
             }
             else
             {
-                breadcrumbs = 
+                breadcrumbs =
                 [
                     new BreadcrumbItem("Home", href: "/"),
                     new BreadcrumbItem("Projects", href: "/projects"),
@@ -160,5 +175,13 @@
         }
 
         isLoading = false;
+    }
+
+    private async Task ConfirmArchive()
+    {
+        if (archiveConfirmationBox is not null)
+        {
+            await archiveConfirmationBox.ShowAsync();
+        }
     }
 }
