@@ -119,7 +119,7 @@
                 Are you sure you want to archive this project?
             </MessageContent>
             <YesButton>
-                <MudButton Variant="Variant.Filled" Color="Color.Error" StartIcon="@Icons.Material.Filled.Delete" Class="ms-2">
+                <MudButton Variant="Variant.Filled" Color="Color.Error" StartIcon="@Icons.Material.Filled.Delete" Class="ms-2" OnClick="HandleArchive">
                     Archive
                 </MudButton>
             </YesButton>
@@ -182,6 +182,27 @@
         if (archiveConfirmationBox is not null)
         {
             await archiveConfirmationBox.ShowAsync();
+        }
+    }
+
+    private async Task HandleArchive()
+    {
+        if (project is null)
+        {
+            return;
+        }
+
+        try
+        {
+            await ProjectService.ArchiveProjectAsync(project.Id, userInfo!);
+
+            // Refresh the info on the page
+            project = await ProjectService.GetProjectByIdAsync(project.Id, userInfo!);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            Snackbar.Add("An error occurred archiving the project!", Severity.Error);
         }
     }
 }
