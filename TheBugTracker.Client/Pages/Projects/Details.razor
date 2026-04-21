@@ -130,21 +130,40 @@
                 <MudButton Variant="Variant.Text" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Edit" Class="ms-auto" Href=@($"/projects/edit/{project.Id}")>
                     Edit
                 </MudButton>
-                <MudButton Variant="Variant.Text" StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="ConfirmArchive">
-                    Archive
-                </MudButton>
+
+                @if (project.IsArchived)
+                {
+                    <MudButton Variant="Variant.Text" StartIcon="@Icons.Material.Filled.RestoreFromTrash" Color="Color.Success" OnClick="ConfirmArchiveToggle">
+                        Restore
+                    </MudButton>
+                }
+                else
+                {
+                    <MudButton Variant="Variant.Text" StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="ConfirmArchiveToggle">
+                        Archive
+                    </MudButton>
+                }
             </div>
         </div>
 
-        @* Archive project mud message box*@
-        <MudMessageBox @ref="archiveConfirmationBox" Title="Archive Project" CancelText="Cancel">
+        @* Archive/restore project mud message box*@
+        <MudMessageBox @ref="archiveConfirmationBox" Title="@(project.IsArchived ? "Restore Project" : "Archive Project")" CancelText="Cancel">
             <MessageContent>
-                Are you sure you want to archive this project?
+                Are you sure you want to @(project.IsArchived ? "restore" : "archive") this project?
             </MessageContent>
             <YesButton>
-                <MudButton Variant="Variant.Filled" Color="Color.Error" StartIcon="@Icons.Material.Filled.Delete" Class="ms-2" OnClick="HandleArchive">
-                    Archive
-                </MudButton>
+                @if (project.IsArchived)
+                {
+                    <MudButton Variant="Variant.Filled" Color="Color.Success" StartIcon="@Icons.Material.Filled.RestoreFromTrash" Class="ms-2" OnClick="HandleArchiveToggle">
+                        Restore
+                    </MudButton>
+                }
+                else
+                {
+                    <MudButton Variant="Variant.Filled" Color="Color.Error" StartIcon="@Icons.Material.Filled.Delete" Class="ms-2" OnClick="HandleArchiveToggle">
+                        Archive
+                    </MudButton>
+                }
             </YesButton>
         </MudMessageBox>
     }
@@ -200,7 +219,7 @@
         isLoading = false;
     }
 
-    private async Task ConfirmArchive()
+    private async Task ConfirmArchiveToggle()
     {
         if (archiveConfirmationBox is not null)
         {
@@ -208,7 +227,7 @@
         }
     }
 
-    private async Task HandleArchive()
+    private async Task HandleArchiveToggle()
     {
         if (project is null)
         {
@@ -217,15 +236,23 @@
 
         try
         {
-            await ProjectService.ArchiveProjectAsync(project.Id, userInfo!);
+            if (project.IsArchived)
+            {
+                throw new NotImplementedException("Restore");
+            }
+            else
+            {
+                await ProjectService.ArchiveProjectAsync(project.Id, userInfo!);
+            }
 
             // Refresh the info on the page
             project = await ProjectService.GetProjectByIdAsync(project.Id, userInfo!);
+            Snackbar.Add($"The project has successfully been {(project!.IsArchived ? "archived" : "restored")}");
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex);
-            Snackbar.Add("An error occurred archiving the project!", Severity.Error);
+            Snackbar.Add("An error occurred archiving/restoring the project!", Severity.Error);
         }
     }
 }
