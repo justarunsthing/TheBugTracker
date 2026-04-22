@@ -247,7 +247,7 @@
 
             // Refresh the info on the page
             project = await ProjectService.GetProjectByIdAsync(project.Id, userInfo!);
-            Snackbar.Add($"The project has successfully been {(project!.IsArchived ? "archived" : "restored")}");
+            Snackbar.Add($"The project has successfully been {(project!.IsArchived ? "archived" : "restored")}", Severity.Success);
         }
         catch (Exception ex)
         {
