@@ -238,7 +238,7 @@
         {
             if (project.IsArchived)
             {
-                throw new NotImplementedException("Restore");
+                await ProjectService.RestoreProjectAsync(project.Id, userInfo!);
             }
             else
             {
