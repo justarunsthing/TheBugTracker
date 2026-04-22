@@ -100,9 +100,37 @@ namespace TheBugTracker.Repository
             foreach (Ticket ticket in project.Tickets)
             {
                 // If ticket.IsArchived == true, then the ticket was archived by a user
-                // If ticket.IsArchived == flase, then the ticket will be archived by the project
+                // If ticket.IsArchived == false, then the ticket will be archived by the project
                 ticket.IsArchivedByProject = !ticket.IsArchived;
                 ticket.IsArchived = true;
+            }
+
+            await context.SaveChangesAsync();
+        }
+
+        public async Task RestoreProjectAsync(int projectId, UserInfo user)
+        {
+            bool canEditProject = await UserCanEditProject(projectId, user);
+
+            if (!canEditProject)
+            {
+                return;
+            }
+
+            await using ApplicationDbContext context = contextFactory.CreateDbContext();
+
+            Project project = await context.Projects
+                .Include(p => p.Tickets)
+                .FirstAsync(p => p.Id == projectId && p.CompanyId == user.CompanyId);
+
+            project.IsArchived = false;
+
+            foreach (Ticket ticket in project.Tickets)
+            {
+                // If ticket.IsArchivedByProject == true, then the ticket should no longer be archived
+                // If ticket.IsArchivedByProject == false, then the ticket was archived by a user and should remain archived
+                ticket.IsArchived = !ticket.IsArchivedByProject;
+                ticket.IsArchivedByProject = false;
             }
 
             await context.SaveChangesAsync();

@@ -48,5 +48,16 @@ namespace TheBugTracker.Client.Interfaces
         /// <param name="projectId"></param>
         /// <param name="user">The current user's claims</param>
         Task ArchiveProjectAsync(int projectId, UserInfo user);
+
+        /// <summary>
+        /// Restores a project to mark it as active. This method will also restore all of the tickets associated with the project
+        /// that were not previously archived
+        /// </summary>
+        /// <remarks>
+        /// Projects may only be restored by the admins or project managers assigned to the project
+        /// </remarks>
+        /// <param name="projectId"></param>
+        /// <param name="user">The current user's claims</param>
+        Task RestoreProjectAsync(int projectId, UserInfo user);
     }
 }
