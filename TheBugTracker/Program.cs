@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
 using MudBlazor.Services;
+using Scalar.AspNetCore;
 using Swashbuckle.AspNetCore.Filters;
 using System.Reflection;
 using TheBugTracker.Client.Interfaces;
@@ -92,6 +93,9 @@ else
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+app.UseSwagger(options => options.RouteTemplate = "/openapi/{documentName}.json");
+app.MapScalarApiReference(); // URL: /scalar/v1
 app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
 app.UseHttpsRedirection();
 
