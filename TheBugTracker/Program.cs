@@ -1,7 +1,10 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi;
 using MudBlazor.Services;
+using Swashbuckle.AspNetCore.Filters;
+using System.Reflection;
 using TheBugTracker.Client.Interfaces;
 using TheBugTracker.Components;
 using TheBugTracker.Components.Account;
@@ -18,6 +21,22 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents()
     .AddAuthenticationStateSerialization(options => options.SerializeAllClaims = true);
+
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("cookie", new OpenApiSecurityScheme
+    {
+        Name = ".AspNetCore.Identity.Application",
+        In = ParameterLocation.Cookie,
+        Type = SecuritySchemeType.Http,
+        Scheme = "cookie"
+    });
+
+    options.OperationFilter<SecurityRequirementsOperationFilter>();
+
+    var xmlFileName = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFileName));
+});
 
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityRedirectManager>();
