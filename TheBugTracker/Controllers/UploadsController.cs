@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.EntityFrameworkCore;
+using Swashbuckle.AspNetCore.Annotations;
 using TheBugTracker.Data;
 
 namespace TheBugTracker.Controllers
@@ -9,6 +10,7 @@ namespace TheBugTracker.Controllers
     [ApiController]
     public class UploadsController(ApplicationDbContext context) : ControllerBase
     {
+        [SwaggerIgnore]
         [HttpGet("{id:guid}")]
         [OutputCache(VaryByRouteValueNames = ["id"], Duration = 60 * 60 * 24)]
         public async Task<IActionResult> GetImageAsync(Guid id)
