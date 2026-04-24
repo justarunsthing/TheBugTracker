@@ -25,6 +25,31 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddSwaggerGen(options =>
 {
+    // Swagger doc details
+    options.SwaggerDoc("v1", new()
+    {
+        Title = "The Bug Tracker API",
+        Version = "v1",
+        Description = """
+                      <img src="/img/app-logo.svg" height="120" />
+
+                      This API is used by The Bug Tracker application when executing 
+                      in WebAssembly to interact with the server.
+
+                      This API uses cookie-based authentication. To test the requests
+                      below, you must first log in through the application to set a 
+                      cookie in your browser and receive a valid response from the 
+                      "Test Request" buttons below.
+                      """,
+        Contact = new()
+        {
+            Name = "Arun Pun",
+            Email = "test@email.com",
+            Url = new("https://github.com/justarunsthing")
+        }
+    });
+
+    // Show cookies as the authentication scheme
     options.AddSecurityDefinition("cookie", new OpenApiSecurityScheme
     {
         Name = ".AspNetCore.Identity.Application",
@@ -33,10 +58,16 @@ builder.Services.AddSwaggerGen(options =>
         Scheme = "cookie"
     });
 
+    // Show which endpoints require login
     options.OperationFilter<SecurityRequirementsOperationFilter>();
 
+    // Generate documentation from XML comments in the code
     var xmlFileName = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFileName));
+
+    // Exclude documentation for the built-in Identity endpoints
+    options.DocInclusionPredicate((_, description) =>
+        description.RelativePath is null || !description.RelativePath.StartsWith("Account"));
 });
 
 builder.Services.AddCascadingAuthenticationState();
@@ -95,7 +126,12 @@ else
 }
 
 app.UseSwagger(options => options.RouteTemplate = "/openapi/{documentName}.json");
-app.MapScalarApiReference(); // URL: /scalar/v1
+app.MapScalarApiReference(options =>
+{
+    options.WithFavicon("/img/arunpun-favicon.png")
+           .WithTitle("API Specification | The Bug Tracker")
+           .WithTheme(ScalarTheme.BluePlanet);
+}); // URL: /scalar/v1
 app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
 app.UseHttpsRedirection();
 
