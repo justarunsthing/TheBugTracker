@@ -12,13 +12,27 @@ namespace TheBugTracker.Controllers
     [Authorize]
     public class ProjectsController(IProjectDTOService projectService) : ControllerBase
     {
+        UserInfo UserInfo => UserInfoHelper.GetUserInfo(User)!;
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProjectDTO>>> GetProjects()
         {
-            UserInfo userInfo = UserInfoHelper.GetUserInfo(User)!;
-            var projects = await projectService.GetProjectsAsync(userInfo);
+            var projects = await projectService.GetProjectsAsync(UserInfo);
 
             return Ok(projects);
+        }
+
+        [HttpGet("{projectId:int}")]
+        public async Task<ActionResult<ProjectDTO>> GetProjectById([FromRoute] int projectId)
+        {
+            ProjectDTO? project = await projectService.GetProjectByIdAsync(projectId, UserInfo);
+
+            if (project is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(project);
         }
     }
 }
