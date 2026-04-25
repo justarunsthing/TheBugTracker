@@ -83,7 +83,32 @@ builder.Services.AddAuthentication(options =>
         options.DefaultScheme = IdentityConstants.ApplicationScheme;
         options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
     })
-    .AddIdentityCookies();
+    .AddIdentityCookies(cookieBuilder =>
+    {
+        // Override the default behavior of redirecting to the login/access denied page when an unauthorized API request is made
+        cookieBuilder.ApplicationCookie!.Configure(config =>
+        {
+            config.Events.OnRedirectToLogin += (context) =>
+            {
+                if (context.Request.Path.StartsWithSegments("/api") || context.Request.HasJsonContentType())
+                {
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                }
+
+                return Task.CompletedTask;
+            };
+
+            config.Events.OnRedirectToAccessDenied += (context) =>
+            {
+                if (context.Request.Path.StartsWithSegments("/api") || context.Request.HasJsonContentType())
+                {
+                    context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                }
+
+                return Task.CompletedTask;
+            };
+        });
+    });
 
 var connectionString = DataUtility.GetConnectionString(builder.Configuration) ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
