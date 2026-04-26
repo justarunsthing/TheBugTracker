@@ -6,9 +6,20 @@ namespace TheBugTracker.Client.Services
 {
     public class WASMProjectDTOService(HttpClient http) : IProjectDTOService
     {
-        public Task<ProjectDTO?> GetProjectByIdAsync(int projectId, UserInfo user)
+        public async Task<ProjectDTO?> GetProjectByIdAsync(int projectId, UserInfo user)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var project = await http.GetFromJsonAsync<ProjectDTO>($"api/projects/{projectId}"); 
+
+                return project;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+
+                return null;
+            }
         }
 
         public async Task<IEnumerable<ProjectDTO>> GetProjectsAsync(UserInfo user)
