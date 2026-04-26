@@ -1,4 +1,5 @@
-﻿using TheBugTracker.Client.Models;
+﻿using System.Net.Http.Json;
+using TheBugTracker.Client.Models;
 using TheBugTracker.Client.Interfaces;
 
 namespace TheBugTracker.Client.Services
@@ -10,9 +11,20 @@ namespace TheBugTracker.Client.Services
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<ProjectDTO>> GetProjectsAsync(UserInfo user)
+        public async Task<IEnumerable<ProjectDTO>> GetProjectsAsync(UserInfo user)
         {
-            throw new NotImplementedException();
+            try
+            {
+                List<ProjectDTO> projects = await http.GetFromJsonAsync<List<ProjectDTO>>("api/projects") ?? [];
+
+                return projects;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+
+                return [];
+            }
         }
 
         public Task<ProjectDTO> CreateProjectAsync(ProjectDTO project, UserInfo user)
