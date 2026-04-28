@@ -49,5 +49,27 @@ namespace TheBugTracker.Controllers
 
             return Ok(project);
         }
+
+        /// <summary>
+        /// Create project
+        /// </summary>
+        /// <remarks>
+        /// Creates a new project for the user's company
+        /// 
+        /// Users must be a project manager or an admin to create a new project.
+        /// If the user is a project manager, they will be assignd to the submitted project.
+        /// </remarks>
+        /// <param name="project">The details of the project to be created</param>
+        [HttpPost]
+        public async Task<ActionResult<ProjectDTO>> CreateProject([FromBody] ProjectDTO project)
+        {
+            ProjectDTO? createdProject = await projectService.CreateProjectAsync(project, UserInfo);
+
+            return CreatedAtAction(
+                actionName: nameof(GetProjectById), 
+                routeValues: new { projectId = createdProject.Id }, 
+                value: createdProject
+            );
+        }
     }
 }
