@@ -38,9 +38,14 @@ namespace TheBugTracker.Client.Services
             }
         }
 
-        public Task<ProjectDTO> CreateProjectAsync(ProjectDTO project, UserInfo user)
+        public async Task<ProjectDTO> CreateProjectAsync(ProjectDTO project, UserInfo user)
         {
-            throw new NotImplementedException();
+            var response = await http.PostAsJsonAsync("api/projects", project);
+            response.EnsureSuccessStatusCode();
+
+            ProjectDTO createdProject = await response.Content.ReadFromJsonAsync<ProjectDTO>() ?? throw new HttpIOException(HttpRequestError.InvalidResponse);
+
+            return createdProject;
         }
 
         public Task UpdateProjectAsync(ProjectDTO project, UserInfo user)
