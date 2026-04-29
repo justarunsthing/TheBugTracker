@@ -4,6 +4,7 @@ using TheBugTracker.Client.Models;
 using TheBugTracker.Client.Helpers;
 using TheBugTracker.Client.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using TheBugTracker.Client.Enums;
 
 namespace TheBugTracker.Controllers
 {
@@ -61,6 +62,7 @@ namespace TheBugTracker.Controllers
         /// </remarks>
         /// <param name="project">The details of the project to be created</param>
         [HttpPost]
+        [Authorize(Roles = $"{nameof(Role.Admin)}, {nameof(Role.ProjectManager)}")]
         public async Task<ActionResult<ProjectDTO>> CreateProject([FromBody] ProjectDTO project)
         {
             ProjectDTO? createdProject = await projectService.CreateProjectAsync(project, UserInfo);
