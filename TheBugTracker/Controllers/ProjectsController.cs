@@ -73,5 +73,29 @@ namespace TheBugTracker.Controllers
                 value: createdProject
             );
         }
+
+        /// <summary>
+        /// Update project
+        /// </summary>
+        /// <remarks>
+        /// Updates the details of a specific project if it exists.
+        /// 
+        /// Users must be an admin or the project manager assigned to the project to submit an update
+        /// </remarks>
+        /// <param name="projectId">The Id of the project to update</param>
+        /// <param name="project">The updated details for this project</param>
+        [HttpPut("{projectId:int}")] // api/projects/8
+        [Authorize(Roles = $"{nameof(Role.Admin)}, {nameof(Role.ProjectManager)}")]
+        public async Task<IActionResult> UpdateProject([FromRoute] int projectId, [FromBody] ProjectDTO project)
+        {
+            if (projectId != project.Id)
+            {
+                return BadRequest();
+            }
+
+            await projectService.UpdateProjectAsync(project, UserInfo!);
+
+            return NoContent();
+        }
     }
 }
