@@ -48,9 +48,10 @@ namespace TheBugTracker.Client.Services
             return createdProject;
         }
 
-        public Task UpdateProjectAsync(ProjectDTO project, UserInfo user)
+        public async Task UpdateProjectAsync(ProjectDTO project, UserInfo user)
         {
-            throw new NotImplementedException();
+            var response = await http.PutAsJsonAsync($"api/projects/{project.Id}", project);
+            response.EnsureSuccessStatusCode();
         }
 
         public Task ArchiveProjectAsync(int projectId, UserInfo user)
