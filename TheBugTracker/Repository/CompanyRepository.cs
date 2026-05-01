@@ -9,9 +9,15 @@ namespace TheBugTracker.Repository
 {
     public class CompanyRepository(IDbContextFactory<ApplicationDbContext> contextFactory) : ICompanyRepository
     {
-        public Task<IEnumerable<ApplicationUser>> GetUsersAsync(UserInfo userInfo)
+        public async Task<IEnumerable<ApplicationUser>> GetUsersAsync(UserInfo userInfo)
         {
-            throw new NotImplementedException();
+            await using ApplicationDbContext context = contextFactory.CreateDbContext();
+
+            List<ApplicationUser> users = await context.Users
+                .Where(u => u.CompanyId == userInfo.CompanyId)
+                .ToListAsync();
+
+            return users;
         }
 
         public Task<IEnumerable<ApplicationUser>> GetUsersInRoleAsync(Role role, UserInfo userInfo)
