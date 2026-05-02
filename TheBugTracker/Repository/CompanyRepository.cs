@@ -4,10 +4,11 @@ using TheBugTracker.Models;
 using TheBugTracker.Interfaces;
 using TheBugTracker.Client.Enums;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace TheBugTracker.Repository
 {
-    public class CompanyRepository(IDbContextFactory<ApplicationDbContext> contextFactory) : ICompanyRepository
+    public class CompanyRepository(IDbContextFactory<ApplicationDbContext> contextFactory, UserManager<ApplicationUser> userManager) : ICompanyRepository
     {
         public async Task<IEnumerable<ApplicationUser>> GetUsersAsync(UserInfo userInfo)
         {
@@ -20,9 +21,12 @@ namespace TheBugTracker.Repository
             return users;
         }
 
-        public Task<IEnumerable<ApplicationUser>> GetUsersInRoleAsync(Role role, UserInfo userInfo)
+        public async Task<IEnumerable<ApplicationUser>> GetUsersInRoleAsync(Role role, UserInfo userInfo)
         {
-            throw new NotImplementedException();
+            IEnumerable<ApplicationUser> usersInRole = await userManager.GetUsersInRoleAsync(Enum.GetName(role)!);
+            usersInRole = usersInRole.Where(u => u.CompanyId == userInfo.CompanyId);
+
+            return usersInRole;
         }
     }
 }
