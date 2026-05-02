@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
+using TheBugTracker.Client.Enums;
 using TheBugTracker.Client.Models;
 
 namespace TheBugTracker.Models
@@ -35,6 +36,24 @@ namespace TheBugTracker.Models
                     ? $"uploads/{user.ProfilePictureId}" 
                     : $"https://api.dicebear.com/9.x/glass/svg?seed={user.FirstName}{user.LastName}"
             };
+        }
+
+        public static async Task<UserDTO> ToDTOWithRole(this ApplicationUser user, UserManager<ApplicationUser> userManager)
+        {
+            UserDTO dto = user.ToDTO();
+            var roleNames = await userManager.GetRolesAsync(user);
+            string? roleName = roleNames
+                .Where(rn => rn != nameof(Role.DemoUser))
+                .FirstOrDefault();
+
+            bool success = Enum.TryParse(roleName, out Role role);
+
+            if (success)
+            {
+                dto.Role = role;
+            }
+
+            return dto;
         }
     }
 }
