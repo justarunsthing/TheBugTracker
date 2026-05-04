@@ -10,38 +10,44 @@
                     Developers
                 </MudText>
 
-                @foreach (var developer in developers)
-                {
-                    <MudChip T="string">
-                        <AvatarContent>
-                            <MudAvatar>
-                                <MudImage Src="@developer.ImageUrl" />
-                            </MudAvatar>
-                        </AvatarContent>
-                        <ChildContent>
-                            @developer.FullName
-                        </ChildContent>
-                    </MudChip>
-                }
+                <MudChipSet @bind-SelectedValues="selectedDeveloperIds"
+                            SelectionMode="SelectionMode.MultiSelection">
+                    @foreach (var developer in developers)
+                    {
+                        <MudChip T="string" Value="developer.Id" SelectedColor="Color.Info">
+                            <AvatarContent>
+                                <MudAvatar>
+                                    <MudImage Src="@developer.ImageUrl" />
+                                </MudAvatar>
+                            </AvatarContent>
+                            <ChildContent>
+                                @developer.FullName
+                            </ChildContent>
+                        </MudChip>
+                    }
+                </MudChipSet>
             </div>
             <div>
                 <MudText Typo="Typo.h6" GutterBottom>
                     Submitters
                 </MudText>
 
-                @foreach (var submitter in submitters)
-                {
-                    <MudChip T="string">
-                        <AvatarContent>
-                            <MudAvatar>
-                                <MudImage Src="@submitter.ImageUrl" />
-                            </MudAvatar>
-                        </AvatarContent>
-                        <ChildContent>
-                            @submitter.FullName
-                        </ChildContent>
-                    </MudChip>
-                }
+                <MudChipSet @bind-SelectedValues="selectedSubmittersIds"
+                            SelectionMode="SelectionMode.MultiSelection">
+                    @foreach (var submitter in submitters)
+                    {
+                        <MudChip T="string" Value="submitter.Id" SelectedColor="Color.Info">
+                            <AvatarContent>
+                                <MudAvatar>
+                                    <MudImage Src="@submitter.ImageUrl" />
+                                </MudAvatar>
+                            </AvatarContent>
+                            <ChildContent>
+                                @submitter.FullName
+                            </ChildContent>
+                        </MudChip>
+                    }
+                </MudChipSet>
             </div>
             <div class="text-end">
                 <MudButton Variant="Variant.Filled"
@@ -69,6 +75,8 @@
     private UserInfo? userInfo;
     private IEnumerable<UserDTO> developers = [];
     private IEnumerable<UserDTO> submitters = [];
+    private IReadOnlyCollection<string> selectedDeveloperIds = [];
+    private IReadOnlyCollection<string> selectedSubmittersIds = [];
 
     protected override async Task OnParametersSetAsync()
     {
