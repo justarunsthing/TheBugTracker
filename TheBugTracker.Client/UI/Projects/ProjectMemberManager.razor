@@ -14,7 +14,7 @@
                             SelectionMode="SelectionMode.MultiSelection">
                     @foreach (var developer in developers)
                     {
-                        <MudChip T="string" Value="developer.Id" SelectedColor="Color.Info">
+                        <UserChip User="developer" />
                             <AvatarContent>
                                 <MudAvatar>
                                     <MudImage Src="@developer.ImageUrl" />
@@ -36,16 +36,7 @@
                             SelectionMode="SelectionMode.MultiSelection">
                     @foreach (var submitter in submitters)
                     {
-                        <MudChip T="string" Value="submitter.Id" SelectedColor="Color.Info">
-                            <AvatarContent>
-                                <MudAvatar>
-                                    <MudImage Src="@submitter.ImageUrl" />
-                                </MudAvatar>
-                            </AvatarContent>
-                            <ChildContent>
-                                @submitter.FullName
-                            </ChildContent>
-                        </MudChip>
+                        <UserChip User="submitter" />
                     }
                 </MudChipSet>
             </div>
