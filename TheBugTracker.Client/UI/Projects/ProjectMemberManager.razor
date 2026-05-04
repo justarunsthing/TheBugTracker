@@ -52,7 +52,8 @@
             <div class="text-end">
                 <MudButton Variant="Variant.Filled"
                            Color="Color.Error"
-                           StartIcon="@Icons.Material.Filled.Cancel">
+                           StartIcon="@Icons.Material.Filled.Cancel"
+                           OnClick="HandleCancel">
                     Cancel
                 </MudButton>
                 <MudButton Variant="Variant.Filled"
@@ -92,5 +93,11 @@
             Console.WriteLine(ex);
             Snackbar.Add("Failed to load project members", Severity.Error);
         }
+    }
+
+    private void HandleCancel()
+    {
+        selectedDeveloperIds = [];
+        selectedSubmittersIds = [];
     }
 }
