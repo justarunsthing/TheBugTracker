@@ -4,10 +4,11 @@ using TheBugTracker.Client;
 using TheBugTracker.Interfaces;
 using TheBugTracker.Client.Enums;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace TheBugTracker.Repository
 {
-    public class ProjectRepository(IDbContextFactory<ApplicationDbContext> contextFactory) : IProjectRepository
+    public class ProjectRepository(IDbContextFactory<ApplicationDbContext> contextFactory, UserManager<ApplicationUser> userManager) : IProjectRepository
     {
         public async Task<Project?> GetProjectByIdAsync(int projectId, UserInfo user)
         {
@@ -134,6 +135,47 @@ namespace TheBugTracker.Repository
             }
 
             await context.SaveChangesAsync();
+        }
+
+        public async Task AddProjectMemberAsync(int projectId, string userId, UserInfo user)
+        {
+            bool canEditProject = await UserCanEditProject(projectId, user);
+
+            if (!canEditProject)
+            {
+                return;
+            }
+
+            await using ApplicationDbContext context = contextFactory.CreateDbContext();
+
+            Project project = await context.Projects
+                .Include(p => p.Members)
+                .FirstAsync(p => p.Id == projectId);
+
+            if (project.Members.Any(m => m.Id == userId))
+            {
+                return;
+            }
+
+            ApplicationUser? newMember = await context.Users
+                .Where(u => u.CompanyId == user.CompanyId)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (newMember is null 
+                || await userManager.IsInRoleAsync(newMember, nameof(Role.ProjectManager)) 
+                || await userManager.IsInRoleAsync(newMember, nameof(Role.Admin)))
+            {
+                return;
+            }
+
+            project.Members.Add(newMember);
+
+            await context.SaveChangesAsync();
+        }
+
+        public async Task RemoveProjectMemberAsync(int projectId, string userId, UserInfo user)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>

@@ -60,5 +60,21 @@ namespace TheBugTracker.Interfaces
         /// <param name="projectId"></param>
         /// <param name="user">The current user's claims</param>
         Task RestoreProjectAsync(int projectId, UserInfo user);
+
+        /// <summary>
+        /// Assigns a user to the specified project, if they are not already assigned
+        /// </summary>
+        /// <param name="projectId">The Id of the project</param>
+        /// <param name="userId">The Id of the user</param>
+        /// <param name="user">The current user's claims</param>
+        Task AddProjectMemberAsync(int projectId, string userId, UserInfo user);
+
+        /// <summary>
+        /// Removes a user from the specified project, if they are currently assigned
+        /// </summary>
+        /// <param name="projectId">The Id of the project</param>
+        /// <param name="userId">The Id of the user</param>
+        /// <param name="user">The current user's claims</param>
+        Task RemoveProjectMemberAsync(int projectId, string userId, UserInfo user);
     }
 }
