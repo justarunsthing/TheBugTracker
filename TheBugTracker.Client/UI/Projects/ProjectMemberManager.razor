@@ -15,15 +15,6 @@
                     @foreach (var developer in developers)
                     {
                         <UserChip User="developer" />
-                            <AvatarContent>
-                                <MudAvatar>
-                                    <MudImage Src="@developer.ImageUrl" />
-                                </MudAvatar>
-                            </AvatarContent>
-                            <ChildContent>
-                                @developer.FullName
-                            </ChildContent>
-                        </MudChip>
                     }
                 </MudChipSet>
             </div>
