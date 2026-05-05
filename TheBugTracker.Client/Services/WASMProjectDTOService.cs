@@ -65,5 +65,15 @@ namespace TheBugTracker.Client.Services
             var response = await http.PatchAsync($"api/projects/restore/{projectId}", null);
             response.EnsureSuccessStatusCode();
         }
+
+        public Task AddProjectMemberAsync(int projectId, string userId, UserInfo user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task RemoveProjectMemberAsync(int projectId, string userId, UserInfo user)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
