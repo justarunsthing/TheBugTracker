@@ -91,7 +91,10 @@
                     
                 }
 
-                <MudButton Size="Size.Small" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Settings">
+                <MudButton Size="Size.Small" 
+                           Color="Color.Primary" 
+                           StartIcon="@Icons.Material.Filled.Settings"
+                           OnClick="() => isMemberDialogVisible = true">
                     Manage Team
                 </MudButton>
             </MudPaper>
@@ -146,7 +149,7 @@
             </div>
         </div>
 
-        @* Archive/restore project mud message box*@
+        @* Archive/restore project mud message box *@
         <MudMessageBox @ref="archiveConfirmationBox" Title="@(project.IsArchived ? "Restore Project" : "Archive Project")" CancelText="Cancel">
             <MessageContent>
                 Are you sure you want to @(project.IsArchived ? "restore" : "archive") this project?
@@ -166,6 +169,18 @@
                 }
             </YesButton>
         </MudMessageBox>
+
+        @* Manage project members mud dialog box *@
+        <MudDialog @bind-Visible="isMemberDialogVisible">
+            <TitleContent>
+                <MudText Typo="Typo.h5">
+                    Manage Project Team
+                </MudText>
+            </TitleContent>
+            <DialogContent>
+                <ProjectMemberManager Project="project" />
+            </DialogContent>
+        </MudDialog>
     }
 </MudContainer>
 
@@ -180,6 +195,7 @@
     private ProjectDTO? project;
     private List<BreadcrumbItem> breadcrumbs = [];
     private bool isLoading = true;
+    private bool isMemberDialogVisible = false;
     private MudMessageBox? archiveConfirmationBox;
 
     protected override async Task OnParametersSetAsync()
