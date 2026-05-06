@@ -62,15 +62,21 @@
     private IEnumerable<UserDTO> submitters = [];
     private IReadOnlyCollection<string> selectedDeveloperIds = [];
     private IReadOnlyCollection<string> selectedSubmittersIds = [];
+    private IEnumerable<string> originalMemberIds = [];
 
     protected override async Task OnParametersSetAsync()
     {
         userInfo ??= await UserInfoHelper.GetUserInfoAsync(AuthStateTask);
+        originalMemberIds = Project?.Members.Select(m => m.Id) ?? [];
 
         try
         {
             developers = await CompanyService.GetUsersInRoleAsync(Role.Developer, userInfo!);
             submitters = await CompanyService.GetUsersInRoleAsync(Role.Submitter, userInfo!);
+
+            // Preselect the current members
+            selectedDeveloperIds = [.. developers.Select(d => d.Id).Where(id => originalMemberIds.Contains(id))];
+            selectedSubmittersIds = [.. submitters.Select(s => s.Id).Where(id => originalMemberIds.Contains(id))];
         }
         catch (Exception ex)
         {
