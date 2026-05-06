@@ -107,9 +107,20 @@
         {
             IEnumerable<string> selectedUsers = [.. selectedDeveloperIds, .. selectedSubmittersIds];
 
-            foreach (var userId in selectedUsers)
+            // New members => selected members NOT in original members
+            IEnumerable<string> addedUserIds = selectedUsers.Except(originalMemberIds);
+
+            foreach (var userId in addedUserIds)
             {
                 await ProjectService.AddProjectMemberAsync(Project.Id, userId, userInfo);
+            }
+
+            // Removed members => original members NOT in selected members
+            IEnumerable<string> removedUserIds = originalMemberIds.Except(selectedUsers);
+
+            foreach (var userId in removedUserIds)
+            {
+                await ProjectService.RemoveProjectMemberAsync(Project.Id, userId, userInfo);
             }
 
             Snackbar.Add("Project members has been successfully updated", Severity.Success);
