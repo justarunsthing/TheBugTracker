@@ -54,6 +54,9 @@
     [Parameter, EditorRequired]
     public ProjectDTO? Project { get; set; }
 
+    [Parameter]
+    public EventCallback OnClose { get; set; }
+
     [CascadingParameter]
     public Task<AuthenticationState> AuthStateTask { get; set; } = default!;
 
@@ -85,10 +88,12 @@
         }
     }
 
-    private void HandleCancel()
+    private async Task HandleCancel()
     {
-        selectedDeveloperIds = [];
-        selectedSubmittersIds = [];
+        selectedDeveloperIds = [.. developers.Select(d => d.Id).Where(id => originalMemberIds.Contains(id))];
+        selectedSubmittersIds = [.. submitters.Select(s => s.Id).Where(id => originalMemberIds.Contains(id))];
+
+        await OnClose.InvokeAsync();
     }
 
     private async Task HandleSave()
@@ -106,6 +111,9 @@
             {
                 await ProjectService.AddProjectMemberAsync(Project.Id, userId, userInfo);
             }
+
+            Snackbar.Add("Project members has been successfully updated", Severity.Success);
+            await OnClose.InvokeAsync();
         }
         catch (Exception ex)
         {
