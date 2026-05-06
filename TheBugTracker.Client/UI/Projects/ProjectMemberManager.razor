@@ -1,5 +1,6 @@
 ﻿@inject ICompanyDTOService CompanyService
 @inject ISnackbar Snackbar
+@inject IProjectDTOService ProjectService
 
 @if (Project is not null)
 {
@@ -40,7 +41,8 @@
                 </MudButton>
                 <MudButton Variant="Variant.Filled"
                            Color="Color.Primary"
-                           StartIcon="@Icons.Material.Filled.Save">
+                           StartIcon="@Icons.Material.Filled.Save"
+                           OnClick="HandleSave">
                     Save
                 </MudButton>
             </div>
@@ -81,5 +83,28 @@
     {
         selectedDeveloperIds = [];
         selectedSubmittersIds = [];
+    }
+
+    private async Task HandleSave()
+    {
+        if (Project is null || userInfo is null)
+        {
+            return;
+        }
+
+        try
+        {
+            IEnumerable<string> selectedUsers = [.. selectedDeveloperIds, .. selectedSubmittersIds];
+
+            foreach (var userId in selectedUsers)
+            {
+                await ProjectService.AddProjectMemberAsync(Project.Id, userId, userInfo);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            Snackbar.Add("Failed to save changes!", Severity.Error);
+        }
     }
 }
