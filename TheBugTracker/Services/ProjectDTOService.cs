@@ -75,9 +75,9 @@ namespace TheBugTracker.Services
             await repository.AddProjectMemberAsync(projectId, userId, user);
         }
 
-        public Task RemoveProjectMemberAsync(int projectId, string userId, UserInfo user)
+        public async Task RemoveProjectMemberAsync(int projectId, string userId, UserInfo user)
         {
-            throw new NotImplementedException();
+            await repository.RemoveProjectMemberAsync(projectId, userId, user);
         }
     }
 }
