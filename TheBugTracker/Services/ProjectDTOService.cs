@@ -2,17 +2,34 @@
 using TheBugTracker.Models;
 using TheBugTracker.Interfaces;
 using TheBugTracker.Client.Models;
+using Microsoft.AspNetCore.Identity;
 using TheBugTracker.Client.Interfaces;
 
 namespace TheBugTracker.Services
 {
-    public class ProjectDTOService(IProjectRepository repository) : IProjectDTOService
+    public class ProjectDTOService(IProjectRepository repository, UserManager<ApplicationUser> userManager) : IProjectDTOService
     {
         public async Task<ProjectDTO?> GetProjectByIdAsync(int projectId, UserInfo user)
         {
             Project? project = await repository.GetProjectByIdAsync(projectId, user);
 
-            return project?.ToDTO();
+            if (project == null)
+            {
+                return null;
+            }
+
+            List<UserDTO> members = [];
+
+            foreach (var member in project.Members)
+            {
+                UserDTO dto = await member.ToDTOWithRole(userManager);
+                members.Add(dto);
+            }
+
+            ProjectDTO projectDTO = project.ToDTO();
+            projectDTO.Members = members;
+
+            return projectDTO;
         }
 
         public async Task<IEnumerable<ProjectDTO>> GetProjectsAsync(UserInfo user)
