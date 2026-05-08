@@ -123,6 +123,12 @@
                 await ProjectService.RemoveProjectMemberAsync(Project.Id, userId, userInfo);
             }
 
+            // Update project members
+            Project.Members = [.. await ProjectService.GetProjectMembersAsync(Project.Id, userInfo!)];
+
+            // Update original member ids after save
+            originalMemberIds = Project.Members.Select(m => m.Id);
+
             Snackbar.Add("Project members has been successfully updated", Severity.Success);
             await OnClose.InvokeAsync();
         }
