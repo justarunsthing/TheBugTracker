@@ -40,6 +40,20 @@ namespace TheBugTracker.Services
             return dtos;
         }
 
+        public async Task<IEnumerable<UserDTO>> GetProjectMembersAsync(int projectId, UserInfo user)
+        {
+            IEnumerable<ApplicationUser> members = await repository.GetProjectMembersAsync(projectId, user);
+            List<UserDTO> dtos = [];
+
+            foreach (var member in members)
+            {
+                UserDTO dto = await member.ToDTOWithRole(userManager);
+                dtos.Add(dto);
+            }
+
+            return dtos;
+        }
+
         public async Task<ProjectDTO> CreateProjectAsync(ProjectDTO project, UserInfo user)
         {
             Project dbProject = new()

@@ -27,6 +27,15 @@ namespace TheBugTracker.Client.Interfaces
         /// <param name="project">The project to be saved in the database</param>
         /// <param name="user">The current user's claims</param>
         /// <returns>The created project's DTO after it has been saved in the database</returns>
+        
+        /// <summary>
+        /// Retrieves a list of users currently assigned to the project
+        /// </summary>
+        /// <param name="projectId">The Id of the project</param>
+        /// <param name="user">The current user's claims</param>
+        /// <returns>A collection of users</returns>
+        Task<IEnumerable<UserDTO>> GetProjectMembersAsync(int projectId, UserInfo user);
+
         Task<ProjectDTO> CreateProjectAsync(ProjectDTO project, UserInfo user);
 
         /// <summary>

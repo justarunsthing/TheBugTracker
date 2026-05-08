@@ -38,6 +38,17 @@ namespace TheBugTracker.Client.Services
             }
         }
 
+        /// <summary>
+        /// Retrieves a list of users currently assigned to the project
+        /// </summary>
+        /// <param name="projectId">The Id of the project</param>
+        /// <param name="user">The current user's claims</param>
+        /// <returns>A collection of users</returns>
+        public async Task<IEnumerable<UserDTO>> GetProjectMembersAsync(int projectId, UserInfo user)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<ProjectDTO> CreateProjectAsync(ProjectDTO project, UserInfo user)
         {
             var response = await http.PostAsJsonAsync("api/projects", project);
