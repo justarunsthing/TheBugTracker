@@ -36,6 +36,18 @@ namespace TheBugTracker.Repository
             return projects;
         }
 
+        public async Task<IEnumerable<ApplicationUser>> GetProjectMembersAsync(int projectId, UserInfo user)
+        {
+            await using ApplicationDbContext context = contextFactory.CreateDbContext();
+
+            List<ApplicationUser> members = await context.Projects
+                .Where(p => p.Id == projectId && p.CompanyId == user.CompanyId)
+                .SelectMany(p => p.Members)
+                .ToListAsync();
+
+            return members;
+        }
+
         public async Task<Project> CreateProjectAsync(Project project, UserInfo user)
         {
             bool isAdmin = user.Roles.Any(r => r == nameof(Role.Admin));

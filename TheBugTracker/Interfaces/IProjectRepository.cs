@@ -20,6 +20,14 @@ namespace TheBugTracker.Interfaces
         Task<IEnumerable<Project>> GetProjectsAsync(UserInfo user);
 
         /// <summary>
+        /// Retrieves a list of users currently assigned to the project
+        /// </summary>
+        /// <param name="projectId">The Id of the project</param>
+        /// <param name="user">The current user's claims</param>
+        /// <returns>A collection of users</returns>
+        Task<IEnumerable<ApplicationUser>> GetProjectMembersAsync(int projectId, UserInfo user);
+
+        /// <summary>
         /// Creates a new project in the database for the user's company
         /// </summary>
         /// <remarks>
