@@ -62,13 +62,13 @@
                     </MudChip>
                 </div>
                 <div class="mt-2 hstack gap-2">
-                    <UserCard User="projectManager" 
-                              PlaceholderName="Unassigned" 
+                    <UserCard User="projectManager"
+                              PlaceholderName="Unassigned"
                               PlaceholderRole="@Role.ProjectManager.GetDisplayName()" />
 
-                    <MudIconButton Icon="@Icons.Material.Filled.Edit" 
-                                   Size="Size.Small" Variant="Variant.Text" 
-                                   OnClick="() => isProjectManagerDialogVisible = true"/>
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                   Size="Size.Small" Variant="Variant.Text"
+                                   OnClick="() => isProjectManagerDialogVisible = true" />
                 </div>
             </MudPaper>
 
@@ -208,30 +208,35 @@
             </TitleContent>
             <DialogContent>
                 <div class="vstack gap-3">
-                    <UserCard User="projectManager" 
-                              PlaceholderName="Unassigned" 
+                    <UserCard User="projectManagers.FirstOrDefault(pm => pm.Id == selectedPmId)"
+                              PlaceholderName="Unassigned"
                               PlaceholderRole="@Role.ProjectManager.GetDisplayName()" />
 
-                    <MudSelect Label="Project Manager" 
-                               @bind-Value="projectManager" 
+                    <MudSelect Label="Project Manager"
+                               @bind-Value="selectedPmId"
                                Variant="Variant.Outlined"
                                Clearable
                                Placeholder="Select a project manager">
                         @foreach (var pm in projectManagers)
                         {
-                            <MudSelectItem Value="pm">
-                                @pm.FullName
+                            <MudSelectItem Value="pm.Id">
+                                <div class="hstack gap-2 align-items-center">
+                                    <MudAvatar Size="Size.Small">
+                                        <MudImage Src="@pm.ImageUrl" />
+                                    </MudAvatar>
+                                    @pm.FullName
+                                </div>
                             </MudSelectItem>
                         }
                     </MudSelect>
                 </div>
             </DialogContent>
             <DialogActions>
-                <MudButton Variant="Variant.Text" 
-                           Color="Color.Error" 
+                <MudButton Variant="Variant.Text"
+                           Color="Color.Error"
                            StartIcon="@Icons.Material.Filled.Cancel"
                            OnClick="HandleCancelProjectManager">
-                    Close
+                    Cancel
                 </MudButton>
                 <MudButton Variant="Variant.Filled" 
                            Color="Color.Primary" 
@@ -244,7 +249,7 @@
     }
 </MudContainer>
 
-@code {
+    @code {
     [Parameter]
     public int Id { get; set; }
 
@@ -260,6 +265,7 @@
     private UserDTO? projectManager;
     private IEnumerable<UserDTO> projectManagers = [];
     private bool isProjectManagerDialogVisible = false;
+    private string? selectedPmId;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -290,6 +296,7 @@
 
                 projectManagers = await CompanyService.GetUsersInRoleAsync(Role.ProjectManager, userInfo!);
                 projectManager = project.Members.FirstOrDefault(m => m.Role == Role.ProjectManager);
+                selectedPmId = projectManager?.Id;
             }
         }
         catch (Exception ex)
