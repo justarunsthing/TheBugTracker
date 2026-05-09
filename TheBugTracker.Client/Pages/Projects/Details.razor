@@ -2,6 +2,7 @@
 @using TheBugTracker.Client.UI.Projects
 @attribute [Authorize]
 @inject IProjectDTOService ProjectService
+@inject ICompanyDTOService CompanyService
 @inject ISnackbar Snackbar
 
 <MudContainer MaxWidth="MaxWidth.Large" Class="h-100">
