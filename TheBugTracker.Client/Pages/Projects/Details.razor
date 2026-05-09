@@ -230,10 +230,13 @@
                 <MudButton Variant="Variant.Text" 
                            Color="Color.Error" 
                            StartIcon="@Icons.Material.Filled.Cancel"
-                           OnClick="() => isProjectManagerDialogVisible = false">
+                           OnClick="HandleCancelProjectManager">
                     Close
                 </MudButton>
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Save">
+                <MudButton Variant="Variant.Filled" 
+                           Color="Color.Primary" 
+                           StartIcon="@Icons.Material.Filled.Save"
+                           OnClick="HandleSaveProjectManager">
                     Save
                 </MudButton>
             </DialogActions>
@@ -333,5 +336,17 @@
             Console.WriteLine(ex);
             Snackbar.Add("An error occurred archiving/restoring the project!", Severity.Error);
         }
+    }
+
+    private void HandleCancelProjectManager()
+    {
+        selectedPmId = projectManager?.Id;
+        isProjectManagerDialogVisible = false;
+    }
+
+    private void HandleSaveProjectManager()
+    {
+        Snackbar.Add($"You selected {selectedPmId ?? "Nobody"}");
+        isProjectManagerDialogVisible = false;
     }
 }
