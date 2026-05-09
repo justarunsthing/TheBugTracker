@@ -108,8 +108,8 @@
                     </div>
                 }
 
-                <MudButton Size="Size.Small" 
-                           Color="Color.Primary" 
+                <MudButton Size="Size.Small"
+                           Color="Color.Primary"
                            StartIcon="@Icons.Material.Filled.Settings"
                            OnClick="() => isMemberDialogVisible = true">
                     Manage Team
@@ -198,10 +198,50 @@
                 <ProjectMemberManager Project="project" OnClose="() => isMemberDialogVisible = false" />
             </DialogContent>
         </MudDialog>
+
+        @* Manage project manager mud dialog box *@
+        <MudDialog @bind-Visible="isProjectManagerDialogVisible">
+            <TitleContent>
+                <MudText Typo="Typo.h5">
+                    Assign Project Manager
+                </MudText>
+            </TitleContent>
+            <DialogContent>
+                <div class="vstack gap-3">
+                    <UserCard User="projectManager" 
+                              PlaceholderName="Unassigned" 
+                              PlaceholderRole="@Role.ProjectManager.GetDisplayName()" />
+
+                    <MudSelect Label="Project Manager" 
+                               @bind-Value="projectManager" 
+                               Variant="Variant.Outlined"
+                               Clearable
+                               Placeholder="Select a project manager">
+                        @foreach (var pm in projectManagers)
+                        {
+                            <MudSelectItem Value="pm">
+                                @pm.FullName
+                            </MudSelectItem>
+                        }
+                    </MudSelect>
+                </div>
+            </DialogContent>
+            <DialogActions>
+                <MudButton Variant="Variant.Text" 
+                           Color="Color.Error" 
+                           StartIcon="@Icons.Material.Filled.Cancel"
+                           OnClick="() => isProjectManagerDialogVisible = false">
+                    Close
+                </MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Save">
+                    Save
+                </MudButton>
+            </DialogActions>
+        </MudDialog>
     }
 </MudContainer>
 
-    @code {
+@code {
     [Parameter]
     public int Id { get; set; }
 
