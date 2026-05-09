@@ -61,6 +61,15 @@
                         @project.StartDateTime?.ToShortDateString() - @project.EndDateTime?.ToShortDateString()
                     </MudChip>
                 </div>
+                <div class="mt-2 hstack gap-2">
+                    <UserCard User="projectManager" 
+                              PlaceholderName="Unassigned" 
+                              PlaceholderRole="@Role.ProjectManager.GetDisplayName()" />
+
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit" 
+                                   Size="Size.Small" Variant="Variant.Text" 
+                                   OnClick="() => isProjectManagerDialogVisible = true"/>
+                </div>
             </MudPaper>
 
             @* Description *@
@@ -89,7 +98,14 @@
                 }
                 else
                 {
-                    
+                    <div class="row g-3 py-3 row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5">
+                        @foreach (var member in project.Members)
+                        {
+                            <div class="col">
+                                <UserCard User="member" />
+                            </div>
+                        }
+                    </div>
                 }
 
                 <MudButton Size="Size.Small" 
@@ -198,6 +214,9 @@
     private bool isLoading = true;
     private bool isMemberDialogVisible = false;
     private MudMessageBox? archiveConfirmationBox;
+    private UserDTO? projectManager;
+    private IEnumerable<UserDTO> projectManagers = [];
+    private bool isProjectManagerDialogVisible = false;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -225,6 +244,9 @@
                     new BreadcrumbItem("Projects", href: "/projects"),
                     new BreadcrumbItem(project.Name!, href: null, disabled: true)
                 ];
+
+                projectManagers = await CompanyService.GetUsersInRoleAsync(Role.ProjectManager, userInfo!);
+                projectManager = project.Members.FirstOrDefault(m => m.Role == Role.ProjectManager);
             }
         }
         catch (Exception ex)
