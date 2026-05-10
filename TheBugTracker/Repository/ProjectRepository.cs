@@ -213,6 +213,55 @@ namespace TheBugTracker.Repository
             await context.SaveChangesAsync();
         }
 
+        public Task<ApplicationUser?> GetProjectManagerAsync(int projectId, UserInfo user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task AssignProjectManagerAsync(int projectId, string managerId, UserInfo user)
+        {
+            bool canEditProject = await UserCanEditProject(projectId, user);
+
+            if (!canEditProject)
+            {
+                return;
+            }
+
+            await using ApplicationDbContext context = contextFactory.CreateDbContext();
+
+            ApplicationUser? newManager = await context.Users
+                .FirstOrDefaultAsync(u => u.Id == managerId && u.CompanyId == user.CompanyId);
+
+            if (newManager == null || !await userManager.IsInRoleAsync(newManager, nameof(Role.ProjectManager)))
+            {
+                return;
+            }
+
+            Project project = await context.Projects
+                .Include(p => p.Members)
+                .FirstAsync(p => p.Id == projectId && p.CompanyId == user.CompanyId);
+
+            ApplicationUser? oldManager = await GetProjectManagerAsync(projectId, user);
+
+            if (oldManager?.Id == newManager.Id)
+            {
+                return;
+            }
+            else if (oldManager is not null)
+            {
+                ApplicationUser userToRemove = project.Members.First(m => m.Id == oldManager.Id);
+                project.Members.Remove(userToRemove);
+            }
+
+            project.Members.Add(newManager);
+            await context.SaveChangesAsync();
+        }
+
+        public Task RemoveProjectManagerAsync(int projectId, UserInfo user)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Checks that the project exists and belongs to the user's company, then checks that the user is either an admin or the project manager assigned to the project
         /// </summary>
@@ -237,21 +286,6 @@ namespace TheBugTracker.Repository
                 .AnyAsync(p => isAdmin || p.Members.Any(m => m.Id == user.UserId));
 
             return canEditProject;
-        }
-
-        public Task<ApplicationUser?> GetProjectManagerAsync(int projectId, UserInfo user)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task AssignProjectManagerAsync(int projectId, string managerId, UserInfo user)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task RemoveProjectManagerAsync(int projectId, UserInfo user)
-        {
-            throw new NotImplementedException();
         }
     }
 }
