@@ -1,6 +1,7 @@
 ﻿using TheBugTracker.Client;
 using TheBugTracker.Models;
 using TheBugTracker.Interfaces;
+using TheBugTracker.Client.Enums;
 using TheBugTracker.Client.Models;
 using Microsoft.AspNetCore.Identity;
 using TheBugTracker.Client.Interfaces;
@@ -111,19 +112,29 @@ namespace TheBugTracker.Services
             await repository.RemoveProjectMemberAsync(projectId, userId, user);
         }
 
-        public Task<UserDTO?> GetProjectManagerAsync(int projectId, UserInfo user)
+        public async Task<UserDTO?> GetProjectManagerAsync(int projectId, UserInfo user)
         {
-            throw new NotImplementedException();
+            ApplicationUser? projectManager = await repository.GetProjectManagerAsync(projectId, user);
+
+            if (projectManager == null)
+            {
+                return null;
+            }
+
+            UserDTO dto = projectManager.ToDTO();
+            dto.Role = Role.ProjectManager;
+
+            return dto;
         }
 
-        public Task AssignProjectManagerAsync(int projectId, string managerId, UserInfo user)
+        public async Task AssignProjectManagerAsync(int projectId, string managerId, UserInfo user)
         {
-            throw new NotImplementedException();
+            await repository.AssignProjectManagerAsync(projectId, managerId, user);
         }
 
-        public Task RemoveProjectManagerAsync(int projectId, UserInfo user)
+        public async Task RemoveProjectManagerAsync(int projectId, UserInfo user)
         {
-            throw new NotImplementedException();
+            await repository.RemoveProjectManagerAsync(projectId, user);
         }
     }
 }
