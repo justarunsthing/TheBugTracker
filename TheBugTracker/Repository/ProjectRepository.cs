@@ -213,9 +213,19 @@ namespace TheBugTracker.Repository
             await context.SaveChangesAsync();
         }
 
-        public Task<ApplicationUser?> GetProjectManagerAsync(int projectId, UserInfo user)
+        public async Task<ApplicationUser?> GetProjectManagerAsync(int projectId, UserInfo user)
         {
-            throw new NotImplementedException();
+            IEnumerable<ApplicationUser> members = await GetProjectMembersAsync(projectId, user);
+
+            foreach (var member in members)
+            {
+                if (await userManager.IsInRoleAsync(member, nameof(Role.ProjectManager)))
+                {
+                    return member;
+                }
+            }
+
+            return null;
         }
 
         public async Task AssignProjectManagerAsync(int projectId, string managerId, UserInfo user)
