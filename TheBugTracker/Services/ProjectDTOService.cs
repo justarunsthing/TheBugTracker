@@ -110,5 +110,20 @@ namespace TheBugTracker.Services
         {
             await repository.RemoveProjectMemberAsync(projectId, userId, user);
         }
+
+        public Task<UserDTO?> GetProjectManagerAsync(int projectId, UserInfo user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task AssignProjectManagerAsync(int projectId, string managerId, UserInfo user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task RemoveProjectManagerAsync(int projectId, UserInfo user)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

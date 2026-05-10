@@ -84,5 +84,28 @@ namespace TheBugTracker.Interfaces
         /// <param name="userId">The Id of the user</param>
         /// <param name="user">The current user's claims</param>
         Task RemoveProjectMemberAsync(int projectId, string userId, UserInfo user);
+
+        /// <summary>
+        /// Retrieves the assigned project manager for the project
+        /// </summary>
+        /// <param name="projectId">The Id of the project</param>
+        /// <param name="user">The current user's claims</param>
+        /// <returns>The assigned project manager or null</returns>
+        Task<ApplicationUser?> GetProjectManagerAsync(int projectId, UserInfo user);
+
+        /// <summary>
+        /// Assigns a project manager to a project, removes if another project manager was already assigned
+        /// </summary>
+        /// <param name="projectId">The id of the project</param>
+        /// <param name="managerId">The id of the project manager to assign</param>
+        /// <param name="user">The current user's claims</param>
+        Task AssignProjectManagerAsync(int projectId, string managerId, UserInfo user);
+
+        /// <summary>
+        /// Removes the project manager from the project is assigned
+        /// </summary>
+        /// <param name="projectId">The id of the project</param>
+        /// <param name="user">The current user's claims</param>
+        Task RemoveProjectManagerAsync(int projectId, UserInfo user);
     }
 }
