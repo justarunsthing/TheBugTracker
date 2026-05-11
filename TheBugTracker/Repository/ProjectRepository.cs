@@ -267,9 +267,31 @@ namespace TheBugTracker.Repository
             await context.SaveChangesAsync();
         }
 
-        public Task RemoveProjectManagerAsync(int projectId, UserInfo user)
+        public async Task RemoveProjectManagerAsync(int projectId, UserInfo user)
         {
-            throw new NotImplementedException();
+            bool canEditProject = await UserCanEditProject(projectId, user);
+
+            if (!canEditProject)
+            {
+                return;
+            }
+
+            await using ApplicationDbContext context = contextFactory.CreateDbContext();
+
+            Project project = await context.Projects
+                .Include(p => p.Members)
+                .FirstAsync(p => p.Id == projectId && p.CompanyId == user.CompanyId);
+
+            foreach (var member in project.Members)
+            {
+                if (await userManager.IsInRoleAsync(member, nameof(Role.ProjectManager)))
+                {
+                    project.Members.Remove(member);
+                    await context.SaveChangesAsync();
+
+                    return;
+                }
+            }
         }
 
         /// <summary>
