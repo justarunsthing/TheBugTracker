@@ -238,8 +238,8 @@
                            OnClick="HandleCancelProjectManager">
                     Cancel
                 </MudButton>
-                <MudButton Variant="Variant.Filled" 
-                           Color="Color.Primary" 
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
                            StartIcon="@Icons.Material.Filled.Save"
                            OnClick="HandleSaveProjectManager">
                     Save
@@ -249,7 +249,7 @@
     }
 </MudContainer>
 
-    @code {
+@code {
     [Parameter]
     public int Id { get; set; }
 
@@ -351,9 +351,31 @@
         isProjectManagerDialogVisible = false;
     }
 
-    private void HandleSaveProjectManager()
+    private async Task HandleSaveProjectManager()
     {
-        Snackbar.Add($"You selected {selectedPmId ?? "Nobody"}");
-        isProjectManagerDialogVisible = false;
+        try
+        {
+            isProjectManagerDialogVisible = false;
+
+            if (string.IsNullOrEmpty(selectedPmId))
+            {
+                await ProjectService.RemoveProjectManagerAsync(Id, userInfo!);
+            }
+            else
+            {
+                await ProjectService.AssignProjectManagerAsync(Id, selectedPmId, userInfo!);
+            }
+
+            project!.Members = [.. await ProjectService.GetProjectMembersAsync(Id, userInfo!)];
+            projectManager = project.Members.FirstOrDefault(m => m.Role == Role.ProjectManager);
+            selectedPmId = projectManager?.Id;
+
+            Snackbar.Add("Project manager has been updated successfully!", Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            Snackbar.Add("Failed to update project manager!", Severity.Error);
+        }
     }
 }
