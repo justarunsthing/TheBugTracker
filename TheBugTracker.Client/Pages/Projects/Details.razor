@@ -88,7 +88,7 @@
                     Project Members
                 </MudText>
 
-                @if (project.Members.Count == 0)
+                @if (project.Members.Where(m => m.Role != Role.ProjectManager).Count() == 0)
                 {
                     <div class="p-5 text-center">
                         <MudText Typo="Typo.button" Color="Color.Tertiary">
@@ -99,7 +99,7 @@
                 else
                 {
                     <div class="row g-3 py-3 row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5">
-                        @foreach (var member in project.Members)
+                        @foreach (var member in project.Members.Where(m => m.Role != Role.ProjectManager))
                         {
                             <div class="col">
                                 <UserCard User="member" />
