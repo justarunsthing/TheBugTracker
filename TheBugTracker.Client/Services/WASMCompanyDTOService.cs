@@ -1,14 +1,25 @@
-﻿using TheBugTracker.Client.Enums;
+﻿using System.Net.Http.Json;
+using TheBugTracker.Client.Enums;
 using TheBugTracker.Client.Models;
 using TheBugTracker.Client.Interfaces;
 
 namespace TheBugTracker.Client.Services
 {
-    public class WASMCompanyDTOService : ICompanyDTOService
+    public class WASMCompanyDTOService(HttpClient http) : ICompanyDTOService
     {
-        public Task<IEnumerable<UserDTO>> GetUsersAsync(UserInfo userInfo)
+        public async Task<IEnumerable<UserDTO>> GetUsersAsync(UserInfo userInfo)
         {
-            throw new NotImplementedException();
+            try
+            {
+                List<UserDTO> users = await http.GetFromJsonAsync<List<UserDTO>>("api/company/users") ?? [];
+
+                return users;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return [];
+            }
         }
 
         public Task<IEnumerable<UserDTO>> GetUsersInRoleAsync(Role role, UserInfo userInfo)
