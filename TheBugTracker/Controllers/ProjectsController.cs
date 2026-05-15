@@ -133,5 +133,24 @@ namespace TheBugTracker.Controllers
 
             return NoContent();
         }
+
+        /// <summary>
+        /// Add Project Member
+        /// </summary>
+        /// <param name="projectId">The Id of the project</param>
+        /// <param name="userId">The Id of the user</param>
+        /// <remarks>
+        /// Assigns a user to a project, if they are not already assigned
+        /// 
+        /// *Note: Project managers must be assigned by the AssignProjectManager endpoint. Admins cannot be assigned to projects.*
+        /// </remarks>
+        [HttpPut("members/{projectId:int}/{userId}")]
+        [Authorize(Roles = $"{nameof(Role.Admin)}, {nameof(Role.ProjectManager)}")]
+        public async Task<IActionResult> AddProjectMember([FromRoute] int projectId, [FromRoute] string userId)
+        {
+            await projectService.AddProjectMemberAsync(projectId, userId, UserInfo);
+
+            return NoContent();
+        }
     }
 }
