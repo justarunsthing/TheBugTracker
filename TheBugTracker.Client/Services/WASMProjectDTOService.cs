@@ -46,7 +46,18 @@ namespace TheBugTracker.Client.Services
         /// <returns>A collection of users</returns>
         public async Task<IEnumerable<UserDTO>> GetProjectMembersAsync(int projectId, UserInfo user)
         {
-            throw new NotImplementedException();
+            try
+            {
+                List<UserDTO> members = await http.GetFromJsonAsync<List<UserDTO>>($"api/projects/members/{projectId}") ?? [];
+
+                return members;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+
+                return [];
+            }
         }
 
         public async Task<ProjectDTO> CreateProjectAsync(ProjectDTO project, UserInfo user)
