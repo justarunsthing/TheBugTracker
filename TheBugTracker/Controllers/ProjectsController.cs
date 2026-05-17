@@ -52,6 +52,21 @@ namespace TheBugTracker.Controllers
         }
 
         /// <summary>
+        /// Get Project Members
+        /// </summary>
+        /// <param name="projectId">The id of the project</param>
+        /// <remarks>
+        /// Returns all members assigned to the project
+        /// </remarks>
+        [HttpGet("members/{projectId:int}")]
+        public async Task<ActionResult<IEnumerable<UserDTO>>> GetProjectMembers([FromRoute] int projectId)
+        {
+            IEnumerable<UserDTO> members = await projectService.GetProjectMembersAsync(projectId, UserInfo);
+
+            return Ok(members);
+        }
+
+        /// <summary>
         /// Create project
         /// </summary>
         /// <remarks>
