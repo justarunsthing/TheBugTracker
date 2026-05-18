@@ -1,10 +1,10 @@
 ﻿using TheBugTracker.Client;
 using Microsoft.AspNetCore.Mvc;
+using TheBugTracker.Client.Enums;
 using TheBugTracker.Client.Models;
 using TheBugTracker.Client.Helpers;
 using TheBugTracker.Client.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using TheBugTracker.Client.Enums;
 
 namespace TheBugTracker.Controllers
 {
@@ -71,7 +71,6 @@ namespace TheBugTracker.Controllers
         /// </summary>
         /// <remarks>
         /// Creates a new project for the user's company
-        /// 
         /// Users must be a project manager or an admin to create a new project.
         /// If the user is a project manager, they will be assignd to the submitted project.
         /// </remarks>
@@ -94,7 +93,6 @@ namespace TheBugTracker.Controllers
         /// </summary>
         /// <remarks>
         /// Updates the details of a specific project if it exists.
-        /// 
         /// Users must be an admin or the project manager assigned to the project to submit an update
         /// </remarks>
         /// <param name="projectId">The Id of the project to update</param>
@@ -118,7 +116,6 @@ namespace TheBugTracker.Controllers
         /// </summary>
         /// <remarks>
         /// Archive a project to indicate it is no longer being worked on
-        /// 
         /// Users must be an admin or the project manager assigned to the project to archive the project
         /// </remarks>
         /// <param name="projectId">The Id of the project to archive</param>
@@ -136,7 +133,6 @@ namespace TheBugTracker.Controllers
         /// </summary>
         /// <remarks>
         /// Restore a project to indicate it is active and work is resumed
-        /// 
         /// Users must be an admin or the project manager assigned to the project to resotre the project
         /// </remarks>
         /// <param name="projectId">The Id of the project to restore</param>
@@ -156,14 +152,33 @@ namespace TheBugTracker.Controllers
         /// <param name="userId">The Id of the user</param>
         /// <remarks>
         /// Assigns a user to a project, if they are not already assigned
-        /// 
         /// *Note: Project managers must be assigned by the AssignProjectManager endpoint. Admins cannot be assigned to projects.*
+        /// *Only Admins and the assigned project manager may add members to a project.*
         /// </remarks>
         [HttpPut("members/{projectId:int}/{userId}")]
         [Authorize(Roles = $"{nameof(Role.Admin)}, {nameof(Role.ProjectManager)}")]
         public async Task<IActionResult> AddProjectMember([FromRoute] int projectId, [FromRoute] string userId)
         {
             await projectService.AddProjectMemberAsync(projectId, userId, UserInfo);
+
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Remove Project Member
+        /// </summary>
+        /// <param name="projectId">The Id of the project</param>
+        /// <param name="userId">The Id of the user</param>
+        /// <remarks>
+        /// Removes a user from a project, if they are currently assigned
+        /// *Note: Only Admins and the assigned project manager may remove members from a project. The Project manager 
+        /// must be removed using the RemoveProjectManager endpoint.*
+        /// </remarks>
+        [HttpDelete("members/{projectId:int}/{userId}")]
+        [Authorize(Roles = $"{nameof(Role.Admin)}, {nameof(Role.ProjectManager)}")]
+        public async Task<IActionResult> RemoveProjectMember([FromRoute] int projectId, [FromRoute] string userId)
+        {
+            await projectService.RemoveProjectMemberAsync(projectId, userId, UserInfo);
 
             return NoContent();
         }
