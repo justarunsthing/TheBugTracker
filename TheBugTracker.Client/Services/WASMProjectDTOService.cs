@@ -94,9 +94,10 @@ namespace TheBugTracker.Client.Services
             response.EnsureSuccessStatusCode();
         }
 
-        public Task RemoveProjectMemberAsync(int projectId, string userId, UserInfo user)
+        public async Task RemoveProjectMemberAsync(int projectId, string userId, UserInfo user)
         {
-            throw new NotImplementedException();
+            var response = await http.DeleteAsync($"api/projects/members/{projectId}/{userId}");
+            response.EnsureSuccessStatusCode();
         }
 
         public Task<UserDTO?> GetProjectManagerAsync(int projectId, UserInfo user)
