@@ -116,9 +116,10 @@ namespace TheBugTracker.Client.Services
             }
         }
 
-        public Task AssignProjectManagerAsync(int projectId, string managerId, UserInfo user)
+        public async Task AssignProjectManagerAsync(int projectId, string managerId, UserInfo user)
         {
-            throw new NotImplementedException();
+            var response = await http.PutAsync($"api/projects/manager/{projectId}/{managerId}", null);
+            response.EnsureSuccessStatusCode();
         }
 
         public Task RemoveProjectManagerAsync(int projectId, UserInfo user)
