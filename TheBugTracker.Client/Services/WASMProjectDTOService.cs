@@ -122,9 +122,10 @@ namespace TheBugTracker.Client.Services
             response.EnsureSuccessStatusCode();
         }
 
-        public Task RemoveProjectManagerAsync(int projectId, UserInfo user)
+        public async Task RemoveProjectManagerAsync(int projectId, UserInfo user)
         {
-            throw new NotImplementedException();
+            var response = await http.DeleteAsync($"api/projects/manager/{projectId}");
+            response.EnsureSuccessStatusCode();
         }
     }
 }
