@@ -100,9 +100,20 @@ namespace TheBugTracker.Client.Services
             response.EnsureSuccessStatusCode();
         }
 
-        public Task<UserDTO?> GetProjectManagerAsync(int projectId, UserInfo user)
+        public async Task<UserDTO?> GetProjectManagerAsync(int projectId, UserInfo user)
         {
-            throw new NotImplementedException();
+            try
+            {
+                UserDTO? projectManager = await http.GetFromJsonAsync<UserDTO>($"api/projects/manager/{projectId}");
+
+                return projectManager;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+
+                return null;
+            }
         }
 
         public Task AssignProjectManagerAsync(int projectId, string managerId, UserInfo user)
