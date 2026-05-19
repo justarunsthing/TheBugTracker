@@ -185,6 +185,25 @@ namespace TheBugTracker.Controllers
         }
 
         /// <summary>
+        /// Assign Project Manager
+        /// </summary>
+        /// <param name="projectId">The id of the project</param>
+        /// <param name="userId">The id of the user</param>
+        /// <remarks>
+        /// Assigns a project manager to a project. If another project manager is currently assigned, 
+        /// they will be removed and replaced with the new project manager.
+        /// If the user is not a project manager, they may not be assigned to manage the project.
+        /// </remarks>
+        [HttpPut("manager/{projectId:int}/{userId}")]
+        [Authorize(Roles = $"{nameof(Role.Admin)}, {nameof(Role.ProjectManager)}")]
+        public async Task<IActionResult> AssignProjectManager([FromRoute] int projectId, [FromRoute] string userId)
+        {
+            await projectService.AssignProjectManagerAsync(projectId, userId, UserInfo);
+
+            return NoContent();
+        }
+
+        /// <summary>
         /// Remove Project Member
         /// </summary>
         /// <param name="projectId">The Id of the project</param>
