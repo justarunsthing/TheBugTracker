@@ -222,6 +222,20 @@ namespace TheBugTracker.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Remove Project Manager
+        /// </summary>
+        /// <param name="projectId">The id of the project</param>
+        /// <remarks>
+        /// Unassigns a project's manager if one is currently assigned.
+        /// </remarks>
+        [HttpDelete("manager/{projectId:int}")]
+        [Authorize(Roles = $"{nameof(Role.Admin)}, {nameof(Role.ProjectManager)}")]
+        public async Task<IActionResult> RemoveProjectManager([FromRoute] int projectId)
+        {
+            await projectService.RemoveProjectManagerAsync(projectId, UserInfo);
 
+            return NoContent();
+        }
     }
 }
