@@ -67,6 +67,26 @@ namespace TheBugTracker.Controllers
         }
 
         /// <summary>
+        /// Get Project Manager
+        /// </summary>
+        /// <param name="projectId">The id of the project</param>
+        /// <remarks>
+        /// Returns the manager assigned to the project or null if no manager is assigned
+        /// </remarks>
+        [HttpGet("manager/{projectId:int}")]
+        public async Task<ActionResult<UserDTO>> GetProjectManager([FromRoute] int projectId)
+        {
+            UserDTO? projectManager = await projectService.GetProjectManagerAsync(projectId, UserInfo);
+
+            if (projectManager is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(projectManager);
+        }
+
+        /// <summary>
         /// Create project
         /// </summary>
         /// <remarks>
@@ -182,5 +202,7 @@ namespace TheBugTracker.Controllers
 
             return NoContent();
         }
+
+
     }
 }
