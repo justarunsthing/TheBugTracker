@@ -13,9 +13,25 @@
         </MudCardHeader>
         <MudCardContent>
             <div class="h-100 d-flex align-items-center justify-content-center">
-                <MudText Typo="Typo.button" Color="Color.Tertiary">
-                    No project members
-                </MudText>
+                @if (Project.Members.Any())
+                {
+                    <MudAvatarGroup Max="5" MaxColor="Color.Primary">
+                        @foreach (var member in Project.Members)
+                        {
+                            <MudAvatar>
+                                <MudTooltip Text="@member.FullName" Arrow>
+                                    <MudImage Src="@member.ImageUrl" Height="40" />
+                                </MudTooltip>
+                            </MudAvatar>
+                        }
+                    </MudAvatarGroup>
+                }
+                else
+                {
+                    <MudText Typo="Typo.button" Color="Color.Tertiary">
+                        No project members
+                    </MudText>
+                }
             </div>
         </MudCardContent>
         <MudCardActions>
