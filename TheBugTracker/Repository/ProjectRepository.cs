@@ -31,6 +31,7 @@ namespace TheBugTracker.Repository
 
             IEnumerable<Project> projects = await context.Projects
                 .Where(p => p.CompanyId == user.CompanyId && !p.IsArchived)
+                .Include(p => p.Members)
                 .ToListAsync();
 
             return projects;
