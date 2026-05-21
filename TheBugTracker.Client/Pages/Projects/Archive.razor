@@ -52,7 +52,7 @@
         try
         {
             UserInfo? userInfo = await UserInfoHelper.GetUserInfoAsync(AuthStateTask);
-            projects = await ProjectService.GetProjectsAsync(userInfo!);
+            projects = await ProjectService.GetArchivedProjectsAsync(userInfo!);
         }
         catch (Exception ex)
         {

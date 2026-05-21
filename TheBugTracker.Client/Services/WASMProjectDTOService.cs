@@ -38,6 +38,11 @@ namespace TheBugTracker.Client.Services
             }
         }
 
+        public async Task<IEnumerable<ProjectDTO>> GetArchivedProjectsAsync(UserInfo user)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Retrieves a list of users currently assigned to the project
         /// </summary>

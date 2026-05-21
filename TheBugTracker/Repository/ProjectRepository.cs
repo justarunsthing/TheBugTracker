@@ -37,6 +37,18 @@ namespace TheBugTracker.Repository
             return projects;
         }
 
+        public async Task<IEnumerable<Project>> GetArchivedProjectsAsync(UserInfo user)
+        {
+            await using ApplicationDbContext context = contextFactory.CreateDbContext();
+
+            IEnumerable<Project> projects = await context.Projects
+                .Where(p => p.CompanyId == user.CompanyId && p.IsArchived)
+                .Include(p => p.Members)
+                .ToListAsync();
+
+            return projects;
+        }
+
         public async Task<IEnumerable<ApplicationUser>> GetProjectMembersAsync(int projectId, UserInfo user)
         {
             await using ApplicationDbContext context = contextFactory.CreateDbContext();

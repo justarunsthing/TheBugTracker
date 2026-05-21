@@ -16,8 +16,14 @@ namespace TheBugTracker.Interfaces
         /// <summary>
         /// Retrieves all active projects for the current user's company
         /// </summary>
-        /// <param name="user>The current user's claims </param>
+        /// <param name="user">The current user's claims </param>
         Task<IEnumerable<Project>> GetProjectsAsync(UserInfo user);
+
+        /// <summary>
+        /// Retrieves all archived projects for the current user's company
+        /// </summary>
+        /// <param name="user">The current user's claims</param>
+        Task<IEnumerable<Project>> GetArchivedProjectsAsync(UserInfo user);
 
         /// <summary>
         /// Retrieves a list of users currently assigned to the project
