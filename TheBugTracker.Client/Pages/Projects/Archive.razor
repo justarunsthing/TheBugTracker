@@ -1,9 +1,9 @@
-﻿@page "/projects"
+﻿@page "/projects/archive"
 @attribute [Authorize]
 @inject IProjectDTOService ProjectService
 @inject ISnackbar Snackbar
 
-<PageTitle>Active Projects | The Bug Tracker</PageTitle>
+<PageTitle>Archived Projects | The Bug Tracker</PageTitle>
 
 <MudContainer MaxWidth="MaxWidth.Large" Class="py-4 page-container">
     <MudBreadcrumbs Items="breadcrumbs" />
@@ -27,14 +27,10 @@
     {
         <div class="h-100 d-flex align-items-center justify-content-center">
             <MudText Color="Color.Tertiary" Typo="Typo.button">
-                No Active Projects Found
+                No Archived Projects Found
             </MudText>
         </div>
     }
-
-    <AuthorizeView Roles="@($"{nameof(Role.Admin)}, {nameof(Role.ProjectManager)}")">
-        <MudFab Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Add" Href="projects/create" Class="create-project-btn" />
-    </AuthorizeView>
 </MudContainer>
 
 @code {
@@ -46,7 +42,7 @@
     {
         new BreadcrumbItem("Home", href: "/"),
         new BreadcrumbItem("Projects", href: "/projects"),
-        new BreadcrumbItem("Active", href: null, disabled: true)
+        new BreadcrumbItem("Archive", href: null, disabled: true)
     };
 
     private bool isLoading = true;
@@ -61,7 +57,7 @@
         catch (Exception ex)
         {
             Console.WriteLine(ex);
-            Snackbar.Add("Failed to load active projects.", Severity.Error);
+            Snackbar.Add("Failed to load archived projects.", Severity.Error);
         }
 
         isLoading = false;
