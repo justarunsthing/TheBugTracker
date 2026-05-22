@@ -244,7 +244,7 @@
     }
 </MudContainer>
 
-@code {
+    @code {
     [Parameter]
     public int Id { get; set; }
 
@@ -270,24 +270,24 @@
         try
         {
             project = await ProjectService.GetProjectByIdAsync(Id, userInfo!);
+            breadcrumbs =
+            [
+                new BreadcrumbItem("Home", href: "/"),
+                new BreadcrumbItem("Projects", href: "/projects"),
+        ];
 
             if (project is null)
             {
-                breadcrumbs =
-                [
-                    new BreadcrumbItem("Home", href: "/"),
-                    new BreadcrumbItem("Projects", href: "/projects"),
-                    new BreadcrumbItem("Not Found", href: null, disabled: true)
-                ];
+                breadcrumbs.Add(new BreadcrumbItem("Not Found", href: null, disabled: true));
             }
             else
             {
-                breadcrumbs =
-                [
-                    new BreadcrumbItem("Home", href: "/"),
-                    new BreadcrumbItem("Projects", href: "/projects"),
-                    new BreadcrumbItem(project.Name!, href: null, disabled: true)
-                ];
+                if (project.IsArchived)
+                {
+                    breadcrumbs.Add(new BreadcrumbItem("Archive", href: "/projects/archive"));
+                }
+
+                breadcrumbs.Add(new BreadcrumbItem(project.Name!, href: null, disabled: true));
 
                 projectManagers = await CompanyService.GetUsersInRoleAsync(Role.ProjectManager, userInfo!);
                 projectManager = project.Members.FirstOrDefault(m => m.Role == Role.ProjectManager);
