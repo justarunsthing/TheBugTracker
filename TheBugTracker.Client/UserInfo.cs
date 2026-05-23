@@ -1,4 +1,6 @@
-﻿namespace TheBugTracker.Client
+﻿using TheBugTracker.Client.Enums;
+
+namespace TheBugTracker.Client
 {
     // Add properties to this class and update the server and client AuthenticationStateProviders
     // to expose more information about the authenticated user to the client
@@ -12,5 +14,20 @@
         public required string ProfilePictureUrl { get; set; }
         public required int CompanyId { get; set; }
         public required string[] Roles { get; set; }
+    }
+
+    public static class UserInfoExtensions
+    {
+        public static bool IsInRole(this UserInfo user, Role role)
+        {
+            string? roleName = Enum.GetName(role);
+
+            if (roleName is null)
+            {
+                return false;
+            }
+
+            return user.Roles.Contains(roleName);
+        }
     }
 }
