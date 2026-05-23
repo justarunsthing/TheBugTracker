@@ -43,6 +43,11 @@ namespace TheBugTracker.Client.Services
             throw new NotImplementedException();
         }
 
+        public async Task<IEnumerable<ProjectDTO>> GetAssignedProjectsAsync(UserInfo user)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Retrieves a list of users currently assigned to the project
         /// </summary>

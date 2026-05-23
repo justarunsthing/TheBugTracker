@@ -26,6 +26,12 @@ namespace TheBugTracker.Interfaces
         Task<IEnumerable<Project>> GetArchivedProjectsAsync(UserInfo user);
 
         /// <summary>
+        /// Retrieves assigned projects to the current user
+        /// </summary>
+        /// <param name="user">The current user's claims</param>
+        Task<IEnumerable<Project>> GetAssignedProjectsAsync(UserInfo user);
+
+        /// <summary>
         /// Retrieves a list of users currently assigned to the project
         /// </summary>
         /// <param name="projectId">The Id of the project</param>
