@@ -21,10 +21,19 @@ namespace TheBugTracker.Controllers
         /// <remarks>
         /// Get all active projects belonging to the user's company
         /// </remarks>
+        /// <param name="filter">
+        /// Optional query parameter to filter projects by status.
+        /// Defaults to **active** projects.
+        /// </param>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProjectDTO>>> GetProjects()
+        public async Task<ActionResult<IEnumerable<ProjectDTO>>> GetProjects([FromQuery] ProjectsFilter filter = ProjectsFilter.Active)
         {
-            var projects = await projectService.GetProjectsAsync(UserInfo);
+            IEnumerable<ProjectDTO> projects = filter switch
+            {
+                ProjectsFilter.Archived => await projectService.GetArchivedProjectsAsync(UserInfo),
+                ProjectsFilter.Assigned => await projectService.GetAssignedProjectsAsync(UserInfo),
+                _ => await projectService.GetProjectsAsync(UserInfo)
+            };
 
             return Ok(projects);
         }
