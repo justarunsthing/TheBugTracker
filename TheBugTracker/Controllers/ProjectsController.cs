@@ -19,7 +19,7 @@ namespace TheBugTracker.Controllers
         /// Get Projects
         /// </summary>
         /// <remarks>
-        /// Get all active projects belonging to the user's company
+        /// Get a list of projects for the user's company. By default only active projects will be returned. Use the filter query parameter to specify which projects to return.
         /// </remarks>
         /// <param name="filter">
         /// Optional query parameter to filter projects by status.

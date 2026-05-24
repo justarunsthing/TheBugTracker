@@ -1,6 +1,7 @@
 ﻿using System.Net.Http.Json;
 using TheBugTracker.Client.Models;
 using TheBugTracker.Client.Interfaces;
+using TheBugTracker.Client.Enums;
 
 namespace TheBugTracker.Client.Services
 {
@@ -40,7 +41,18 @@ namespace TheBugTracker.Client.Services
 
         public async Task<IEnumerable<ProjectDTO>> GetArchivedProjectsAsync(UserInfo user)
         {
-            throw new NotImplementedException();
+            try
+            {
+                List<ProjectDTO> projects = await http.GetFromJsonAsync<List<ProjectDTO>>($"api/projects?filter={ProjectsFilter.Archived}") ?? [];
+
+                return projects;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+
+                return [];
+            }
         }
 
         public async Task<IEnumerable<ProjectDTO>> GetAssignedProjectsAsync(UserInfo user)
