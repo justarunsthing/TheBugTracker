@@ -57,7 +57,18 @@ namespace TheBugTracker.Client.Services
 
         public async Task<IEnumerable<ProjectDTO>> GetAssignedProjectsAsync(UserInfo user)
         {
-            throw new NotImplementedException();
+            try
+            {
+                List<ProjectDTO> projects = await http.GetFromJsonAsync<List<ProjectDTO>>($"api/projects?filter={ProjectsFilter.Assigned}") ?? [];
+
+                return projects;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+
+                return [];
+            }
         }
 
         /// <summary>
