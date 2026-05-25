@@ -16,9 +16,14 @@
             <MudNavLink Href="/projects" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.FolderCopy">
                 All Projects
             </MudNavLink>
-            <MudNavLink Href="/projects/assigned" Icon="@Icons.Material.Filled.FolderShared">
-                My Projects
-            </MudNavLink>
+
+            @if (context.User.IsInRole(nameof(Role.Admin)) == false)
+            {
+                <MudNavLink Href="/projects/assigned" Icon="@Icons.Material.Filled.FolderShared">
+                    My Projects
+                </MudNavLink>
+            }
+
             <MudNavLink Href="/projects/archive" Icon="@Icons.Material.Filled.Archive">
                 Archived Projects
             </MudNavLink>
@@ -54,7 +59,7 @@
                 <MudNavLink Href="/account/manage" Icon="@Icons.Material.Filled.Person">
                     @context.User.Identity!.Name
                 </MudNavLink>
-                <MudNavLink UserAttributes="@(new() { ["onclick"] = "logoutForm.submit()" })" 
+                <MudNavLink UserAttributes="@(new() { ["onclick"] = "logoutForm.submit()" })"
                             ActiveClass=""
                             Icon="@Icons.Material.Filled.Logout">
                     Logout
