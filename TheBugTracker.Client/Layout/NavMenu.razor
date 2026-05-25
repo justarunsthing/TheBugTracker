@@ -57,7 +57,7 @@
         <AuthorizeView>
             <Authorized>
                 <MudNavLink Href="/account/manage" Icon="@Icons.Material.Filled.Person">
-                    @context.User.Identity!.Name
+                    @UserInfoHelper.GetUserInfo(context)?.FullName
                 </MudNavLink>
                 <MudNavLink UserAttributes="@(new() { ["onclick"] = "logoutForm.submit()" })"
                             ActiveClass=""
