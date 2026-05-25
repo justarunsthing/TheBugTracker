@@ -61,9 +61,12 @@
                               PlaceholderName="Unassigned"
                               PlaceholderRole="@Role.ProjectManager.GetDisplayName()" />
 
-                    <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                                   Size="Size.Small" Variant="Variant.Text"
-                                   OnClick="() => isProjectManagerDialogVisible = true" />
+                    @if (userCanEditProject)
+                    {
+                        <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                       Size="Size.Small" Variant="Variant.Text"
+                                       OnClick="() => isProjectManagerDialogVisible = true" />
+                    }
                 </div>
             </MudPaper>
 
@@ -103,12 +106,15 @@
                     </div>
                 }
 
-                <MudButton Size="Size.Small"
-                           Color="Color.Primary"
-                           StartIcon="@Icons.Material.Filled.Settings"
-                           OnClick="() => isMemberDialogVisible = true">
-                    Manage Team
-                </MudButton>
+                @if (userCanEditProject)
+                {
+                    <MudButton Size="Size.Small"
+                               Color="Color.Primary"
+                               StartIcon="@Icons.Material.Filled.Settings"
+                               OnClick="() => isMemberDialogVisible = true">
+                        Manage Team
+                    </MudButton>
+                }
             </MudPaper>
 
             @* Project tickets *@
@@ -142,105 +148,112 @@
                 <MudButton Variant="Variant.Text" Color="Color.Primary" StartIcon="@Icons.Material.Filled.ArrowBack" Href="/projects">
                     Back to Projects
                 </MudButton>
-                <MudButton Variant="Variant.Text" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Edit" Class="ms-auto" Href=@($"/projects/edit/{project.Id}")>
-                    Edit
-                </MudButton>
 
-                @if (project.IsArchived)
+                @if (userCanEditProject)
                 {
-                    <MudButton Variant="Variant.Text" StartIcon="@Icons.Material.Filled.RestoreFromTrash" Color="Color.Success" OnClick="ConfirmArchiveToggle">
-                        Restore
+                    <MudButton Variant="Variant.Text" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Edit" Class="ms-auto" Href=@($"/projects/edit/{project.Id}")>
+                        Edit
                     </MudButton>
-                }
-                else
-                {
-                    <MudButton Variant="Variant.Text" StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="ConfirmArchiveToggle">
-                        Archive
-                    </MudButton>
+
+                    @if (project.IsArchived)
+                    {
+                        <MudButton Variant="Variant.Text" StartIcon="@Icons.Material.Filled.RestoreFromTrash" Color="Color.Success" OnClick="ConfirmArchiveToggle">
+                            Restore
+                        </MudButton>
+                    }
+                    else
+                    {
+                        <MudButton Variant="Variant.Text" StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="ConfirmArchiveToggle">
+                            Archive
+                        </MudButton>
+                    }
                 }
             </div>
         </div>
 
-        @* Archive/restore project mud message box *@
-        <MudMessageBox @ref="archiveConfirmationBox" Title="@(project.IsArchived ? "Restore Project" : "Archive Project")" CancelText="Cancel">
-            <MessageContent>
-                Are you sure you want to @(project.IsArchived ? "restore" : "archive") this project?
-            </MessageContent>
-            <YesButton>
-                @if (project.IsArchived)
-                {
-                    <MudButton Variant="Variant.Filled" Color="Color.Success" StartIcon="@Icons.Material.Filled.RestoreFromTrash" Class="ms-2" OnClick="HandleArchiveToggle">
-                        Restore
+        @if (userCanEditProject)
+        {
+            @* Archive/restore project mud message box *@
+            <MudMessageBox @ref="archiveConfirmationBox" Title="@(project.IsArchived ? "Restore Project" : "Archive Project")" CancelText="Cancel">
+                <MessageContent>
+                    Are you sure you want to @(project.IsArchived ? "restore" : "archive") this project?
+                </MessageContent>
+                <YesButton>
+                    @if (project.IsArchived)
+                    {
+                        <MudButton Variant="Variant.Filled" Color="Color.Success" StartIcon="@Icons.Material.Filled.RestoreFromTrash" Class="ms-2" OnClick="HandleArchiveToggle">
+                            Restore
+                        </MudButton>
+                    }
+                    else
+                    {
+                        <MudButton Variant="Variant.Filled" Color="Color.Error" StartIcon="@Icons.Material.Filled.Delete" Class="ms-2" OnClick="HandleArchiveToggle">
+                            Archive
+                        </MudButton>
+                    }
+                </YesButton>
+            </MudMessageBox>
+
+            @* Manage project members mud dialog box *@
+            <MudDialog @bind-Visible="isMemberDialogVisible">
+                <TitleContent>
+                    <MudText Typo="Typo.h5">
+                        Manage Project Team
+                    </MudText>
+                </TitleContent>
+                <DialogContent>
+                    <ProjectMemberManager Project="project" OnClose="() => isMemberDialogVisible = false" />
+                </DialogContent>
+            </MudDialog>
+
+            @* Manage project manager mud dialog box *@
+            <MudDialog @bind-Visible="isProjectManagerDialogVisible">
+                <TitleContent>
+                    <MudText Typo="Typo.h5">
+                        Assign Project Manager
+                    </MudText>
+                </TitleContent>
+                <DialogContent>
+                    <div class="vstack gap-3">
+                        <UserCard User="projectManagers.FirstOrDefault(pm => pm.Id == selectedPmId)"
+                                  PlaceholderName="Unassigned"
+                                  PlaceholderRole="@Role.ProjectManager.GetDisplayName()" />
+
+                        <MudSelect Label="Project Manager"
+                                   @bind-Value="selectedPmId"
+                                   Variant="Variant.Outlined"
+                                   Clearable
+                                   Placeholder="Select a project manager">
+                            @foreach (var pm in projectManagers)
+                            {
+                                <MudSelectItem Value="pm.Id">
+                                    <div class="hstack gap-2 align-items-center">
+                                        <MudAvatar Size="Size.Small">
+                                            <MudImage Src="@pm.ImageUrl" />
+                                        </MudAvatar>
+                                        @pm.FullName
+                                    </div>
+                                </MudSelectItem>
+                            }
+                        </MudSelect>
+                    </div>
+                </DialogContent>
+                <DialogActions>
+                    <MudButton Variant="Variant.Text"
+                               Color="Color.Error"
+                               StartIcon="@Icons.Material.Filled.Cancel"
+                               OnClick="HandleCancelProjectManager">
+                        Cancel
                     </MudButton>
-                }
-                else
-                {
-                    <MudButton Variant="Variant.Filled" Color="Color.Error" StartIcon="@Icons.Material.Filled.Delete" Class="ms-2" OnClick="HandleArchiveToggle">
-                        Archive
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               StartIcon="@Icons.Material.Filled.Save"
+                               OnClick="HandleSaveProjectManager">
+                        Save
                     </MudButton>
-                }
-            </YesButton>
-        </MudMessageBox>
-
-        @* Manage project members mud dialog box *@
-        <MudDialog @bind-Visible="isMemberDialogVisible">
-            <TitleContent>
-                <MudText Typo="Typo.h5">
-                    Manage Project Team
-                </MudText>
-            </TitleContent>
-            <DialogContent>
-                <ProjectMemberManager Project="project" OnClose="() => isMemberDialogVisible = false" />
-            </DialogContent>
-        </MudDialog>
-
-        @* Manage project manager mud dialog box *@
-        <MudDialog @bind-Visible="isProjectManagerDialogVisible">
-            <TitleContent>
-                <MudText Typo="Typo.h5">
-                    Assign Project Manager
-                </MudText>
-            </TitleContent>
-            <DialogContent>
-                <div class="vstack gap-3">
-                    <UserCard User="projectManagers.FirstOrDefault(pm => pm.Id == selectedPmId)"
-                              PlaceholderName="Unassigned"
-                              PlaceholderRole="@Role.ProjectManager.GetDisplayName()" />
-
-                    <MudSelect Label="Project Manager"
-                               @bind-Value="selectedPmId"
-                               Variant="Variant.Outlined"
-                               Clearable
-                               Placeholder="Select a project manager">
-                        @foreach (var pm in projectManagers)
-                        {
-                            <MudSelectItem Value="pm.Id">
-                                <div class="hstack gap-2 align-items-center">
-                                    <MudAvatar Size="Size.Small">
-                                        <MudImage Src="@pm.ImageUrl" />
-                                    </MudAvatar>
-                                    @pm.FullName
-                                </div>
-                            </MudSelectItem>
-                        }
-                    </MudSelect>
-                </div>
-            </DialogContent>
-            <DialogActions>
-                <MudButton Variant="Variant.Text"
-                           Color="Color.Error"
-                           StartIcon="@Icons.Material.Filled.Cancel"
-                           OnClick="HandleCancelProjectManager">
-                    Cancel
-                </MudButton>
-                <MudButton Variant="Variant.Filled"
-                           Color="Color.Primary"
-                           StartIcon="@Icons.Material.Filled.Save"
-                           OnClick="HandleSaveProjectManager">
-                    Save
-                </MudButton>
-            </DialogActions>
-        </MudDialog>
+                </DialogActions>
+            </MudDialog>
+        }
     }
 </MudContainer>
 
@@ -261,6 +274,7 @@
     private IEnumerable<UserDTO> projectManagers = [];
     private bool isProjectManagerDialogVisible = false;
     private string? selectedPmId;
+    private bool userCanEditProject = false;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -274,11 +288,12 @@
             [
                 new BreadcrumbItem("Home", href: "/"),
                 new BreadcrumbItem("Projects", href: "/projects"),
-        ];
+    ];
 
             if (project is null)
             {
                 breadcrumbs.Add(new BreadcrumbItem("Not Found", href: null, disabled: true));
+                userCanEditProject = false;
             }
             else
             {
@@ -292,6 +307,8 @@
                 projectManagers = await CompanyService.GetUsersInRoleAsync(Role.ProjectManager, userInfo!);
                 projectManager = project.Members.FirstOrDefault(m => m.Role == Role.ProjectManager);
                 selectedPmId = projectManager?.Id;
+
+                userCanEditProject = userInfo!.IsInRole(Role.Admin) || userInfo!.UserId == projectManager?.Id;
             }
         }
         catch (Exception ex)
@@ -305,6 +322,11 @@
 
     private async Task ConfirmArchiveToggle()
     {
+        if (!userCanEditProject)
+        {
+            return;
+        }
+
         if (archiveConfirmationBox is not null)
         {
             await archiveConfirmationBox.ShowAsync();
@@ -313,7 +335,7 @@
 
     private async Task HandleArchiveToggle()
     {
-        if (project is null)
+        if (project is null || !userCanEditProject)
         {
             return;
         }
@@ -348,6 +370,11 @@
 
     private async Task HandleSaveProjectManager()
     {
+        if (!userCanEditProject)
+        {
+            return;
+        }
+
         try
         {
             isProjectManagerDialogVisible = false;
