@@ -9,7 +9,6 @@ namespace TheBugTracker.Client.Interfaces
         /// </summary>
         /// <param name="projectId"></param>
         /// <param name="user"></param>
-        /// <returns></returns>
         Task<ProjectDTO?> GetProjectByIdAsync(int projectId, UserInfo user);
 
         /// <summary>
