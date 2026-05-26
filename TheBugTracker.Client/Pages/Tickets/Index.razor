@@ -1,0 +1,54 @@
+﻿@page "/tickets"
+@attribute [Authorize]
+@inject ISnackbar Snackbar
+
+<PageTitle>Open Tickets | The Bug Tracker</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="py-4 h-100">
+    <MudBreadcrumbs Items="breadcrumbs" />
+
+    @if (isLoading)
+    {
+        <LoadingSpinner Message="Loading Open Tickets..." />
+    }
+    else if (tickets.Count() > 0)
+    {
+        <ProjectTicketTable Tickets="tickets" />
+    }
+    else
+    {
+        <div class="h-100 d-flex justify-content-center align-items-center">
+            <MudText Color="Color.Tertiary" Typo="Typo.button">
+                No Open Tickets
+            </MudText>
+        </div>
+    }
+</MudContainer>
+
+    @code {
+    private static readonly List<BreadcrumbItem> breadcrumbs = new()
+    {
+        new BreadcrumbItem("Home", href: "/"),
+        new BreadcrumbItem("Tickets", href: "/tickets"),
+        new BreadcrumbItem("Open", href: null, disabled: true)
+    };
+
+    private IEnumerable<TicketDTO> tickets = [];
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            await Task.Delay(1000);
+            throw new Exception("Simulated exception for testing error handling.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            Snackbar.Add("Failed to load open tickets.", Severity.Error);
+        }
+
+        isLoading = false;
+    }
+}
