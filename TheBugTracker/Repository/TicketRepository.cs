@@ -2,6 +2,7 @@
 using TheBugTracker.Client;
 using TheBugTracker.Models;
 using TheBugTracker.Interfaces;
+using TheBugTracker.Client.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,9 +10,20 @@ namespace TheBugTracker.Repository
 {
     public class TicketRepository(IDbContextFactory<ApplicationDbContext> contextFactory, UserManager<ApplicationUser> userManager) : ITicketRepository
     {
-        public Task<IEnumerable<Ticket>> GetOpenTicketsAsync(UserInfo user)
+        public async Task<IEnumerable<Ticket>> GetOpenTicketsAsync(UserInfo user)
         {
-            throw new NotImplementedException();
+            await using ApplicationDbContext context = contextFactory.CreateDbContext();
+
+            List<Ticket> tickets = await context.Tickets
+                .Where(t => t.Project!.CompanyId == user.CompanyId 
+                         && !t.IsArchived 
+                         && t.Status != TicketStatus.Resolved)
+                .Include(t => t.Project)
+                .Include(t => t.SubmitterUser)
+                .Include(t => t.DeveloperUser)
+                .ToListAsync();
+
+            return tickets;
         }
     }
 }
