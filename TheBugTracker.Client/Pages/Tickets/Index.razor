@@ -14,7 +14,10 @@
     }
     else if (tickets.Count() > 0)
     {
-        <ProjectTicketTable Tickets="tickets" />
+        <MudText Typo="Typo.h4" GutterBottom>
+            Open Tickets
+        </MudText>
+        <TicketTable Tickets="tickets" />
     }
     else
     {
