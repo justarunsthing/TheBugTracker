@@ -52,6 +52,11 @@ namespace TheBugTracker.Models
     {
         public static TicketDTO ToDTO(this Ticket ticket)
         {
+            if (ticket.Project is not null)
+            {
+                ticket.Project.Tickets = [];
+            }
+
             return new TicketDTO
             {
                 Id = ticket.Id,
