@@ -1,0 +1,30 @@
+﻿<MudDataGrid Items="Tickets" RowsPerPage="10">
+    <Columns>
+        <PropertyColumn Property="t => t.Title"></PropertyColumn>
+        <PropertyColumn Property="@(t => t.Project != null ? t.Project.Name : "Unknown")"></PropertyColumn>
+        <PropertyColumn Property="t => t.Type"></PropertyColumn>
+        <PropertyColumn Property="t => t.Status"></PropertyColumn>
+        <PropertyColumn Property="t => t.Priority"></PropertyColumn>
+        <PropertyColumn Property="@(t => t.SubmitterUser != null ? t.SubmitterUser.FullName : "Unknown")"></PropertyColumn>
+        <PropertyColumn Property="@(t => t.DeveloperUser != null ? t.DeveloperUser.FullName : "Unassigned")"></PropertyColumn>
+        <PropertyColumn Property="t => t.Created" Format="g"></PropertyColumn>
+        <PropertyColumn Property="t => t.Updated" Format="g"></PropertyColumn>
+    </Columns>
+
+    <PagerContent>
+        <MudDataGridPager />
+    </PagerContent>
+
+    <NoRecordsContent>
+        <div class="text-center py-5">
+            <MudText Typo="Typo.button" Color="Color.Tertiary">
+                No Tickets Found
+            </MudText>
+        </div>
+    </NoRecordsContent>
+</MudDataGrid>
+
+@code {
+    [Parameter, EditorRequired]
+    public IEnumerable<TicketDTO> Tickets { get; set; } = [];
+}
