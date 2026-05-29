@@ -8,8 +8,20 @@
             </CellTemplate>
         </PropertyColumn>
         <PropertyColumn Property="@(t => t.Project != null ? t.Project.Name : "Unknown")"></PropertyColumn>
-        <PropertyColumn Property="t => t.Type"></PropertyColumn>
-        <PropertyColumn Property="t => t.Status"></PropertyColumn>
+        <PropertyColumn Property="t => t.Type">
+            <CellTemplate>
+                <MudChip T="string" Size="Size.Small" Color="context.Item.Type.GetColor()">
+                    @context.Item.Type.GetDisplayName()
+                </MudChip>
+            </CellTemplate>
+        </PropertyColumn>
+        <PropertyColumn Property="t => t.Status">
+            <CellTemplate>
+                <MudChip T="string" Size="Size.Small" Color="context.Item.Status.GetColor()">
+                    @context.Item.Status.GetDisplayName()
+                </MudChip>
+            </CellTemplate>
+        </PropertyColumn>
         <PropertyColumn Property="t => t.Priority"></PropertyColumn>
         <PropertyColumn Property="@(t => t.SubmitterUser != null ? t.SubmitterUser.FullName : "Unknown")"></PropertyColumn>
         <PropertyColumn Property="@(t => t.DeveloperUser != null ? t.DeveloperUser.FullName : "Unassigned")"></PropertyColumn>
