@@ -1,6 +1,12 @@
-﻿<MudDataGrid Items="Tickets" RowsPerPage="10">
+﻿<MudDataGrid Items="Tickets" RowsPerPage="10" Dense>
     <Columns>
-        <PropertyColumn Property="t => t.Title"></PropertyColumn>
+        <PropertyColumn Property="t => t.Title">
+            <CellTemplate>
+                <MudLink Typo="Typo.inherit" Href="@($"tickets/{context.Item.Id}")">
+                    @context.Item.Title
+                </MudLink>
+            </CellTemplate>
+        </PropertyColumn>
         <PropertyColumn Property="@(t => t.Project != null ? t.Project.Name : "Unknown")"></PropertyColumn>
         <PropertyColumn Property="t => t.Type"></PropertyColumn>
         <PropertyColumn Property="t => t.Status"></PropertyColumn>
