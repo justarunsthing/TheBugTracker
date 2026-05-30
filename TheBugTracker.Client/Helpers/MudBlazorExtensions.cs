@@ -46,5 +46,20 @@ namespace TheBugTracker.Client.Helpers
 
             return color;
         }
+
+        public static Color GetColor(this TicketType type)
+        {
+            Color color = type switch
+            {
+                TicketType.Bug => Color.Error,
+                TicketType.Enhancement => Color.Info,
+                TicketType.WorkTask => Color.Tertiary,
+                TicketType.GeneralTask => Color.Primary,
+                TicketType.ChangeRequest => Color.Secondary,
+                TicketType.NewDevelopment => Color.Success,
+                _ => Color.Default
+            };
+            return color;
+        })
     }
 }
