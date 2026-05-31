@@ -22,7 +22,13 @@
                 </MudChip>
             </CellTemplate>
         </PropertyColumn>
-        <PropertyColumn Property="t => t.Priority"></PropertyColumn>
+        <PropertyColumn Property="t => t.Priority">
+            <CellTemplate>
+                <MudChip T="string" Size="Size.Small" Color="context.Item.Priority.GetColor()">
+                    @context.Item.Priority.GetDisplayName()
+                </MudChip>
+            </CellTemplate>
+        </PropertyColumn>
         <PropertyColumn Property="@(t => t.SubmitterUser != null ? t.SubmitterUser.FullName : "Unknown")"></PropertyColumn>
         <PropertyColumn Property="@(t => t.DeveloperUser != null ? t.DeveloperUser.FullName : "Unassigned")"></PropertyColumn>
         <PropertyColumn Property="t => t.Created" Format="g"></PropertyColumn>

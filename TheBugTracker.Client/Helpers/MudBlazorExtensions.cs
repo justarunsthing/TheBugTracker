@@ -60,6 +60,6 @@ namespace TheBugTracker.Client.Helpers
                 _ => Color.Default
             };
             return color;
-        })
+        }
     }
 }
