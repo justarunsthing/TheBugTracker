@@ -1,4 +1,5 @@
 ﻿using TheBugTracker.Client.Enums;
+using System.Text.Json.Serialization;
 using System.ComponentModel.DataAnnotations;
 
 namespace TheBugTracker.Client.Models
@@ -45,5 +46,8 @@ namespace TheBugTracker.Client.Models
         public ICollection<TicketAttachmentDTO> Attachments { get; set; } = [];
         public ICollection<TicketCommentDTO> Comments { get; set; } = [];
         public ICollection<TicketHistoryDTO> History { get; set; } = [];
+
+        [JsonIgnore]
+        public DateTimeOffset LastModified => Updated ?? Created;
     }
 }
