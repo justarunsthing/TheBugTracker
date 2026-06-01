@@ -29,8 +29,19 @@
                 </MudChip>
             </CellTemplate>
         </PropertyColumn>
-        <PropertyColumn Property="@(t => t.SubmitterUser != null ? t.SubmitterUser.FullName : "Unknown")"></PropertyColumn>
-        <PropertyColumn Property="@(t => t.DeveloperUser != null ? t.DeveloperUser.FullName : "Unassigned")"></PropertyColumn>
+        <PropertyColumn Property="@(t => t.SubmitterUser != null ? t.SubmitterUser.FullName : "Unknown")" Title="Submitter">
+            <CellTemplate>
+                @if (context.Item.SubmitterUser is not null)
+                {
+                    <UserChip User="context.Item.SubmitterUser" />
+                }
+                else
+                {
+                    <text>Unknown</text>
+                }
+            </CellTemplate>
+        </PropertyColumn>
+        <PropertyColumn Property="@(t => t.DeveloperUser != null ? t.DeveloperUser.FullName : "Unassigned")" Title="Developer"></PropertyColumn>
         <PropertyColumn Property="t => t.Created" Format="g"></PropertyColumn>
         <PropertyColumn Property="t => t.Updated" Format="g"></PropertyColumn>
     </Columns>
