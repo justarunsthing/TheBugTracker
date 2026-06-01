@@ -41,7 +41,18 @@
                 }
             </CellTemplate>
         </PropertyColumn>
-        <PropertyColumn Property="@(t => t.DeveloperUser != null ? t.DeveloperUser.FullName : "Unassigned")" Title="Developer"></PropertyColumn>
+        <PropertyColumn Property="@(t => t.DeveloperUser != null ? t.DeveloperUser.FullName : "Unassigned")" Title="Developer">
+            <CellTemplate>
+                @if (context.Item.DeveloperUser is { } developer) // Is not null and assign to variable
+                {
+                    <UserChip User="developer" />
+                }
+                else
+                {
+                    <text>Unknown</text>
+                }
+            </CellTemplate>
+        </PropertyColumn>
         <PropertyColumn Property="t => t.Created" Format="g"></PropertyColumn>
         <PropertyColumn Property="t => t.Updated" Format="g"></PropertyColumn>
     </Columns>
