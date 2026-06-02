@@ -7,6 +7,14 @@
              ShowMenuIcon>
     
     <ToolBarContent>
+        <MudTextField Variant="Variant.Text"
+                      Placeholder="Search tickets..."
+                      Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search"
+                      @bind-Value="searchText" />
+
+        <MudSpacer />
+
         <MudButton Color="Color.Secondary"
                    Variant="Variant.Outlined"
                    StartIcon="@Icons.Material.Filled.Add"
