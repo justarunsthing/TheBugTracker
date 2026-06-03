@@ -4,14 +4,16 @@
              ColumnResizeMode="ResizeMode.Container" 
              DragDropColumnReordering 
              Hideable 
-             ShowMenuIcon>
+             ShowMenuIcon
+             QuickFilter="TicketFilter">
     
     <ToolBarContent>
         <MudTextField Variant="Variant.Text"
                       Placeholder="Search tickets..."
                       Adornment="Adornment.Start"
                       AdornmentIcon="@Icons.Material.Filled.Search"
-                      @bind-Value="searchText" />
+                      @bind-Value="searchText" 
+                      Immediate />
 
         <MudSpacer />
 
@@ -98,4 +100,18 @@
 @code {
     [Parameter, EditorRequired]
     public IEnumerable<TicketDTO> Tickets { get; set; } = [];
+
+    private string searchText = string.Empty;
+
+    private bool TicketFilter(TicketDTO ticket)
+    {
+        return string.IsNullOrWhiteSpace(searchText)
+            || ticket.Title!.Contains(searchText, StringComparison.CurrentCultureIgnoreCase)
+            || ticket.Project?.Name!.Contains(searchText, StringComparison.CurrentCultureIgnoreCase) == true
+            || (ticket.SubmitterUser?.FullName ?? "Unknown").Contains(searchText, StringComparison.CurrentCultureIgnoreCase)
+            || (ticket.DeveloperUser?.FullName ?? "Unassigned").Contains(searchText, StringComparison.CurrentCultureIgnoreCase)
+            || ticket.Priority.GetDisplayName().Contains(searchText, StringComparison.CurrentCultureIgnoreCase)
+            || ticket.Status.GetDisplayName().Contains(searchText, StringComparison.CurrentCultureIgnoreCase)
+            || ticket.Type.GetDisplayName().Contains(searchText, StringComparison.CurrentCultureIgnoreCase);
+    }
 }
