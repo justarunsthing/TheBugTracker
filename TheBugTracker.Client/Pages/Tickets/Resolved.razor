@@ -1,0 +1,60 @@
+﻿@page "/tickets/resolved"
+@attribute [Authorize]
+@inject ISnackbar Snackbar
+@inject ITicketDTOService TicketService
+
+<PageTitle>Resolved Tickets | The Bug Tracker</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="py-4 h-100">
+    <MudBreadcrumbs Items="breadcrumbs" />
+
+    @if (isLoading)
+    {
+        <LoadingSpinner Message="Loading Resolved Tickets..." />
+    }
+    else if (tickets.Count() > 0)
+    {
+        <MudText Typo="Typo.h4" GutterBottom>
+            Resolved Tickets
+        </MudText>
+        <TicketTable Tickets="tickets" />
+    }
+    else
+    {
+        <div class="h-100 d-flex justify-content-center align-items-center">
+            <MudText Color="Color.Tertiary" Typo="Typo.button">
+                No Resolved Tickets
+            </MudText>
+        </div>
+    }
+</MudContainer>
+
+    @code {
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthStateTask { get; set; } = default!;
+
+    private static readonly List<BreadcrumbItem> breadcrumbs = new()
+    {
+        new BreadcrumbItem("Home", href: "/"),
+        new BreadcrumbItem("Tickets", href: "/tickets"),
+        new BreadcrumbItem("Resolved", href: null, disabled: true)
+    };
+
+    private IEnumerable<TicketDTO> tickets = [];
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            UserInfo? userInfo = await UserInfoHelper.GetUserInfoAsync(AuthStateTask);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            Snackbar.Add("Failed to load resolved tickets.", Severity.Error);
+        }
+
+        isLoading = false;
+    }
+}
