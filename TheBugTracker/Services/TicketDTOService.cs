@@ -8,9 +8,17 @@ namespace TheBugTracker.Services
 {
     public class TicketDTOService(ITicketRepository repository) : ITicketDTOService
     {
-        public async Task<IEnumerable<TicketDTO>> GetOpenTicketsAsync(UserInfo user)
+        public async Task<IEnumerable<TicketDTO>> GetOpenTicketsAsync(UserInfo userInfo)
         {
-            IEnumerable<Ticket> tickets = await repository.GetOpenTicketsAsync(user);
+            IEnumerable<Ticket> tickets = await repository.GetOpenTicketsAsync(userInfo);
+            IEnumerable<TicketDTO> dtos = tickets.Select(t => t.ToDTO());
+
+            return dtos;
+        }
+
+        public async Task<IEnumerable<TicketDTO>> GetResolvedTicketsAsync(UserInfo userInfo)
+        {
+            IEnumerable<Ticket> tickets = await repository.GetResolvedTicketsAsync(userInfo);
             IEnumerable<TicketDTO> dtos = tickets.Select(t => t.ToDTO());
 
             return dtos;

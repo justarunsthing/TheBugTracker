@@ -8,6 +8,12 @@ namespace TheBugTracker.Client.Interfaces
         /// Retrives all open tickets in the user's company
         /// </summary>
         /// <param name="user">The current user's claims</param>
-        Task<IEnumerable<TicketDTO>> GetOpenTicketsAsync(UserInfo user);
+        Task<IEnumerable<TicketDTO>> GetOpenTicketsAsync(UserInfo userInfo);
+
+        /// <summary>
+        /// Retrives all resolved tickets in the user's company
+        /// </summary>
+        /// <param name="user">The current user's claims</param>
+        Task<IEnumerable<TicketDTO>> GetResolvedTicketsAsync(UserInfo userInfo);
     }
 }

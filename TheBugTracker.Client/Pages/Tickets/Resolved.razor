@@ -48,6 +48,7 @@
         try
         {
             UserInfo? userInfo = await UserInfoHelper.GetUserInfoAsync(AuthStateTask);
+            tickets = await TicketService.GetResolvedTicketsAsync(userInfo!);
         }
         catch (Exception ex)
         {
