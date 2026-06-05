@@ -41,5 +41,20 @@ namespace TheBugTracker.Repository
 
             return tickets;
         }
+
+        public async Task<IEnumerable<Ticket>> GetArchivedTicketsAsync(UserInfo userInfo)
+        {
+            await using ApplicationDbContext context = contextFactory.CreateDbContext();
+
+            List<Ticket> tickets = await context.Tickets
+                .Where(t => t.Project!.CompanyId == userInfo.CompanyId
+                         && t.IsArchived)
+               .Include(t => t.Project)
+               .Include(t => t.SubmitterUser)
+               .Include(t => t.DeveloperUser)
+               .ToListAsync();
+
+            return tickets;
+        }
     }
 }
