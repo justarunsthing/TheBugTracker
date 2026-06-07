@@ -31,5 +31,12 @@ namespace TheBugTracker.Services
 
             return dtos;
         }
+
+        public async Task<IEnumerable<TicketDTO>> GetAssignedTicketsAsync(UserInfo userInfo)
+        {
+            IEnumerable<Ticket> tickets = await repository.GetAssignedTicketsAsync(userInfo);
+            IEnumerable<TicketDTO> dtos = tickets.Select(t => t.ToDTO());
+            return dtos;
+        }
     }
 }

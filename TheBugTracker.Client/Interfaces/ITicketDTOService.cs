@@ -21,5 +21,12 @@ namespace TheBugTracker.Client.Interfaces
         /// </summary>
         /// <param name="userInfo">The current user's claims</param>
         Task<IEnumerable<TicketDTO>> GetArchivedTicketsAsync(UserInfo userInfo);
+
+        /// <summary>
+        /// Retrives all tickets assigned to the current user. For project managers, this will retrieve all tickets
+        /// they've submitted and all tickets in their assigned projects
+        /// </summary>
+        /// <param name="userInfo">The current user's claims</param>
+        Task<IEnumerable<TicketDTO>> GetAssignedTicketsAsync(UserInfo userInfo);
     }
 }
