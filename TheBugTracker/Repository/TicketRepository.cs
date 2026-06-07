@@ -56,5 +56,44 @@ namespace TheBugTracker.Repository
 
             return tickets;
         }
+
+        public async Task<IEnumerable<Ticket>> GetAssignedTicketsAsync(UserInfo userInfo)
+        {
+            await using ApplicationDbContext context = contextFactory.CreateDbContext();
+
+            List<Ticket> tickets = [];
+
+            if (userInfo.IsInRole(Role.ProjectManager))
+            {
+                List<int> assignedProjectIds = await context.Users
+                    .Where(u => u.Id == userInfo.UserId)
+                    .SelectMany(u => u.Projects)
+                    .Select(p => p.Id)
+                    .ToListAsync();
+
+                tickets = await context.Tickets
+                    .Where(t => !t.IsArchived)
+                    .Where(t => t.SubmitterUserId == userInfo.UserId 
+                             || t.DeveloperUserId == userInfo.UserId
+                             || assignedProjectIds.Contains(t.ProjectId))
+                    .Include(t => t.Project)
+                    .Include(t => t.SubmitterUser)
+                    .Include(t => t.DeveloperUser)
+                    .ToListAsync();
+            }
+            else
+            {
+                tickets = await context.Tickets
+                    .Where(t => !t.IsArchived)
+                    .Where(t => t.SubmitterUserId == userInfo.UserId 
+                             || t.DeveloperUserId == userInfo.UserId)
+                    .Include(t => t.Project)
+                    .Include(t => t.SubmitterUser)
+                    .Include(t => t.DeveloperUser)
+                    .ToListAsync();
+            }
+
+            return tickets;
+        }
     }
 }
