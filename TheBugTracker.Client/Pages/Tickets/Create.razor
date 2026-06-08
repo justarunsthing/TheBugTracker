@@ -1,0 +1,130 @@
+﻿@page "/tickets/create"
+@attribute [Authorize]
+@inject ITicketDTOService TicketService
+@inject ISnackbar Snackbar
+
+<PageTitle>Submit a Ticket | The Bug Tracker</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Large">
+    <MudBreadcrumbs Items="breadcrumbs" />
+
+    <MudPaper Class="p-3">
+        <MudText Typo="Typo.h5">
+            Submit a New Ticket
+        </MudText>
+
+        <EditForm Model="ticket" class="vstack gap-3">
+            <DataAnnotationsValidator />
+
+            <MudTextField @bind-Value="ticket.Title"
+                          For="() => ticket.Title"
+                          Label="Title" 
+                          Variant="Variant.Outlined" />
+
+            <MudTextField @bind-Value="ticket.Description"
+                          For="() => ticket.Description"
+                          Label="Description"
+                          Variant="Variant.Outlined"
+                          Lines="5"
+                          AutoGrow
+                          MaxLines="15" />
+
+            <MudSelect @bind-Value="ticket.ProjectId"
+                       For="() => ticket.ProjectId"
+                       Label="Project"
+                       Variant="Variant.Outlined">
+
+                <MudSelectItem Value="0">
+                    Select a Project
+                </MudSelectItem>
+            </MudSelect>
+
+            <div class="hstack flex-wrap gap-3 align-items-start">
+                <MudSelect @bind-Value="ticket.SubmitterUserId"
+                           For="() => ticket.SubmitterUserId"
+                           Label="Submitter"
+                           Variant="Variant.Outlined"
+                           Disabled>
+
+                    @* TODO: Put the current user's info here *@
+                    <MudSelectItem Value="ticket.SubmitterUserId">
+                        You!
+                    </MudSelectItem>
+                </MudSelect>
+
+                <MudSelect @bind-Value="ticket.DeveloperUserId"
+                           For="() => ticket.DeveloperUserId"
+                           Label="Developer"
+                           Variant="Variant.Outlined">
+
+                    @* TODO: Get a list of valid developers *@
+                    @* TODO: Disable this unless you are an admin or PM *@
+                    <MudSelectItem T="string">
+                        Select a Developer
+                    </MudSelectItem>
+                </MudSelect>
+            </div>
+
+            <div>
+                <MudField Variant="Variant.Outlined" Label="Ticket Type">
+                    <MudChipSet @bind-SelectedValue="ticket.Type"
+                                CheckMark="true">
+
+                        @foreach (TicketType type in Enum.GetValues<TicketType>())
+                        {
+                            <MudChip Value="type" Color="type.GetColor()" Text="@type.GetDisplayName()">
+                                @type
+                            </MudChip>
+                        }
+                    </MudChipSet>
+                </MudField>
+                <ValidationMessage For="() => ticket.Type" />
+            </div>
+
+            <div>
+                <MudField Variant="Variant.Outlined" Label="Ticket Priority">
+                    <MudChipSet @bind-SelectedValue="ticket.Priority"
+                                CheckMark="true">
+
+                        @foreach (TicketPriority priority in Enum.GetValues<TicketPriority>())
+                        {
+                            <MudChip Value="priority" Color="priority.GetColor()" Text="@priority.GetDisplayName()">
+                                @priority
+                            </MudChip>
+                        }
+                    </MudChipSet>
+                </MudField>
+                <ValidationMessage For="() => ticket.Priority" />
+            </div>
+
+            <div class="d-flex justify-content-between mt-5">
+                <MudButton Variant="Variant.Text"
+                           Href="tickets"
+                           StartIcon="@Icons.Material.Filled.ArrowBack">
+                    Back to Tickets
+                </MudButton>
+
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           StartIcon="@Icons.Material.Filled.Save"
+                           ButtonType="ButtonType.Submit">
+                    Submit
+                </MudButton>
+            </div>
+        </EditForm>
+    </MudPaper>
+</MudContainer>
+
+@code {
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthStateTask { get; set; } = default!;
+
+    private static readonly List<BreadcrumbItem> breadcrumbs = new()
+    {
+        new BreadcrumbItem("Home", href: "/"),
+        new BreadcrumbItem("Tickets", href: "/tickets"),
+        new BreadcrumbItem("Submit a Ticket", href: null, disabled: true)
+    };
+
+    private TicketDTO ticket = new();   
+}
