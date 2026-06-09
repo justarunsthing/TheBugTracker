@@ -1,6 +1,7 @@
 ﻿@page "/tickets/create"
 @attribute [Authorize]
 @inject ITicketDTOService TicketService
+@inject IProjectDTOService ProjectService
 @inject ISnackbar Snackbar
 
 <PageTitle>Submit a Ticket | The Bug Tracker</PageTitle>
@@ -37,6 +38,13 @@
                 <MudSelectItem Value="0">
                     Select a Project
                 </MudSelectItem>
+
+                @foreach (ProjectDTO project in projects)
+                {
+                    <MudSelectItem Value="project.Id">
+                        @project.Name
+                    </MudSelectItem>
+                }
             </MudSelect>
 
             <div class="hstack flex-wrap gap-3 align-items-start">
@@ -118,6 +126,7 @@
 @code {
     [CascadingParameter]
     public Task<AuthenticationState> AuthStateTask { get; set; } = default!;
+    private UserInfo? userInfo;
 
     private static readonly List<BreadcrumbItem> breadcrumbs = new()
     {
@@ -126,5 +135,25 @@
         new BreadcrumbItem("Submit a Ticket", href: null, disabled: true)
     };
 
-    private TicketDTO ticket = new();   
+    private TicketDTO ticket = new();
+    IEnumerable<ProjectDTO> projects = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        userInfo = await UserInfoHelper.GetUserInfoAsync(AuthStateTask);
+
+        ticket.SubmitterUserId = userInfo!.UserId;
+        ticket.Created = DateTime.UtcNow;
+        ticket.Status = TicketStatus.New;
+
+        try
+        {
+            projects = await ProjectService.GetProjectsAsync(userInfo);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            Snackbar.Add("Failed to load available projects", Severity.Error);
+        }
+    }
 }
