@@ -48,15 +48,14 @@
             </MudSelect>
 
             <div class="hstack flex-wrap gap-3 align-items-start">
-                <MudSelect @bind-Value="ticket.SubmitterUserId"
+                <MudSelect Value="userInfo!.UserId"
                            For="() => ticket.SubmitterUserId"
                            Label="Submitter"
                            Variant="Variant.Outlined"
                            Disabled>
 
-                    @* TODO: Put the current user's info here *@
-                    <MudSelectItem Value="ticket.SubmitterUserId">
-                        You!
+                    <MudSelectItem Value="userInfo!.UserId">
+                        @userInfo!.FullName
                     </MudSelectItem>
                 </MudSelect>
 
