@@ -35,6 +35,7 @@ namespace TheBugTracker.Client.Models
         public TicketStatus Status { get; set; }
 
         // Navigational Properties
+        [Range(1, int.MaxValue, ErrorMessage = "Please select a valid project")]
         public int ProjectId { get; set; }
         public ProjectDTO? Project { get; set; }
 
