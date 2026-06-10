@@ -31,6 +31,7 @@
                           MaxLines="15" />
 
             <MudSelect @bind-Value="ticket.ProjectId"
+                       @bind-Value:after="HandleProjectChange"
                        For="() => ticket.ProjectId"
                        Label="Project"
                        Variant="Variant.Outlined">
@@ -62,13 +63,17 @@
                 <MudSelect @bind-Value="ticket.DeveloperUserId"
                            For="() => ticket.DeveloperUserId"
                            Label="Developer"
-                           Variant="Variant.Outlined">
+                           Variant="Variant.Outlined"
+                           Disabled="@(developers.Count() == 0)"
+                           Placeholder="@(developers.Any() ? "Select a Developer" : "No developers available")">
 
-                    @* TODO: Get a list of valid developers *@
                     @* TODO: Disable this unless you are an admin or PM *@
-                    <MudSelectItem T="string">
-                        Select a Developer
-                    </MudSelectItem>
+                    @foreach (UserDTO developer in developers)
+                    {
+                        <MudSelectItem Value="developer.Id">
+                            @developer.FullName
+                        </MudSelectItem>
+                    }
                 </MudSelect>
             </div>
 
@@ -136,6 +141,7 @@
 
     private TicketDTO ticket = new();
     IEnumerable<ProjectDTO> projects = [];
+    IEnumerable<UserDTO> developers = [];
 
     protected override async Task OnInitializedAsync()
     {
@@ -153,6 +159,33 @@
         {
             Console.WriteLine(ex);
             Snackbar.Add("Failed to load available projects", Severity.Error);
+        }
+    }
+
+    private async Task HandleProjectChange()
+    {
+        if (ticket.ProjectId == 0)
+        {
+            ticket.DeveloperUserId = null;
+            developers = [];
+
+            return;
+        }
+
+        try
+        {
+            IEnumerable<UserDTO> projectMembers = await ProjectService.GetProjectMembersAsync(ticket.ProjectId, userInfo!);
+            developers = projectMembers.Where(m => m.Role == Role.Developer);
+
+            if (!developers.Any(d => d.Id == ticket.DeveloperUserId))
+            {
+                ticket.DeveloperUserId = null;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            Snackbar.Add("Failed to load developers for the selected project", Severity.Warning);
         }
     }
 }
