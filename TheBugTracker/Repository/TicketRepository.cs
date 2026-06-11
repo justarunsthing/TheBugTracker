@@ -95,5 +95,54 @@ namespace TheBugTracker.Repository
 
             return tickets;
         }
+
+        public async Task<Ticket> CreateTicketAsync(Ticket ticket, UserInfo userInfo)
+        {
+            await using ApplicationDbContext context = contextFactory.CreateDbContext();
+
+            Project? project = await context.Projects
+                .Include(p => p.Members)
+                .FirstOrDefaultAsync(p => p.Id == ticket.ProjectId && p.CompanyId == userInfo.CompanyId);
+
+            if (project is null)
+            {
+                throw new ApplicationException("Project does not exist");
+            }
+
+            ticket.Status = TicketStatus.New;
+            ticket.Created = DateTimeOffset.UtcNow;
+            ticket.SubmitterUserId = userInfo.UserId;
+
+            ApplicationUser? developer = null;
+
+            if (!string.IsNullOrEmpty(ticket.DeveloperUserId))
+            {
+                bool isManagerofProject = userInfo.IsInRole(Role.ProjectManager) 
+                                          && project.Members.Any(m => m.Id == userInfo.UserId);
+
+                if (userInfo.IsInRole(Role.Admin) || isManagerofProject)
+                {
+                    developer = project.Members.FirstOrDefault(m => m.Id == ticket.DeveloperUserId);
+
+                    if (developer is not null)
+                    {
+                        bool isDeveloper = await userManager.IsInRoleAsync(developer, nameof(Role.Developer));
+
+                        if (!isDeveloper)
+                        {
+                            developer = null;
+                        }
+                    }
+                }
+            }
+
+            ticket.DeveloperUser = developer;
+            ticket.DeveloperUserId = developer?.Id;
+
+            context.Add(ticket);
+            await context.SaveChangesAsync();
+
+            return ticket;
+        }
     }
 }
