@@ -28,5 +28,13 @@ namespace TheBugTracker.Client.Interfaces
         /// </summary>
         /// <param name="userInfo">The current user's claims</param>
         Task<IEnumerable<TicketDTO>> GetAssignedTicketsAsync(UserInfo userInfo);
+
+        /// <summary>
+        /// Creates a new ticket in the database
+        /// </summary>
+        /// <param name="ticket">The details of the ticket to create</param>
+        /// <param name="userInfo">The current user's claims</param>
+        /// <returns>The created ticket</returns>
+        Task<TicketDTO> CreateTicketAsync(TicketDTO ticket, UserInfo userInfo);
     }
 }

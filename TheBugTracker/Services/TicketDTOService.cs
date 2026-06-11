@@ -1,6 +1,7 @@
 ﻿using TheBugTracker.Client;
 using TheBugTracker.Models;
 using TheBugTracker.Interfaces;
+using TheBugTracker.Client.Enums;
 using TheBugTracker.Client.Models;
 using TheBugTracker.Client.Interfaces;
 
@@ -38,6 +39,26 @@ namespace TheBugTracker.Services
             IEnumerable<TicketDTO> dtos = tickets.Select(t => t.ToDTO());
 
             return dtos;
+        }
+
+        public async Task<TicketDTO> CreateTicketAsync(TicketDTO ticket, UserInfo userInfo)
+        {
+            Ticket dbTicket = new()
+            {
+                Title = ticket.Title,
+                Description = ticket.Description,
+                Created = DateTimeOffset.UtcNow,
+                Status = TicketStatus.New,
+                SubmitterUserId = userInfo.UserId,
+                DeveloperUserId = ticket.DeveloperUserId,
+                ProjectId = ticket.ProjectId,
+                Priority = ticket.Priority,
+                Type = ticket.Type
+            };
+
+            dbTicket = await repository.CreateTicketAsync(dbTicket, userInfo);
+
+            return dbTicket.ToDTO();
         }
     }
 }
