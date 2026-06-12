@@ -3,6 +3,7 @@
 @inject ITicketDTOService TicketService
 @inject IProjectDTOService ProjectService
 @inject ISnackbar Snackbar
+@inject NavigationManager Nav
 
 <PageTitle>Submit a Ticket | The Bug Tracker</PageTitle>
 
@@ -14,7 +15,7 @@
             Submit a New Ticket
         </MudText>
 
-        <EditForm Model="ticket" class="vstack gap-3">
+        <EditForm Model="ticket" class="vstack gap-3" OnValidSubmit="HandleSubmit">
             <DataAnnotationsValidator />
 
             <MudTextField @bind-Value="ticket.Title"
@@ -198,6 +199,32 @@
         {
             Console.WriteLine(ex);
             Snackbar.Add("Failed to load developers for the selected project", Severity.Warning);
+        }
+    }
+
+    private async Task HandleSubmit()
+    {
+        if (!canUserAssignTickets)
+        {
+            ticket.DeveloperUserId = null;
+        }
+
+        try
+        {
+            ticket = await TicketService.CreateTicketAsync(ticket, userInfo!);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            Snackbar.Add("An unexpected error occurred while submitting the ticket", Severity.Error);
+        }
+
+        if (ticket.Id > 0)
+        {
+            Snackbar.Add("Ticket submitted successfully!", Severity.Success);
+
+            // TODO: Redirect to ticket details
+            Nav.NavigateTo($"/tickets");
         }
     }
 }
