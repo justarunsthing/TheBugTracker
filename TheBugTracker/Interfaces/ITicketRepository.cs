@@ -31,6 +31,14 @@ namespace TheBugTracker.Interfaces
         Task<IEnumerable<Ticket>> GetAssignedTicketsAsync(UserInfo userInfo);
 
         /// <summary>
+        /// Retrives a ticket by its id if it exists
+        /// </summary>
+        /// <param name="id">The id of the ticket to retrieve</param>
+        /// <param name="userInfo">The current user's claims</param>
+        /// <returns>The ticket if found, otherwise null</returns>
+        Task<Ticket?> GetTicketByIdAsync(int id, UserInfo userInfo);
+
+        /// <summary>
         /// Creates a new ticket in the database
         /// </summary>
         /// <param name="ticket">The details of the ticket to create</param>

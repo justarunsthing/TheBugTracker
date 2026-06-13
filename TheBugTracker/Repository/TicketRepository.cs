@@ -96,6 +96,19 @@ namespace TheBugTracker.Repository
             return tickets;
         }
 
+        public async Task<Ticket?> GetTicketByIdAsync(int id, UserInfo userInfo)
+        {
+            await using ApplicationDbContext context = contextFactory.CreateDbContext();
+
+            Ticket? ticket = await context.Tickets
+                .Include(t => t.Project)
+                .Include(t => t.SubmitterUser)
+                .Include(t => t.DeveloperUser)
+                .FirstOrDefaultAsync(t => t.Id == id && t.Project!.CompanyId == userInfo.CompanyId);
+
+            return ticket;
+        }
+
         public async Task<Ticket> CreateTicketAsync(Ticket ticket, UserInfo userInfo)
         {
             await using ApplicationDbContext context = contextFactory.CreateDbContext();
