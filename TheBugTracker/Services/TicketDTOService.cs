@@ -41,6 +41,14 @@ namespace TheBugTracker.Services
             return dtos;
         }
 
+        public async Task<TicketDTO?> GetTicketByIdAsync(int id, UserInfo userInfo)
+        {
+            Ticket? ticket = await repository.GetTicketByIdAsync(id, userInfo);
+            TicketDTO? dto = ticket?.ToDTO();
+
+            return dto;
+        }
+
         public async Task<TicketDTO> CreateTicketAsync(TicketDTO ticket, UserInfo userInfo)
         {
             Ticket dbTicket = new()
