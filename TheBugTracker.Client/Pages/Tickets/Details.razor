@@ -1,6 +1,8 @@
 ﻿@page "/tickets/{id:int}"
 @attribute [Authorize]
 @inject ITicketDTOService TicketService
+@inject ISnackbar Snackbar
+@inject NavigationManager Nav
 
 @if (ticket is not null)
 {
@@ -40,7 +42,12 @@
         catch (Exception ex)
         {
             Console.WriteLine(ex);
-            throw;
+            Snackbar.Add("An error occurred loading the ticket!", Severity.Error);
+        }
+
+        if (ticket is null)
+        {
+            Nav.NavigateTo("tickets");
         }
     }
 }
