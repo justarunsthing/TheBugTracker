@@ -1,0 +1,46 @@
+﻿@page "/tickets/{id:int}"
+@attribute [Authorize]
+@inject ITicketDTOService TicketService
+
+@if (ticket is not null)
+{
+    <PageTitle>@ticket.Title | The Bug Tracker</PageTitle>
+
+    <MudContainer MaxWidth="MaxWidth.Large">
+        <MudBreadcrumbs />
+
+        <div class="vstack gap-3">
+            <MudPaper>
+                <MudText Typo="Typo.h5" GutterBottom>
+                    @ticket.Title
+                </MudText>
+            </MudPaper>
+        </div>
+    </MudContainer>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthStateTask { get; set; } = default!;
+
+    private UserInfo? userInfo;
+    private TicketDTO? ticket;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        userInfo = await UserInfoHelper.GetUserInfoAsync(AuthStateTask);
+
+        try
+        {
+            ticket = await TicketService.GetTicketByIdAsync(Id, userInfo!);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            throw;
+        }
+    }
+}
