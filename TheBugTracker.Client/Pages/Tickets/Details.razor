@@ -9,10 +9,10 @@
     <PageTitle>@ticket.Title | The Bug Tracker</PageTitle>
 
     <MudContainer MaxWidth="MaxWidth.Large">
-        <MudBreadcrumbs />
+        <MudBreadcrumbs Items="breadcrumbs" />
 
         <div class="vstack gap-3">
-            <MudPaper>
+            <MudPaper Class="p-3">
                 <MudText Typo="Typo.h5" GutterBottom>
                     @ticket.Title
                 </MudText>
@@ -30,6 +30,7 @@
 
     private UserInfo? userInfo;
     private TicketDTO? ticket;
+    private List<BreadcrumbItem> breadcrumbs = [];
 
     protected override async Task OnParametersSetAsync()
     {
@@ -38,6 +39,28 @@
         try
         {
             ticket = await TicketService.GetTicketByIdAsync(Id, userInfo!);
+
+            if (ticket is not null)
+            {
+                breadcrumbs = [ new BreadcrumbItem("Home", href: "/")];
+
+                if (ticket.Project is null)
+                {
+                    breadcrumbs.Add(new BreadcrumbItem("Tickets", href: "/tickets"));
+
+                    if (ticket.IsArchived)
+                    {
+                        breadcrumbs.Add(new BreadcrumbItem("Archive", href: "/tickets/archived"));
+                    }
+                }
+                else
+                {
+                    breadcrumbs.Add(new BreadcrumbItem("Projects", href: "/projects"));
+                    breadcrumbs.Add(new BreadcrumbItem(ticket.Project.Name!, href: "/projects"));
+                }
+
+                breadcrumbs.Add(new BreadcrumbItem(ticket.Title!, href: null, disabled: true));
+            }
         }
         catch (Exception ex)
         {
