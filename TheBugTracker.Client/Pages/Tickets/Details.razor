@@ -13,10 +13,50 @@
 
         <div class="vstack gap-3">
             <MudPaper Class="p-3">
-                <MudText Typo="Typo.h5" GutterBottom>
-                    @ticket.Title
-                </MudText>
+                <div class="d-flex">
+                    <MudText Typo="Typo.h5" GutterBottom Class="me-auto">
+                        @ticket.Title
+                    </MudText>
+
+                    @if (ticket.IsArchived)
+                    {
+                        <MudChip T="string" Size="Size.Small" Color="Color.Error">
+                            Archived
+                        </MudChip>
+                    }
+                </div>
+                <div>
+                    <MudText Typo="Typo.subtitle2">
+                        Submitted @ticket.Created.ToString("g")
+                    </MudText>
+
+                    @if (ticket.Updated.HasValue)
+                    {
+                        <span>&bull;</span>
+                        <MudText Typo="Typo.subtitle2">
+                            Updated @ticket.Updated.Value.ToString("g")
+                        </MudText>
+                    }
+                </div>
             </MudPaper>
+            <div class="row row-cols-1 row-cols-md-2 g-3">
+                <div class="col">
+                    <MudPaper Class="p-3 h-100">
+                        <MudText Typo="Typo.h6">
+                            Submitted By:
+                        </MudText>
+                        <UserCard User="ticket.SubmitterUser" />
+                    </MudPaper>
+                </div>
+                <div class="col">
+                    <MudPaper Class="p-3 h-100">
+                        <MudText Typo="Typo.h6">
+                            Assigned To:
+                        </MudText>
+                        <UserCard User="ticket.DeveloperUser" PlaceholderName="Unassigned" PlaceholderRole="@Role.Developer.GetDisplayName()" />
+                    </MudPaper>
+                </div>
+            </div>
         </div>
     </MudContainer>
 }
