@@ -3,11 +3,12 @@ using TheBugTracker.Models;
 using TheBugTracker.Interfaces;
 using TheBugTracker.Client.Enums;
 using TheBugTracker.Client.Models;
+using Microsoft.AspNetCore.Identity;
 using TheBugTracker.Client.Interfaces;
 
 namespace TheBugTracker.Services
 {
-    public class TicketDTOService(ITicketRepository repository) : ITicketDTOService
+    public class TicketDTOService(ITicketRepository repository, UserManager<ApplicationUser> userManager) : ITicketDTOService
     {
         public async Task<IEnumerable<TicketDTO>> GetOpenTicketsAsync(UserInfo userInfo)
         {
@@ -44,7 +45,23 @@ namespace TheBugTracker.Services
         public async Task<TicketDTO?> GetTicketByIdAsync(int id, UserInfo userInfo)
         {
             Ticket? ticket = await repository.GetTicketByIdAsync(id, userInfo);
-            TicketDTO? dto = ticket?.ToDTO();
+
+            if (ticket is null)
+            {
+                return null;
+            }
+
+            TicketDTO dto = ticket.ToDTO();
+
+            if (ticket.SubmitterUser is not null)
+            {
+                dto.SubmitterUser = await ticket.SubmitterUser.ToDTOWithRole(userManager);
+            }
+
+            if (dto.DeveloperUser is not null)
+            {
+                dto.DeveloperUser.Role = Role.Developer;
+            }
 
             return dto;
         }
