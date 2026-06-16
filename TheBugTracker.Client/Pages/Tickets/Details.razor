@@ -100,6 +100,38 @@
                     @ticket.Description
                 </MudText>
             </MudPaper>
+
+            <div class="d-flex">
+                <MudButton Variant="Variant.Text" 
+                           Color="Color.Primary" 
+                           StartIcon="@Icons.Material.Filled.ArrowBack"
+                           Class="me-auto"
+                           Href="@($"projects/{ticket.ProjectId}")">
+                    Back to Project
+                </MudButton>
+
+                <MudButton Variant="Variant.Text" 
+                           StartIcon="@Icons.Material.Filled.Edit">
+                    Edit
+                </MudButton>
+
+                @if (ticket.IsArchived)
+                {
+                    <MudButton Variant="Variant.Text"
+                               Color="Color.Success"
+                               StartIcon="@Icons.Material.Filled.RestoreFromTrash">
+                        Restore
+                    </MudButton>
+                }
+                else
+                {
+                    <MudButton Variant="Variant.Text"
+                               Color="Color.Error"
+                               StartIcon="@Icons.Material.Filled.Delete">
+                        Archive
+                    </MudButton>
+                }
+            </div>
         </div>
     </MudContainer>
 }
