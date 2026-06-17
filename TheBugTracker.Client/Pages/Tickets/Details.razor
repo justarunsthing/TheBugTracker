@@ -1,6 +1,7 @@
 ﻿@page "/tickets/{id:int}"
 @attribute [Authorize]
 @inject ITicketDTOService TicketService
+@inject IProjectDTOService ProjectService
 @inject ISnackbar Snackbar
 @inject NavigationManager Nav
 
@@ -142,9 +143,10 @@
 
     [CascadingParameter]
     public Task<AuthenticationState> AuthStateTask { get; set; } = default!;
-
     private UserInfo? userInfo;
+
     private TicketDTO? ticket;
+    private bool userCanEditTicket = false;
     private List<BreadcrumbItem> breadcrumbs = [];
 
     protected override async Task OnParametersSetAsync()
@@ -175,6 +177,13 @@
                 }
 
                 breadcrumbs.Add(new BreadcrumbItem(ticket.Title!, href: null, disabled: true));
+
+                UserDTO? projectManager = await ProjectService.GetProjectManagerAsync(ticket.ProjectId, userInfo!);
+
+                userCanEditTicket = ticket.SubmitterUserId == userInfo!.UserId
+                                    || ticket.DeveloperUserId == userInfo.UserId
+                                    || userInfo.IsInRole(Role.Admin)
+                                    || projectManager?.Id == userInfo.UserId;
             }
         }
         catch (Exception ex)
