@@ -138,6 +138,38 @@
             </div>
         </div>
     </MudContainer>
+
+    @if (userCanEditTicket)
+    {
+        <MudMessageBox @ref="archiveConfirmationBox"
+                       Title="@(ticket.IsArchived ? "Restore Ticket" : "Archive Ticket")"
+                       CancelText="Cancel">
+            <MessageContent>
+                Are you sure you want to @(ticket.IsArchived ? "Restore" : "Archive") this ticket?
+            </MessageContent>
+
+            <YesButton>
+                @if (ticket.IsArchived)
+                {
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Success"
+                               StartIcon="@Icons.Material.Filled.RestoreFromTrash"
+                               Class="ms-2">
+                        Restore
+                    </MudButton>
+                }
+                else
+                {
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Error"
+                               StartIcon="@Icons.Material.Filled.Delete"
+                               Class="ms-2">
+                        Archive
+                    </MudButton>
+                }
+            </YesButton>
+        </MudMessageBox>
+    }
 }
 
 @code {
@@ -151,6 +183,7 @@
     private TicketDTO? ticket;
     private bool userCanEditTicket = false;
     private List<BreadcrumbItem> breadcrumbs = [];
+    private MudMessageBox? archiveConfirmationBox;
 
     protected override async Task OnParametersSetAsync()
     {
