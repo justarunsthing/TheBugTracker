@@ -111,26 +111,29 @@
                     Back to Project
                 </MudButton>
 
-                <MudButton Variant="Variant.Text" 
-                           StartIcon="@Icons.Material.Filled.Edit">
-                    Edit
-                </MudButton>
+                @if (userCanEditTicket)
+                {
+                    <MudButton Variant="Variant.Text"
+                               StartIcon="@Icons.Material.Filled.Edit">
+                        Edit
+                    </MudButton>
 
-                @if (ticket.IsArchived)
-                {
-                    <MudButton Variant="Variant.Text"
-                               Color="Color.Success"
-                               StartIcon="@Icons.Material.Filled.RestoreFromTrash">
-                        Restore
-                    </MudButton>
-                }
-                else
-                {
-                    <MudButton Variant="Variant.Text"
-                               Color="Color.Error"
-                               StartIcon="@Icons.Material.Filled.Delete">
-                        Archive
-                    </MudButton>
+                    @if (ticket.IsArchived)
+                    {
+                        <MudButton Variant="Variant.Text"
+                                   Color="Color.Success"
+                                   StartIcon="@Icons.Material.Filled.RestoreFromTrash">
+                            Restore
+                        </MudButton>
+                    }
+                    else
+                    {
+                        <MudButton Variant="Variant.Text"
+                                   Color="Color.Error"
+                                   StartIcon="@Icons.Material.Filled.Delete">
+                            Archive
+                        </MudButton>
+                    }
                 }
             </div>
         </div>
