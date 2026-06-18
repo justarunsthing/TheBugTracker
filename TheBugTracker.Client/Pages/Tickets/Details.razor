@@ -122,7 +122,8 @@
                     {
                         <MudButton Variant="Variant.Text"
                                    Color="Color.Success"
-                                   StartIcon="@Icons.Material.Filled.RestoreFromTrash">
+                                   StartIcon="@Icons.Material.Filled.RestoreFromTrash"
+                                   OnClick="HandleArchiveToggle">
                             Restore
                         </MudButton>
                     }
@@ -130,7 +131,8 @@
                     {
                         <MudButton Variant="Variant.Text"
                                    Color="Color.Error"
-                                   StartIcon="@Icons.Material.Filled.Delete">
+                                   StartIcon="@Icons.Material.Filled.Delete"
+                                   OnClick="HandleArchiveToggle">
                             Archive
                         </MudButton>
                     }
@@ -231,6 +233,14 @@
         if (ticket is null)
         {
             Nav.NavigateTo("tickets");
+        }
+    }
+
+    private async Task HandleArchiveToggle()
+    {
+        if (userCanEditTicket && archiveConfirmationBox is not null)
+        {
+            await archiveConfirmationBox.ShowAsync();
         }
     }
 }
