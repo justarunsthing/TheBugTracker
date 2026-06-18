@@ -240,7 +240,29 @@
     {
         if (userCanEditTicket && archiveConfirmationBox is not null)
         {
-            await archiveConfirmationBox.ShowAsync();
+            bool? confirmed = await archiveConfirmationBox.ShowAsync();
+
+            if (confirmed == true)
+            {
+                try
+                {
+                    if (ticket!.IsArchived)
+                    {
+                        // Restore
+                        Snackbar.Add("The ticke has been successfully restored!", Severity.Success);
+                    }
+                    else
+                    {
+                        // Archive
+                        Snackbar.Add("The ticke has been successfully archived!", Severity.Success);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                    Snackbar.Add("An error occurred updating the ticket!", Severity.Error);
+                }
+            }
         }
     }
 }
