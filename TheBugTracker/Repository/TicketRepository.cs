@@ -167,5 +167,34 @@ namespace TheBugTracker.Repository
         {
             throw new NotImplementedException();
         }
+
+        private async Task<bool> UserCanEditTicket(int ticketId, UserInfo userInfo)
+        {
+            await using ApplicationDbContext context = contextFactory.CreateDbContext();
+
+            bool result = false;
+
+            if (userInfo.IsInRole(Role.Admin))
+            {
+                result = await context.Tickets
+                    .AnyAsync(t => t.Id == ticketId 
+                              && t.Project!.CompanyId == userInfo.CompanyId);
+            }
+            else if (userInfo.IsInRole(Role.ProjectManager))
+            {
+                result = await context.Tickets
+                    .AnyAsync(t => t.Id == ticketId 
+                              && (t.Project!.Members.Any(m => m.Id == userInfo.UserId)
+                              || t.SubmitterUserId == userInfo.UserId));
+            }
+            else
+            {
+                result = await context.Tickets
+                    .AnyAsync (t => t.Id == ticketId
+                               && (t.SubmitterUserId == userInfo.UserId || t.DeveloperUserId == userInfo.UserId));
+            }
+
+            return result;
+        }
     }
 }
