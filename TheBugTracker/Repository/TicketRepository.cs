@@ -171,9 +171,17 @@ namespace TheBugTracker.Repository
             }
         }
 
-        public Task RestoreTicketAsync(int ticketId, UserInfo userInfo)
+        public async Task RestoreTicketAsync(int ticketId, UserInfo userInfo)
         {
-            throw new NotImplementedException();
+            if (await UserCanEditTicket(ticketId, userInfo))
+            {
+                await using ApplicationDbContext context = contextFactory.CreateDbContext();
+
+                Ticket ticket = await context.Tickets.FirstAsync(t => t.Id == ticketId);
+
+                ticket.IsArchived = false;
+                await context.SaveChangesAsync();
+            }
         }
 
         private async Task<bool> UserCanEditTicket(int ticketId, UserInfo userInfo)

@@ -91,9 +91,9 @@ namespace TheBugTracker.Services
             await repository.ArchiveTicketAsync(ticketId, userInfo);
         }
 
-        public Task RestoreTicketAsync(int ticketId, UserInfo userInfo)
+        public async Task RestoreTicketAsync(int ticketId, UserInfo userInfo)
         {
-            throw new NotImplementedException();
+            await repository.RestoreTicketAsync(ticketId, userInfo);
         }
     }
 }
