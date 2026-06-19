@@ -85,5 +85,15 @@ namespace TheBugTracker.Services
 
             return dbTicket.ToDTO();
         }
+
+        public Task ArchiveTicketAsync(int ticketId, UserInfo userInfo)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task RestoreTicketAsync(int ticketId, UserInfo userInfo)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

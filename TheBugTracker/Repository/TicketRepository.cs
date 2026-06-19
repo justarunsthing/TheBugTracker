@@ -157,5 +157,15 @@ namespace TheBugTracker.Repository
 
             return ticket;
         }
+
+        public Task ArchiveTicketAsync(int ticketId, UserInfo userInfo)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task RestoreTicketAsync(int ticketId, UserInfo userInfo)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

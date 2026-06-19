@@ -45,5 +45,19 @@ namespace TheBugTracker.Interfaces
         /// <param name="userInfo">The current user's claims</param>
         /// <returns>The created ticket</returns>
         Task<Ticket> CreateTicketAsync(Ticket ticket, UserInfo userInfo);
+
+        /// <summary>
+        /// Archives a ticket if the user is authorized to do so
+        /// </summary>
+        /// <param name="ticketId">The id of the ticket to archive</param>
+        /// <param name="userInfo">The current user's claims</param>
+        Task ArchiveTicketAsync(int ticketId, UserInfo userInfo);
+
+        /// <summary>
+        /// Restores a ticket if the user is authorized to do so
+        /// </summary>
+        /// <param name="ticketId">The id of the ticket to restore</param>
+        /// <param name="userInfo">The current user's claims</param>
+        Task RestoreTicketAsync(int ticketId, UserInfo userInfo);
     }
 }
