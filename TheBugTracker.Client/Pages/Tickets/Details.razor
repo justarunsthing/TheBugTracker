@@ -248,14 +248,16 @@
                 {
                     if (ticket!.IsArchived)
                     {
-                        // Restore
-                        Snackbar.Add("The ticke has been successfully restored!", Severity.Success);
+                        await TicketService.RestoreTicketAsync(ticket.Id, userInfo!);
+                        Snackbar.Add("The ticket has been successfully restored!", Severity.Success);
                     }
                     else
                     {
-                        // Archive
+                        await TicketService.ArchiveTicketAsync(ticket.Id, userInfo!);
                         Snackbar.Add("The ticke has been successfully archived!", Severity.Success);
                     }
+
+                    ticket = await TicketService.GetTicketByIdAsync(ticket.Id, userInfo!);
                 }
                 catch (Exception ex)
                 {
