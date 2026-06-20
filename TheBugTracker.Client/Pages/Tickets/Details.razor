@@ -114,7 +114,8 @@
                 @if (userCanEditTicket)
                 {
                     <MudButton Variant="Variant.Text"
-                               StartIcon="@Icons.Material.Filled.Edit">
+                               StartIcon="@Icons.Material.Filled.Edit"
+                               Href="@($"tickets/edit/{ticket.Id}")">
                         Edit
                     </MudButton>
 
