@@ -1,0 +1,65 @@
+﻿@page "/tickets/edit/{id:int}"
+@attribute [Authorize]
+@inject ITicketDTOService TicketService
+@inject IProjectDTOService ProjectService
+@inject ISnackbar SnackBar
+@inject NavigationManager Nav
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="h-100">
+    <MudBreadcrumbs Items="breadcrumbs" />
+
+    @if (isLoading)
+    {
+        <PageTitle>Edit Ticket | The Bug Tracker</PageTitle>
+
+        <LoadingSpinner Message="Loading ticket..." />
+    }
+    else if (ticket is null)
+    {
+        <PageTitle>Not Found | The Bug Tracker</PageTitle>
+
+        <div class="h-100 d-flex flex-column gap-2 align-items-center justify-content-center">
+            <MudText Color="Color.Tertiary" Typo="Typo.button">
+                Ticket Not Found!
+            </MudText>
+            <MudLink Href="tickets">
+                <MudIcon Icon="@Icons.Material.Filled.ArrowBack" />
+                Back to Tickets
+            </MudLink>
+        </div>
+    }
+    else
+    {
+        <PageTitle>Edit '@ticket.Title' | The Bug Tracker</PageTitle>
+    }
+    </MudContainer>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthStateTask { get; set; } = default!;
+    private UserInfo? userInfo;
+
+    private TicketDTO? ticket { get; set; }
+    private List<BreadcrumbItem> breadcrumbs = [];
+    private bool isLoading = true;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        userInfo ??= await UserInfoHelper.GetUserInfoAsync(AuthStateTask);
+
+        try
+        {
+            await Task.Delay(3000);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            SnackBar.Add("Failed to load ticket!", Severity.Error);
+        }
+
+        isLoading = false;
+    }
+}
