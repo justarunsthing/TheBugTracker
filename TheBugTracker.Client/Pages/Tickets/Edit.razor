@@ -20,12 +20,14 @@
 
         <div class="h-100 d-flex flex-column gap-2 align-items-center justify-content-center">
             <MudText Color="Color.Tertiary" Typo="Typo.button">
-                Ticket Not Found!
+                Ticket Not Found
             </MudText>
-            <MudLink Href="tickets">
-                <MudIcon Icon="@Icons.Material.Filled.ArrowBack" />
+            <MudButton Variant="Variant.Text"
+                       Size="Size.Small"
+                       Href="tickets"
+                       StartIcon="@Icons.Material.Filled.ArrowBack">
                 Back to Tickets
-            </MudLink>
+            </MudButton>
         </div>
     }
     else
