@@ -54,7 +54,18 @@
 
         try
         {
-            await Task.Delay(3000);
+            ticket = await TicketService.GetTicketByIdAsync(Id, userInfo!);
+
+            if (ticket is not null)
+            {
+                breadcrumbs = new List<BreadcrumbItem>()
+                {
+                    new("Home", href: "/"),
+                    new("Tickets", href: "/tickets"),
+                    new(ticket.Title!, href: $"/tickets/{Id}"),
+                    new("Edit Ticket", href: null, disabled: true)
+                };
+            }
         }
         catch (Exception ex)
         {
