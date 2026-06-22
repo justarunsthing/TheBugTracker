@@ -160,7 +160,7 @@
     }
 </MudContainer>
 
-@code {
+    @code {
     [Parameter]
     public int Id { get; set; }
 
@@ -191,6 +191,17 @@
                     new(ticket.Title!, href: $"/tickets/{Id}"),
                     new("Edit Ticket", href: null, disabled: true)
                 };
+
+                UserDTO? projectManager = await ProjectService.GetProjectManagerAsync(ticket.ProjectId, userInfo!);
+                canUserAssignTickets = userInfo!.IsInRole(Role.Admin) || projectManager?.Id == userInfo!.UserId;
+
+                IEnumerable<UserDTO> members = await ProjectService.GetProjectMembersAsync(ticket.ProjectId, userInfo!);
+                developers = members.Where(m => m.Role == Role.Developer);
+
+                if (!developers.Any(d => d.Id == ticket.DeveloperUserId))
+                {
+                    ticket.DeveloperUserId = null;
+                }
             }
         }
         catch (Exception ex)
