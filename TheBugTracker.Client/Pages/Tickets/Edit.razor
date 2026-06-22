@@ -177,7 +177,7 @@
     protected override async Task OnParametersSetAsync()
     {
         userInfo ??= await UserInfoHelper.GetUserInfoAsync(AuthStateTask);
-
+        UserDTO? projectManager = null;
         try
         {
             ticket = await TicketService.GetTicketByIdAsync(Id, userInfo!);
@@ -192,7 +192,7 @@
                     new("Edit Ticket", href: null, disabled: true)
                 };
 
-                UserDTO? projectManager = await ProjectService.GetProjectManagerAsync(ticket.ProjectId, userInfo!);
+                projectManager = await ProjectService.GetProjectManagerAsync(ticket.ProjectId, userInfo!);
                 canUserAssignTickets = userInfo!.IsInRole(Role.Admin) || projectManager?.Id == userInfo!.UserId;
 
                 IEnumerable<UserDTO> members = await ProjectService.GetProjectMembersAsync(ticket.ProjectId, userInfo!);
@@ -208,6 +208,16 @@
         {
             Console.WriteLine(ex);
             SnackBar.Add("Failed to load ticket!", Severity.Error);
+        }
+
+        if (ticket is not null 
+            && ticket.SubmitterUserId != userInfo!.UserId 
+            && ticket.DeveloperUserId != userInfo.UserId
+            && projectManager?.Id != userInfo.UserId
+            && !userInfo.IsInRole(Role.Admin))
+        {
+            SnackBar.Add("You are not authorized to edit the requested ticket!", Severity.Error);
+            Nav.NavigateTo("tickets");
         }
 
         isLoading = false;
