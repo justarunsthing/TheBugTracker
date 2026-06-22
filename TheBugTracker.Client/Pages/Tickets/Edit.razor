@@ -216,8 +216,7 @@
             && projectManager?.Id != userInfo.UserId
             && !userInfo.IsInRole(Role.Admin))
         {
-            SnackBar.Add("You are not authorized to edit the requested ticket!", Severity.Error);
-            Nav.NavigateTo("tickets");
+            Nav.NavigateTo($"tickets/{ticket.Id}");
         }
 
         isLoading = false;
