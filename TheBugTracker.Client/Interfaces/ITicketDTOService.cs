@@ -58,5 +58,12 @@ namespace TheBugTracker.Client.Interfaces
         /// <param name="ticketId">The id of the ticket to restore</param>
         /// <param name="userInfo">The current user's claims</param>
         Task RestoreTicketAsync(int ticketId, UserInfo userInfo);
+
+        /// <summary>
+        /// Updates a ticket in the database
+        /// </summary>
+        /// <param name="ticket">The updated ticket information</param>
+        /// <param name="userInfo">The current user's claims</param>
+        Task UpdateTicketAsync(TicketDTO ticket, UserInfo userInfo);
     }
 }

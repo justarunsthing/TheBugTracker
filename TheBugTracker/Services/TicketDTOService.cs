@@ -8,7 +8,7 @@ using TheBugTracker.Client.Interfaces;
 
 namespace TheBugTracker.Services
 {
-    public class TicketDTOService(ITicketRepository repository, UserManager<ApplicationUser> userManager) : ITicketDTOService
+    public class TicketDTOService(ITicketRepository repository, IProjectRepository projectRepository, UserManager<ApplicationUser> userManager) : ITicketDTOService
     {
         public async Task<IEnumerable<TicketDTO>> GetOpenTicketsAsync(UserInfo userInfo)
         {
@@ -94,6 +94,49 @@ namespace TheBugTracker.Services
         public async Task RestoreTicketAsync(int ticketId, UserInfo userInfo)
         {
             await repository.RestoreTicketAsync(ticketId, userInfo);
+        }
+
+        public async Task UpdateTicketAsync(TicketDTO ticket, UserInfo userInfo)
+        {
+            Ticket? dbTicket = await repository.GetTicketByIdAsync(ticket.Id, userInfo);
+
+            if (dbTicket is null)
+            {
+                return;
+            }
+
+            dbTicket.Title = ticket.Title;
+            dbTicket.Description = ticket.Description;
+            dbTicket.Updated = DateTimeOffset.UtcNow;
+            dbTicket.Priority = ticket.Priority;
+            dbTicket.Type = ticket.Type;
+            dbTicket.Status = ticket.Status;
+
+            // User sent a new developer
+            if (dbTicket.DeveloperUserId != ticket.DeveloperUserId)
+            {
+                // Check user is authorized to reassign developer
+                var projectManager = await projectRepository.GetProjectManagerAsync(dbTicket.ProjectId, userInfo);
+
+                if (projectManager?.Id == userInfo.UserId || userInfo.IsInRole(Role.Admin))
+                {
+                    var projectMembers = await projectRepository.GetProjectMembersAsync(dbTicket.ProjectId, userInfo);
+                    var developer = projectMembers.FirstOrDefault(m => m.Id == ticket.DeveloperUserId);
+
+                    // Check new developer is assigned to the project and is in role
+                    if (developer is not null && await userManager.IsInRoleAsync(developer, nameof(Role.Developer)))
+                    {
+                        dbTicket.DeveloperUserId = ticket.DeveloperUserId;
+                        dbTicket.DeveloperUser = developer;
+                    }
+                    // Unassign ticket if user sent null
+                    else if (string.IsNullOrEmpty(ticket.DeveloperUserId))
+                    {
+                        dbTicket.DeveloperUserId = null;
+                        dbTicket.DeveloperUser = null;
+                    }
+                }
+            }
         }
     }
 }
