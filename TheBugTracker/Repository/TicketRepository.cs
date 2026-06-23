@@ -184,6 +184,27 @@ namespace TheBugTracker.Repository
             }
         }
 
+        public async Task UpdateTicketAsync(Ticket ticket, UserInfo userInfo)
+        {
+            bool canEdit = await UserCanEditTicket(ticket.Id, userInfo);
+
+            if (canEdit)
+            {
+                ticket.Updated = DateTimeOffset.UtcNow;
+
+                // Clear navigational properties so EF doesn't try to update them
+                ticket.Comments = [];
+                ticket.Attachments = [];
+                ticket.DeveloperUser = null;
+                ticket.SubmitterUser = null;
+
+                await using ApplicationDbContext context = contextFactory.CreateDbContext();
+
+                context.Update(ticket);
+                await context.SaveChangesAsync();
+            }
+        }
+
         private async Task<bool> UserCanEditTicket(int ticketId, UserInfo userInfo)
         {
             await using ApplicationDbContext context = contextFactory.CreateDbContext();
@@ -206,7 +227,7 @@ namespace TheBugTracker.Repository
             else
             {
                 result = await context.Tickets
-                    .AnyAsync (t => t.Id == ticketId
+                    .AnyAsync(t => t.Id == ticketId
                                && (t.SubmitterUserId == userInfo.UserId || t.DeveloperUserId == userInfo.UserId));
             }
 
