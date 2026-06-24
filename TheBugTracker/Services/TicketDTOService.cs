@@ -137,6 +137,8 @@ namespace TheBugTracker.Services
                     }
                 }
             }
+
+            await repository.UpdateTicketAsync(dbTicket, userInfo);
         }
     }
 }
