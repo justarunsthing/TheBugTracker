@@ -27,14 +27,14 @@
                     }
                 </div>
                 <div>
-                    <MudText Typo="Typo.subtitle2">
+                    <MudText Typo="Typo.subtitle2" Inline="true">
                         Submitted @ticket.Created.ToString("g")
                     </MudText>
 
                     @if (ticket.Updated.HasValue)
                     {
-                        <span>&bull;</span>
-                        <MudText Typo="Typo.subtitle2">
+                        <span class="mx-1">&bull;</span>
+                        <MudText Typo="Typo.subtitle2" Inline>
                             Updated @ticket.Updated.Value.ToString("g")
                         </MudText>
                     }
