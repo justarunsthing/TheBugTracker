@@ -224,6 +224,30 @@
 
     private async Task HandleSubmit()
     {
-        SnackBar.Add("Form Submitted!");
+        if (ticket is null)
+        {
+            return;
+        }
+
+        bool success;
+
+        try
+        {
+            await TicketService.UpdateTicketAsync(ticket, userInfo!);
+            success = true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            SnackBar.Add("Failed to update ticket!", Severity.Error);
+
+            success = false;
+        }
+
+        if (success)
+        {
+            SnackBar.Add("Ticket successfully updated!", Severity.Success);
+            Nav.NavigateTo($"tickets/{ticket.Id}");
+        }
     }
 }
