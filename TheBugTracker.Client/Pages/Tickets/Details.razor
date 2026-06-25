@@ -73,14 +73,34 @@
                             }
                             else
                             {
-                                <UserCard User="ticket.DeveloperUser"
-                                          PlaceholderName="Unassigned"
-                                          PlaceholderRole="@Role.Developer.GetDisplayName()" />
+                                <MudSelect @bind-Value="ticket.DeveloperUserId"
+                                           Label="Developer"
+                                           Variant="Variant.Outlined"
+                                           Placeholder="@(developers.Any() ? "Select a Developer" : "No developers available")"
+                                           Disabled="developers.Count() == 0"
+                                           Clearable>
+                                    @foreach (var developer in developers)
+                                    {
+                                        <MudSelectItem Value="@developer.Id">
+                                            @developer.FullName
+                                        </MudSelectItem>
+                                    }
+                                </MudSelect>
 
-                                <MudIconButton Class="ms-auto"
-                                               Icon="@Icons.Material.Filled.Save"
-                                               Color="Color.Success"
-                                               OnClick="() => assigningDeveloper = false" />
+                                @if (developers.Any())
+                                {
+                                    <MudIconButton Class="ms-auto"
+                                                   Icon="@Icons.Material.Filled.Save"
+                                                   Color="Color.Success"
+                                                   OnClick="() => assigningDeveloper = false" />
+                                }
+                                else
+                                {
+                                    <MudIconButton Class="ms-auto"
+                                                   Icon="@Icons.Material.Filled.Cancel"
+                                                   Color="Color.Error"
+                                                   OnClick="() => assigningDeveloper = false" />
+                                }
                             }
                         </div>
                     </MudPaper>
@@ -214,6 +234,7 @@
     private bool userCanEditTicket = false;
     private bool assigningDeveloper = false;
     private List<BreadcrumbItem> breadcrumbs = [];
+    private IEnumerable<UserDTO> developers = [];
     private MudMessageBox? archiveConfirmationBox;
 
     protected override async Task OnParametersSetAsync()
@@ -251,6 +272,9 @@
                                     || ticket.DeveloperUserId == userInfo.UserId
                                     || userInfo.IsInRole(Role.Admin)
                                     || projectManager?.Id == userInfo.UserId;
+
+                var members = await ProjectService.GetProjectMembersAsync(ticket.ProjectId, userInfo);
+                developers = members.Where(m => m.Role == Role.Developer);
             }
         }
         catch (Exception ex)
