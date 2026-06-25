@@ -55,7 +55,34 @@
                         <MudText Typo="Typo.h6">
                             Assigned To:
                         </MudText>
-                        <UserCard User="ticket.DeveloperUser" PlaceholderName="Unassigned" PlaceholderRole="@Role.Developer.GetDisplayName()" />
+                        <div class="d-flex align-items-center">
+                            @if (assigningDeveloper == false)
+                            {
+                                <UserCard User="ticket.DeveloperUser"
+                                          PlaceholderName="Unassigned"
+                                          PlaceholderRole="@Role.Developer.GetDisplayName()" />
+
+                                @if (userCanEditTicket)
+                                {
+                                    <AuthorizeView Roles="@($"{nameof(Role.Admin)}, {nameof(Role.ProjectManager)}")">
+                                        <MudIconButton Class="ms-auto"
+                                                       Icon="@Icons.Material.Filled.Edit"
+                                                       OnClick="() => assigningDeveloper = true" />
+                                    </AuthorizeView>
+                                }
+                            }
+                            else
+                            {
+                                <UserCard User="ticket.DeveloperUser"
+                                          PlaceholderName="Unassigned"
+                                          PlaceholderRole="@Role.Developer.GetDisplayName()" />
+
+                                <MudIconButton Class="ms-auto"
+                                               Icon="@Icons.Material.Filled.Save"
+                                               Color="Color.Success"
+                                               OnClick="() => assigningDeveloper = false" />
+                            }
+                        </div>
                     </MudPaper>
                 </div>
             </div>
@@ -185,6 +212,7 @@
 
     private TicketDTO? ticket;
     private bool userCanEditTicket = false;
+    private bool assigningDeveloper = false;
     private List<BreadcrumbItem> breadcrumbs = [];
     private MudMessageBox? archiveConfirmationBox;
 
