@@ -92,7 +92,7 @@
                                     <MudIconButton Class="ms-auto"
                                                    Icon="@Icons.Material.Filled.Save"
                                                    Color="Color.Success"
-                                                   OnClick="() => assigningDeveloper = false" />
+                                                   OnClick="UpdateTicket" />
                                 }
                                 else
                                 {
@@ -319,5 +319,28 @@
                 }
             }
         }
+    }
+
+    private async Task UpdateTicket()
+    {
+        if (!userCanEditTicket)
+        {
+            return;
+        }
+
+        try
+        {
+            await TicketService.UpdateTicketAsync(ticket!, userInfo!);
+            Snackbar.Add("Changes saved successfully!", Severity.Success);
+
+            await OnParametersSetAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            Snackbar.Add("Failed to save changes", Severity.Error);
+        }
+
+        assigningDeveloper = false;
     }
 }
