@@ -113,9 +113,41 @@
                         <MudText Typo="Typo.h6">
                             Priority
                         </MudText>
-                        <MudChip T="string" Label="true" Color="ticket.Priority.GetColor()">
-                            @ticket.Priority.GetDisplayName()
-                        </MudChip>
+
+                        @if (userCanEditTicket)
+                        {
+                            <MudMenu Dense>
+                                <ActivatorContent>
+                                    <MudChip T="string" 
+                                             Label="true" 
+                                             Color="ticket.Priority.GetColor()"
+                                             CloseIcon="@Icons.Material.Filled.ArrowDropDown"
+                                             OnClose="() => {}">
+                                        @ticket.Priority.GetDisplayName()
+                                    </MudChip>
+                                </ActivatorContent>
+                                <ChildContent>
+                                    @foreach (TicketPriority priority in Enum.GetValues<TicketPriority>())
+                                    {
+                                        <MudMenuItem Class="text-center">
+                                            <MudChip T="string"
+                                                     Label="true"
+                                                     Color="priority.GetColor()">
+                                                @priority.GetDisplayName()
+                                            </MudChip>
+                                        </MudMenuItem>
+                                    }
+                                </ChildContent>
+                            </MudMenu>
+                        }
+                        else
+                        {
+                            <MudChip T="string" 
+                                     Label="true" 
+                                     Color="ticket.Priority.GetColor()">
+                                @ticket.Priority.GetDisplayName()
+                            </MudChip>
+                        }
                     </MudPaper>
                 </div>
                 <div class="col">
