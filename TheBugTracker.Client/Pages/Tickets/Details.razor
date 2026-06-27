@@ -129,7 +129,7 @@
                                 <ChildContent>
                                     @foreach (TicketPriority priority in Enum.GetValues<TicketPriority>())
                                     {
-                                        <MudMenuItem Class="text-center">
+                                        <MudMenuItem Class="text-center" OnClick="async () => await SetTicketPriority(priority)">
                                             <MudChip T="string"
                                                      Label="true"
                                                      Color="priority.GetColor()">
@@ -374,5 +374,14 @@
         }
 
         assigningDeveloper = false;
+    }
+
+    private async Task SetTicketPriority(TicketPriority priority)
+    {
+        if (userCanEditTicket && ticket is not null && ticket.Priority != priority)
+        {
+            ticket.Priority = priority;
+            await UpdateTicket();
+        }
     }
 }
