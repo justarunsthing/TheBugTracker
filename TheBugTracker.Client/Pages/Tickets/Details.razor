@@ -130,7 +130,7 @@
                                     @foreach (TicketPriority priority in Enum.GetValues<TicketPriority>())
                                     {
                                         <MudMenuItem Class="text-center" OnClick="async () => await SetTicketPriority(priority)">
-                                            <MudChip T="string"
+                                            <MudChip Value="priority"
                                                      Label="true"
                                                      Color="priority.GetColor()">
                                                 @priority.GetDisplayName()
@@ -172,7 +172,7 @@
                                     @foreach (TicketStatus status in Enum.GetValues<TicketStatus>())
                                     {
                                         <MudMenuItem Class="text-center" OnClick="async () => await SetTicketStatus(status)">
-                                            <MudChip T="string"
+                                            <MudChip Value="status"
                                                      Label="true"
                                                      Color="status.GetColor()">
                                                 @status.GetDisplayName()
@@ -214,7 +214,7 @@
                                     @foreach (TicketType type in Enum.GetValues<TicketType>())
                                     {
                                         <MudMenuItem Class="text-center" OnClick="async () => await SetTicketType(type)">
-                                            <MudChip T="string"
+                                            <MudChip Value="type"
                                                      Label="true"
                                                      Color="type.GetColor()">
                                                 @type.GetDisplayName()
