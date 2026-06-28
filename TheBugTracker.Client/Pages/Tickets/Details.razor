@@ -155,9 +155,41 @@
                         <MudText Typo="Typo.h6">
                             Status
                         </MudText>
-                        <MudChip T="string" Label="true" Color="ticket.Status.GetColor()">
-                            @ticket.Status.GetDisplayName()
-                        </MudChip>
+
+                        @if (userCanEditTicket)
+                        {
+                            <MudMenu Dense>
+                                <ActivatorContent>
+                                    <MudChip T="string"
+                                             Label="true"
+                                             Color="ticket.Status.GetColor()"
+                                             CloseIcon="@Icons.Material.Filled.ArrowDropDown"
+                                             OnClose="() => context.ToggleAsync()">
+                                        @ticket.Status.GetDisplayName()
+                                    </MudChip>
+                                </ActivatorContent>
+                                <ChildContent>
+                                    @foreach (TicketStatus status in Enum.GetValues<TicketStatus>())
+                                    {
+                                        <MudMenuItem Class="text-center" OnClick="async () => await SetTicketStatus(status)">
+                                            <MudChip T="string"
+                                                     Label="true"
+                                                     Color="status.GetColor()">
+                                                @status.GetDisplayName()
+                                            </MudChip>
+                                        </MudMenuItem>
+                                    }
+                                </ChildContent>
+                            </MudMenu>
+                        }
+                        else
+                        {
+                            <MudChip T="string"
+                                     Label="true"
+                                     Color="ticket.Status.GetColor()">
+                                @ticket.Status.GetDisplayName()
+                            </MudChip>
+                        }
                     </MudPaper>
                 </div>
                 <div class="col">
@@ -381,6 +413,15 @@
         if (userCanEditTicket && ticket is not null && ticket.Priority != priority)
         {
             ticket.Priority = priority;
+            await UpdateTicket();
+        }
+    }
+
+    private async Task SetTicketStatus(TicketStatus status)
+    {
+        if (userCanEditTicket && ticket is not null && ticket.Status != status)
+        {
+            ticket.Status = status;
             await UpdateTicket();
         }
     }
