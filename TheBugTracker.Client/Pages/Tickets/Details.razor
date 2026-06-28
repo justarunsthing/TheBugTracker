@@ -197,9 +197,41 @@
                         <MudText Typo="Typo.h6">
                             Type
                         </MudText>
-                        <MudChip T="string" Label="true" Color="ticket.Type.GetColor()">
-                            @ticket.Type.GetDisplayName()
-                        </MudChip>
+
+                        @if (userCanEditTicket)
+                        {
+                            <MudMenu Dense>
+                                <ActivatorContent>
+                                    <MudChip T="string"
+                                             Label="true"
+                                             Color="ticket.Type.GetColor()"
+                                             CloseIcon="@Icons.Material.Filled.ArrowDropDown"
+                                             OnClose="() => context.ToggleAsync()">
+                                        @ticket.Type.GetDisplayName()
+                                    </MudChip>
+                                </ActivatorContent>
+                                <ChildContent>
+                                    @foreach (TicketType type in Enum.GetValues<TicketType>())
+                                    {
+                                        <MudMenuItem Class="text-center" OnClick="async () => await SetTicketType(type)">
+                                            <MudChip T="string"
+                                                     Label="true"
+                                                     Color="type.GetColor()">
+                                                @type.GetDisplayName()
+                                            </MudChip>
+                                        </MudMenuItem>
+                                    }
+                                </ChildContent>
+                            </MudMenu>
+                        }
+                        else
+                        {
+                            <MudChip T="string"
+                                     Label="true"
+                                     Color="ticket.Type.GetColor()">
+                                @ticket.Type.GetDisplayName()
+                            </MudChip>
+                        }
                     </MudPaper>
                 </div>
             </div>
@@ -422,6 +454,15 @@
         if (userCanEditTicket && ticket is not null && ticket.Status != status)
         {
             ticket.Status = status;
+            await UpdateTicket();
+        }
+    }
+
+    private async Task SetTicketType(TicketType type)
+    {
+        if (userCanEditTicket && ticket is not null && ticket.Type != type)
+        {
+            ticket.Type = type;
             await UpdateTicket();
         }
     }
