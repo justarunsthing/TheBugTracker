@@ -122,7 +122,7 @@
                                              Label="true" 
                                              Color="ticket.Priority.GetColor()"
                                              CloseIcon="@Icons.Material.Filled.ArrowDropDown"
-                                             OnClose="() => {}">
+                                             OnClose="() => context.ToggleAsync()">
                                         @ticket.Priority.GetDisplayName()
                                     </MudChip>
                                 </ActivatorContent>
