@@ -1,13 +1,24 @@
-﻿using TheBugTracker.Client.Models;
+﻿using System.Net.Http.Json;
+using TheBugTracker.Client.Models;
 using TheBugTracker.Client.Interfaces;
 
 namespace TheBugTracker.Client.Services
 {
     public class WASMTicketDTOService(HttpClient http) : ITicketDTOService
     {
-        public Task<IEnumerable<TicketDTO>> GetOpenTicketsAsync(UserInfo userInfo)
+        public async Task<IEnumerable<TicketDTO>> GetOpenTicketsAsync(UserInfo userInfo)
         {
-            throw new NotImplementedException();
+            try
+            {
+                List<TicketDTO> tickets = await http.GetFromJsonAsync<List<TicketDTO>>("api/Tickets") ?? [];
+
+                return tickets;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return [];
+            }
         }
 
         public Task<IEnumerable<TicketDTO>> GetResolvedTicketsAsync(UserInfo userInfo)

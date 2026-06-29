@@ -13,5 +13,6 @@ builder.Services.AddMudServices();
 
 builder.Services.AddScoped<IProjectDTOService, WASMProjectDTOService>();
 builder.Services.AddScoped<ICompanyDTOService, WASMCompanyDTOService>();
+builder.Services.AddScoped<ITicketDTOService, WASMTicketDTOService>();
 
 await builder.Build().RunAsync();
