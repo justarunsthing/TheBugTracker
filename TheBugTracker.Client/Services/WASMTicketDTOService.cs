@@ -1,6 +1,7 @@
 ﻿using System.Net.Http.Json;
 using TheBugTracker.Client.Models;
 using TheBugTracker.Client.Interfaces;
+using TheBugTracker.Client.Enums;
 
 namespace TheBugTracker.Client.Services
 {
@@ -26,9 +27,19 @@ namespace TheBugTracker.Client.Services
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<TicketDTO>> GetArchivedTicketsAsync(UserInfo userInfo)
+        public async Task<IEnumerable<TicketDTO>> GetArchivedTicketsAsync(UserInfo userInfo)
         {
-            throw new NotImplementedException();
+            try
+            {
+                List<TicketDTO> tickets = await http.GetFromJsonAsync<List<TicketDTO>>($"api/Tickets?filter={TicketsFilter.Archived}") ?? [];
+
+                return tickets;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return [];
+            }
         }
 
         public Task<IEnumerable<TicketDTO>> GetAssignedTicketsAsync(UserInfo userInfo)
