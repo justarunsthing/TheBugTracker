@@ -22,9 +22,19 @@ namespace TheBugTracker.Client.Services
             }
         }
 
-        public Task<IEnumerable<TicketDTO>> GetResolvedTicketsAsync(UserInfo userInfo)
+        public async Task<IEnumerable<TicketDTO>> GetResolvedTicketsAsync(UserInfo userInfo)
         {
-            throw new NotImplementedException();
+            try
+            {
+                List<TicketDTO> tickets = await http.GetFromJsonAsync<List<TicketDTO>>($"api/Tickets?filter={TicketsFilter.Resolved}") ?? [];
+
+                return tickets;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return [];
+            }
         }
 
         public async Task<IEnumerable<TicketDTO>> GetArchivedTicketsAsync(UserInfo userInfo)
