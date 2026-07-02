@@ -39,5 +39,26 @@ namespace TheBugTracker.Controllers
             
             return Ok(tickets);
         }
+
+        /// <summary>
+        /// Get Ticket by Id
+        /// </summary>
+        /// <param name="id">The Id of the ticket to return</param>
+        /// <remarks>
+        /// Returns detailed information about a specific ticket.
+        /// Returns 404 Not Found if the ticket does not exist.
+        /// </remarks>
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<TicketDTO?>> GetTicketById([FromRoute] int id)
+        {
+            TicketDTO? ticket = await ticketService.GetTicketByIdAsync(id, UserInfo);
+
+            if (ticket is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(ticket);
+        }
     }
 }
