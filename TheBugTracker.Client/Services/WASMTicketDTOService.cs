@@ -67,9 +67,19 @@ namespace TheBugTracker.Client.Services
             }
         }
 
-        public Task<TicketDTO?> GetTicketByIdAsync(int id, UserInfo userInfo)
+        public async Task<TicketDTO?> GetTicketByIdAsync(int id, UserInfo userInfo)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var ticket = await http.GetFromJsonAsync<TicketDTO>($"api/Tickets/{id}");
+
+                return ticket;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return null;
+            }
         }
 
         public Task<TicketDTO> CreateTicketAsync(TicketDTO ticket, UserInfo userInfo)
