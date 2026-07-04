@@ -60,5 +60,24 @@ namespace TheBugTracker.Controllers
 
             return Ok(ticket);
         }
+
+        /// <summary>
+        /// Update Ticket
+        /// </summary>
+        /// <param name="id">The Id of the ticket to update</param>
+        /// <param name="ticket">The updated ticket details</param>
+        /// <remarks>Updates a specific ticket if it exists and the user is authorized</remarks>
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult> UpdateTicket([FromRoute] int id, [FromBody] TicketDTO ticket)
+        {
+            if (id != ticket.Id)
+            {
+                return BadRequest();
+            }
+
+            await ticketService.UpdateTicketAsync(ticket, UserInfo);
+
+            return NoContent();
+        }
     }
 }
