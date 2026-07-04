@@ -1,7 +1,7 @@
 ﻿using System.Net.Http.Json;
+using TheBugTracker.Client.Enums;
 using TheBugTracker.Client.Models;
 using TheBugTracker.Client.Interfaces;
-using TheBugTracker.Client.Enums;
 
 namespace TheBugTracker.Client.Services
 {
@@ -97,9 +97,10 @@ namespace TheBugTracker.Client.Services
             throw new NotImplementedException();
         }
 
-        public Task UpdateTicketAsync(TicketDTO ticket, UserInfo userInfo)
+        public async Task UpdateTicketAsync(TicketDTO ticket, UserInfo userInfo)
         {
-            throw new NotImplementedException();
+            var response = await http.PutAsJsonAsync($"api/Tickets/{ticket.Id}", ticket);
+            response.EnsureSuccessStatusCode();
         }
     }
 }
