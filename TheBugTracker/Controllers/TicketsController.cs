@@ -92,5 +92,18 @@ namespace TheBugTracker.Controllers
 
             return NoContent();
         }
+
+        /// <summary>
+        /// Restore Ticket
+        /// </summary>
+        /// <param name="id">The ID of the ticket to restore</param>
+        /// <remarks>Un-archives a specific ticket if it exists and the user is authorized</remarks>
+        [HttpPatch("restore/{id:int}")]
+        public async Task<IActionResult> RestoreTicket([FromRoute] int id)
+        {
+            await ticketService.RestoreTicketAsync(id, UserInfo);
+
+            return NoContent();
+        }
     }
 }
