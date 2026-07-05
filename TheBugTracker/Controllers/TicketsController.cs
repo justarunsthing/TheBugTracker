@@ -68,7 +68,7 @@ namespace TheBugTracker.Controllers
         /// <param name="ticket">The updated ticket details</param>
         /// <remarks>Updates a specific ticket if it exists and the user is authorized</remarks>
         [HttpPut("{id:int}")]
-        public async Task<ActionResult> UpdateTicket([FromRoute] int id, [FromBody] TicketDTO ticket)
+        public async Task<IActionResult> UpdateTicket([FromRoute] int id, [FromBody] TicketDTO ticket)
         {
             if (id != ticket.Id)
             {
@@ -76,6 +76,19 @@ namespace TheBugTracker.Controllers
             }
 
             await ticketService.UpdateTicketAsync(ticket, UserInfo);
+
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Archive Ticket
+        /// </summary>
+        /// <param name="id">The ID of the ticket to archive</param>
+        /// <remarks>Archives a specific ticket if it exists and the user is authorized</remarks>
+        [HttpPatch("archive/{id:int}")]
+        public async Task<IActionResult> ArchiveTicket([FromRoute] int id)
+        {
+            await ticketService.ArchiveTicketAsync(id, UserInfo);
 
             return NoContent();
         }
