@@ -87,20 +87,21 @@ namespace TheBugTracker.Client.Services
             throw new NotImplementedException();
         }
 
-        public Task ArchiveTicketAsync(int ticketId, UserInfo userInfo)
+        public async Task UpdateTicketAsync(TicketDTO ticket, UserInfo userInfo)
         {
-            throw new NotImplementedException();
+            var response = await http.PutAsJsonAsync($"api/Tickets/{ticket.Id}", ticket);
+            response.EnsureSuccessStatusCode();
+        }
+
+        public async Task ArchiveTicketAsync(int ticketId, UserInfo userInfo)
+        {
+            var response = await http.PatchAsync($"api/Tickets/archive/{ticketId}", null);
+            response.EnsureSuccessStatusCode();
         }
 
         public Task RestoreTicketAsync(int ticketId, UserInfo userInfo)
         {
             throw new NotImplementedException();
-        }
-
-        public async Task UpdateTicketAsync(TicketDTO ticket, UserInfo userInfo)
-        {
-            var response = await http.PutAsJsonAsync($"api/Tickets/{ticket.Id}", ticket);
-            response.EnsureSuccessStatusCode();
         }
     }
 }
