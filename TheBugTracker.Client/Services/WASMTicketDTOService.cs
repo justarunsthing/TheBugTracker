@@ -99,9 +99,10 @@ namespace TheBugTracker.Client.Services
             response.EnsureSuccessStatusCode();
         }
 
-        public Task RestoreTicketAsync(int ticketId, UserInfo userInfo)
+        public async Task RestoreTicketAsync(int ticketId, UserInfo userInfo)
         {
-            throw new NotImplementedException();
+            var response = await http.PatchAsync($"api/Tickets/restore/{ticketId}", null);
+            response.EnsureSuccessStatusCode();
         }
     }
 }
