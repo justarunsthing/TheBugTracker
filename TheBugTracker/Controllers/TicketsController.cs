@@ -61,6 +61,29 @@ namespace TheBugTracker.Controllers
             return Ok(ticket);
         }
 
+        [HttpPost]
+        public async Task<ActionResult<TicketDTO>> CreateTicket([FromBody] TicketDTO ticket)
+        {
+            try
+            {
+                var createdTicket = await ticketService.CreateTicketAsync(ticket, UserInfo);
+
+                return CreatedAtAction(actionName: nameof(GetTicketById), routeValues: new { id = createdTicket.Id }, value: createdTicket);
+            }
+            catch (ApplicationException invalidProjectException)
+            {
+                Console.WriteLine(invalidProjectException);
+
+                return BadRequest(invalidProjectException.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+
+                return Problem();
+            }
+        }
+
         /// <summary>
         /// Update Ticket
         /// </summary>
