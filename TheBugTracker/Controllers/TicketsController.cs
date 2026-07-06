@@ -61,6 +61,13 @@ namespace TheBugTracker.Controllers
             return Ok(ticket);
         }
 
+        /// <summary>
+        /// Create Ticket
+        /// </summary>
+        /// <param name="ticket">The ticket to create</param>
+        /// <remarks>
+        /// Creates a new ticket for the specified project, if the project exists in the current user's company
+        /// </remarks>
         [HttpPost]
         public async Task<ActionResult<TicketDTO>> CreateTicket([FromBody] TicketDTO ticket)
         {
