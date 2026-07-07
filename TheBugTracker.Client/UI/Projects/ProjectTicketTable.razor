@@ -1,6 +1,12 @@
 ﻿<MudDataGrid Items="Tickets" Elevation="0" Dense="true" RowsPerPage="10">
     <Columns>
-        <PropertyColumn Property="t => t.Title"/>
+        <PropertyColumn Property="t => t.Title">
+            <CellTemplate>
+                <MudLink Typo="Typo.inherit" Href="@($"tickets/{context.Item.Id}")">
+                    @context.Item.Title
+                </MudLink>
+            </CellTemplate>
+        </PropertyColumn>
         <PropertyColumn Property="t => t.Priority">
             <CellTemplate>
                 <MudChip T="string" Size="Size.Small" Color="context.Item.Priority.GetColor()">
@@ -19,12 +25,7 @@
             <CellTemplate>
                 @if (context.Item.SubmitterUser is not null)
                 {
-                    <div class="hstack gap-2 align-items-center">
-                        <MudAvatar Size="Size.Small">
-                            <MudImage Src="@context.Item.SubmitterUser.ImageUrl" />
-                        </MudAvatar>
-                        @context.Item.SubmitterUser.FullName
-                    </div>
+                    <UserChip User="context.Item.SubmitterUser" />
                 }
                 else
                 {
@@ -36,12 +37,7 @@
             <CellTemplate>
                 @if (context.Item.DeveloperUser is not null)
                 {
-                    <div class="hstack gap-2 align-items-center">
-                        <MudAvatar Size="Size.Small">
-                            <MudImage Src="@context.Item.DeveloperUser.ImageUrl" />
-                        </MudAvatar>
-                        @context.Item.DeveloperUser.FullName
-                    </div>
+                    <UserChip User="context.Item.DeveloperUser" />
                 }
                 else
                 {
@@ -49,7 +45,7 @@
                 }
             </CellTemplate>
         </TemplateColumn>
-        <PropertyColumn Property="t => t.Created" Format="g" />
+        <PropertyColumn Property="t => t.LastModified" Title="Updated" Format="g" />
     </Columns>
 
     <PagerContent>
