@@ -82,9 +82,13 @@ namespace TheBugTracker.Client.Services
             }
         }
 
-        public Task<TicketDTO> CreateTicketAsync(TicketDTO ticket, UserInfo userInfo)
+        public async Task<TicketDTO> CreateTicketAsync(TicketDTO ticket, UserInfo userInfo)
         {
-            throw new NotImplementedException();
+            var response = await http.PostAsJsonAsync("api/Tickets", ticket);
+            TicketDTO createdTicket = await response.Content.ReadFromJsonAsync<TicketDTO>()
+                ?? throw new HttpIOException(HttpRequestError.InvalidResponse);
+
+            return createdTicket;
         }
 
         public async Task UpdateTicketAsync(TicketDTO ticket, UserInfo userInfo)
