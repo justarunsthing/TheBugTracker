@@ -357,7 +357,7 @@
                 else
                 {
                     breadcrumbs.Add(new BreadcrumbItem("Projects", href: "/projects"));
-                    breadcrumbs.Add(new BreadcrumbItem(ticket.Project.Name!, href: "/projects"));
+                    breadcrumbs.Add(new BreadcrumbItem(ticket.Project.Name!, href: $"/projects/{ticket.ProjectId}"));
                 }
 
                 breadcrumbs.Add(new BreadcrumbItem(ticket.Title!, href: null, disabled: true));
