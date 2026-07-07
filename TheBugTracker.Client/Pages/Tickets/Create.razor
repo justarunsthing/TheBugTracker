@@ -222,9 +222,7 @@
         if (ticket.Id > 0)
         {
             Snackbar.Add("Ticket submitted successfully!", Severity.Success);
-
-            // TODO: Redirect to ticket details
-            Nav.NavigateTo($"/tickets");
+            Nav.NavigateTo($"/tickets/{ticket.Id}");
         }
     }
 }
