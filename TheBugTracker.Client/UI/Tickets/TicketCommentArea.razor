@@ -1,0 +1,25 @@
+﻿<MudPaper>
+    <div class="p-3">
+        <MudText Typo="Typo.h6">
+            Comments
+        </MudText>
+    </div>
+    <MudDivider DividerType="DividerType.FullWidth" Light />
+    <div class="p-3" style="background-color: var(--mud-palette-background)">
+        Comments go here
+    </div>
+    <MudDivider DividerType="DividerType.FullWidth" Light />
+    <div class="p-3 d-flex gap-2 align-items-end">
+        <MudTextField Lines="3"
+                      AutoGrow
+                      Variant="Variant.Outlined"
+                      Class="flex-grow-1"
+                      T="string" />
+        <MudIconButton Color="Color.Primary"
+                       Icon="@Icons.Material.Filled.Send" />
+    </div>
+</MudPaper>
+
+@code {
+
+}
