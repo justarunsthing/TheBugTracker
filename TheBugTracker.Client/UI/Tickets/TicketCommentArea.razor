@@ -8,24 +8,31 @@
     <div class="p-3" style="background-color: var(--mud-palette-background)">
         Comments go here
     </div>
-    <MudDivider DividerType="DividerType.FullWidth" Light />
-    <EditForm Model="newComment" class="p-3 d-flex gap-2 align-items-end">
-        <DataAnnotationsValidator />
 
-        <MudTextField Lines="3"
-                      AutoGrow
-                      Variant="Variant.Outlined"
-                      Class="flex-grow-1"
-                      Label="Add a comment"
-                      @bind-Value="newComment.Content"
-                      For="() => newComment.Content" />
-        <MudIconButton Color="Color.Primary"
-                       Icon="@Icons.Material.Filled.Send"
-                       ButtonType="ButtonType.Submit" />
-    </EditForm>
+    @if (CanComment)
+    {
+        <MudDivider DividerType="DividerType.FullWidth" Light />
+        <EditForm Model="newComment" class="p-3 d-flex gap-2 align-items-end">
+            <DataAnnotationsValidator />
+
+            <MudTextField Lines="3"
+                          AutoGrow
+                          Variant="Variant.Outlined"
+                          Class="flex-grow-1"
+                          Label="Add a comment"
+                          @bind-Value="newComment.Content"
+                          For="() => newComment.Content" />
+            <MudIconButton Color="Color.Primary"
+                           Icon="@Icons.Material.Filled.Send"
+                           ButtonType="ButtonType.Submit" />
+        </EditForm>
+    }
 </MudPaper>
 
 @code {
+    [Parameter]
+    public bool CanComment { get; set; } = false;
+
     [CascadingParameter]
     public Task<AuthenticationState> AuthStateTask { get; set; } = default!;
     private UserInfo? userInfo;
@@ -38,6 +45,7 @@
 
         if (userInfo is null)
         {
+            CanComment = false;
             return;
         }
 
