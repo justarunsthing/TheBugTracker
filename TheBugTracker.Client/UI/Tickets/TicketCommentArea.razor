@@ -9,17 +9,41 @@
         Comments go here
     </div>
     <MudDivider DividerType="DividerType.FullWidth" Light />
-    <div class="p-3 d-flex gap-2 align-items-end">
+    <EditForm Model="newComment" class="p-3 d-flex gap-2 align-items-end">
+        <DataAnnotationsValidator />
+
         <MudTextField Lines="3"
                       AutoGrow
                       Variant="Variant.Outlined"
                       Class="flex-grow-1"
-                      T="string" />
+                      Label="Add a comment"
+                      @bind-Value="newComment.Content"
+                      For="() => newComment.Content" />
         <MudIconButton Color="Color.Primary"
-                       Icon="@Icons.Material.Filled.Send" />
-    </div>
+                       Icon="@Icons.Material.Filled.Send"
+                       ButtonType="ButtonType.Submit" />
+    </EditForm>
 </MudPaper>
 
 @code {
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthStateTask { get; set; } = default!;
+    private UserInfo? userInfo;
 
+    TicketCommentDTO newComment = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        userInfo = await UserInfoHelper.GetUserInfoAsync(AuthStateTask);
+
+        if (userInfo is null)
+        {
+            return;
+        }
+
+        newComment = new TicketCommentDTO()
+        {
+            UserId = userInfo.UserId
+        };
+    }
 }
