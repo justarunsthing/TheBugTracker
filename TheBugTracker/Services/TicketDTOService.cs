@@ -140,5 +140,20 @@ namespace TheBugTracker.Services
 
             await repository.UpdateTicketAsync(dbTicket, userInfo);
         }
+
+        public async Task<TicketCommentDTO> CreateCommentAsync(TicketCommentDTO comment, UserInfo userInfo)
+        {
+            TicketComment dbComment = new()
+            {
+                Content = comment.Content,
+                TicketId = comment.TicketId,
+                UserId = userInfo.UserId,
+                Created = DateTimeOffset.UtcNow
+            };
+
+            dbComment = await repository.CreateCommentAsync(dbComment, userInfo);
+
+            return dbComment.ToDTO();
+        }
     }
 }
