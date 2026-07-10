@@ -205,6 +205,26 @@ namespace TheBugTracker.Repository
             }
         }
 
+        public async Task<TicketComment> CreateCommentAsync(TicketComment comment, UserInfo userInfo)
+        {
+            bool canEdit = await UserCanEditTicket(comment.TicketId, userInfo);
+
+            if (!canEdit)
+            {
+                throw new ApplicationException($"User {userInfo.Email} is not authorized to comment on ticket {comment.TicketId}");
+            }
+
+            comment.Created = DateTimeOffset.UtcNow;
+            comment.UserId = userInfo.UserId;
+
+            await using ApplicationDbContext context = contextFactory.CreateDbContext();
+
+            context.Comments.Add(comment);
+            await context.SaveChangesAsync();
+
+            return comment;
+        }
+
         private async Task<bool> UserCanEditTicket(int ticketId, UserInfo userInfo)
         {
             await using ApplicationDbContext context = contextFactory.CreateDbContext();
