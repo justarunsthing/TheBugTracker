@@ -108,5 +108,10 @@ namespace TheBugTracker.Client.Services
             var response = await http.PatchAsync($"api/Tickets/restore/{ticketId}", null);
             response.EnsureSuccessStatusCode();
         }
+
+        public Task<TicketCommentDTO> CreateCommentAsync(TicketCommentDTO comment, UserInfo userInfo)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
