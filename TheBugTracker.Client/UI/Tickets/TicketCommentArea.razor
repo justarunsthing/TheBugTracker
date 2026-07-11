@@ -12,7 +12,10 @@
     @if (CanComment)
     {
         <MudDivider DividerType="DividerType.FullWidth" Light />
-        <EditForm Model="newComment" class="p-3 d-flex gap-2 align-items-end">
+        <EditForm Model="newComment" 
+                  OnValidSubmit="HandleSubmit" 
+                  class="p-3 d-flex gap-2 align-items-end">
+
             <DataAnnotationsValidator />
 
             <MudTextField Lines="3"
@@ -29,9 +32,12 @@
     }
 </MudPaper>
 
-@code {
+    @code {
     [Parameter]
     public bool CanComment { get; set; } = false;
+
+    [Parameter, EditorRequired]
+    public EventCallback<TicketCommentDTO> OnAdd { get; set; }
 
     [CascadingParameter]
     public Task<AuthenticationState> AuthStateTask { get; set; } = default!;
@@ -53,5 +59,18 @@
         {
             UserId = userInfo.UserId
         };
+    }
+
+    private async Task HandleSubmit()
+    {
+        if (CanComment)
+        {
+            await OnAdd.InvokeAsync(newComment);
+
+            newComment = new()
+            {
+                UserId = userInfo!.UserId
+            };
+        }
     }
 }
