@@ -485,7 +485,7 @@
             await TicketService.CreateCommentAsync(comment, userInfo!);
             Snackbar.Add("Comment submitted successfully!", Severity.Success);
 
-            // TODO: Update ticket.comments
+            ticket = await TicketService.GetTicketByIdAsync(Id, userInfo!);
         }
         catch (Exception ex)
         {
