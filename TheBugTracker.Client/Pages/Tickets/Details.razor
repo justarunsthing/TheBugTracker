@@ -245,7 +245,7 @@
                 </MudText>
             </MudPaper>
 
-            <TicketCommentArea CanComment="userCanEditTicket && !ticket.IsArchived" OnAdd="HandleAddComment" />
+            <TicketCommentArea Comments="ticket.Comments" CanComment="userCanEditTicket && !ticket.IsArchived" OnAdd="HandleAddComment" />
 
             <div class="d-flex">
                 <MudButton Variant="Variant.Text" 

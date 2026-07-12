@@ -34,6 +34,9 @@
 
     @code {
     [Parameter]
+    public IEnumerable<TicketCommentDTO> Comments { get; set; } = [];
+
+    [Parameter]
     public bool CanComment { get; set; } = false;
 
     [Parameter, EditorRequired]
