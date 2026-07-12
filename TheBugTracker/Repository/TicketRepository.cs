@@ -104,6 +104,8 @@ namespace TheBugTracker.Repository
                 .Include(t => t.Project)
                 .Include(t => t.SubmitterUser)
                 .Include(t => t.DeveloperUser)
+                .Include(t => t.Comments)
+                    .ThenInclude(c => c.User)
                 .FirstOrDefaultAsync(t => t.Id == id && t.Project!.CompanyId == userInfo.CompanyId);
 
             return ticket;
