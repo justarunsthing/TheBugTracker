@@ -5,8 +5,11 @@
         </MudText>
     </div>
     <MudDivider DividerType="DividerType.FullWidth" Light />
-    <div class="p-3" style="background-color: var(--mud-palette-background)">
-        Comments go here
+    <div class="p-3 d-flex flex-column gap-3" style="background-color: var(--mud-palette-background)">
+        @foreach (TicketCommentDTO comment in Comments)
+        {
+            <TicketComment Comment="comment" />
+        }
     </div>
 
     @if (CanComment)
