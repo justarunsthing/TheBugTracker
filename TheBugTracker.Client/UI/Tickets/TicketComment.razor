@@ -1,0 +1,31 @@
+﻿@if (Comment is not null)
+{
+    <div class="d-flex gap-2 align-items-start">
+        <MudAvatar>
+            <MudImage Src="@Comment.User?.ImageUrl" />
+        </MudAvatar>
+
+        <div>
+            <MudPaper Class="px-3 py-2">
+                <MudText Typo="Typo.overline"
+                         Style="line-height: 1em"
+                         GutterBottom>
+                    @Comment.User?.FullName
+                </MudText>
+
+                <MudText Typo="Typo.body1">
+                    @Comment.Content
+                </MudText>
+            </MudPaper>
+
+            <MudText Typo="Typo.caption">
+                @Comment.Created.ToString("g")
+            </MudText>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public TicketCommentDTO? Comment { get; set; }
+}
