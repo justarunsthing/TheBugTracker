@@ -7,7 +7,7 @@
     <MudDivider DividerType="DividerType.FullWidth" Light />
     <div class="p-3 d-flex flex-column-reverse gap-3" 
          style="background-color: var(--mud-palette-background); min-height: 150px; max-height: 400px; overflow-y: auto;">
-        @foreach (TicketCommentDTO comment in Comments)
+        @foreach (TicketCommentDTO comment in Comments.OrderByDescending(c => c.Created))
         {
             <TicketComment Comment="comment" />
         }
