@@ -5,7 +5,7 @@
             <MudImage Src="@Comment.User?.ImageUrl" />
         </MudAvatar>
 
-        <div>
+        <div class="@(isEditing ? "flex-grow-1" : "")">
             <MudPaper Class="px-3 py-2">
                 <MudText Typo="Typo.overline"
                          Style="line-height: 1em"
@@ -13,9 +13,21 @@
                     @Comment.User?.FullName
                 </MudText>
 
-                <MudText Typo="Typo.body1">
-                    @Comment.Content
-                </MudText>
+                @if (!isEditing)
+                {
+                    <MudText Typo="Typo.body1">
+                        @Comment.Content
+                    </MudText>
+                }
+                else
+                {
+                    <MudTextField @bind-Value="Comment.Content"
+                                  Variant="Variant.Outlined"
+                                  Label="Comment"
+                                  Lines="4"
+                                  AutoGrow
+                                  For="() => Comment.Content" />
+                }
             </MudPaper>
 
             <div class="@(Comment.UserId == userInfo?.UserId ? "text-end" : "text-start")">
@@ -29,7 +41,8 @@
             @if (Comment.UserId == userInfo?.UserId)
             {
                 <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                               Size="Size.Small" />
+                               Size="Size.Small"
+                               OnClick="() => isEditing = true"/>
             }
 
             @if (Comment.UserId == userInfo?.UserId || userInfo?.IsInRole(Role.Admin) == true)
@@ -48,6 +61,8 @@
     [CascadingParameter]
     public Task<AuthenticationState> AuthStateTask { get; set; } = default!;
     private UserInfo? userInfo;
+
+    private bool isEditing = false;
 
     protected override async Task OnParametersSetAsync()
     {
