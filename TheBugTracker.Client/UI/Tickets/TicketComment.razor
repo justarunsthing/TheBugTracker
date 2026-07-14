@@ -24,6 +24,20 @@
                 </MudText>
             </div>
         </div>
+
+        <div class="vstack gap-1 flex-grow-0">
+            @if (Comment.UserId == userInfo?.UserId)
+            {
+                <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                               Size="Size.Small" />
+            }
+
+            @if (Comment.UserId == userInfo?.UserId || userInfo?.IsInRole(Role.Admin) == true)
+            {
+                <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                               Size="Size.Small" />
+            }
+        </div>
     </div>
 }
 
