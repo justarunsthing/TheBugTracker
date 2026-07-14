@@ -1,6 +1,6 @@
 ﻿@if (Comment is not null)
 {
-    <div class="d-flex gap-2 align-items-start">
+    <div class="d-flex gap-2 align-items-start @(Comment.UserId == userInfo?.UserId ? "flex-row-reverse" : "flex-row")">
         <MudAvatar>
             <MudImage Src="@Comment.User?.ImageUrl" />
         </MudAvatar>
@@ -18,9 +18,11 @@
                 </MudText>
             </MudPaper>
 
-            <MudText Typo="Typo.caption">
-                @Comment.Created.ToString("g")
-            </MudText>
+            <div class="@(Comment.UserId == userInfo?.UserId ? "text-end" : "text-start")">
+                <MudText Typo="Typo.caption" Inline>
+                    @Comment.Created.ToString("g")
+                </MudText>
+            </div>
         </div>
     </div>
 }
@@ -28,4 +30,13 @@
 @code {
     [Parameter, EditorRequired]
     public TicketCommentDTO? Comment { get; set; }
+
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthStateTask { get; set; } = default!;
+    private UserInfo? userInfo;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        userInfo = await UserInfoHelper.GetUserInfoAsync(AuthStateTask);
+    }
 }
