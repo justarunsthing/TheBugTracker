@@ -63,7 +63,7 @@
                 <MudIconButton Icon="@Icons.Material.Filled.Cancel"
                                Size="Size.Small"
                                Color="Color.Error"
-                               OnClick="() => isEditing = false" />
+                               OnClick="CancelEdit" />
             }
         </div>
     </div>
@@ -96,5 +96,15 @@
             Created = Comment.Created,
             UserId = Comment.UserId
         };
+    }
+
+    private void CancelEdit()
+    {
+        if (Comment is not null)
+        {
+            formComment.Content = Comment.Content;
+        }
+
+        isEditing = false;
     }
 }
