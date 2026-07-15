@@ -38,17 +38,32 @@
         </div>
 
         <div class="vstack gap-1 flex-grow-0">
-            @if (Comment.UserId == userInfo?.UserId)
+            @if (!isEditing)
             {
-                <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                               Size="Size.Small"
-                               OnClick="() => isEditing = true"/>
-            }
+                @if (Comment.UserId == userInfo?.UserId)
+                {
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                   Size="Size.Small"
+                                   OnClick="() => isEditing = true" />
+                }
 
-            @if (Comment.UserId == userInfo?.UserId || userInfo?.IsInRole(Role.Admin) == true)
+                @if (Comment.UserId == userInfo?.UserId || userInfo?.IsInRole(Role.Admin) == true)
+                {
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                   Size="Size.Small" />
+                }
+            }
+            else
             {
-                <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                               Size="Size.Small" />
+                <MudIconButton Icon="@Icons.Material.Filled.Save"
+                               Size="Size.Small"
+                               Color="Color.Success"
+                               ButtonType="ButtonType.Submit" />
+
+                <MudIconButton Icon="@Icons.Material.Filled.Cancel"
+                               Size="Size.Small"
+                               Color="Color.Error"
+                               OnClick="() => isEditing = false" />
             }
         </div>
     </div>
