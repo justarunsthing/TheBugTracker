@@ -21,12 +21,12 @@
                 }
                 else
                 {
-                    <MudTextField @bind-Value="Comment.Content"
+                    <MudTextField @bind-Value="formComment.Content"
                                   Variant="Variant.Outlined"
                                   Label="Comment"
-                                  Lines="4"
+                                  Lines="3"
                                   AutoGrow
-                                  For="() => Comment.Content" />
+                                  For="() => formComment.Content" />
                 }
             </MudPaper>
 
@@ -78,9 +78,23 @@
     private UserInfo? userInfo;
 
     private bool isEditing = false;
+    private TicketCommentDTO formComment = new();
 
     protected override async Task OnParametersSetAsync()
     {
+        if (Comment is null)
+        {
+            return;
+        }
+
         userInfo = await UserInfoHelper.GetUserInfoAsync(AuthStateTask);
+        formComment = new TicketCommentDTO
+        {
+            Id = Comment.Id,
+            Content = Comment.Content,
+            TicketId = Comment.TicketId,
+            Created = Comment.Created,
+            UserId = Comment.UserId
+        };
     }
 }
