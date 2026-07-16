@@ -4,12 +4,15 @@
             Comments
         </MudText>
     </div>
+
     <MudDivider DividerType="DividerType.FullWidth" Light />
+
     <div class="p-3 d-flex flex-column-reverse gap-3" 
          style="background-color: var(--mud-palette-background); min-height: 150px; max-height: 400px; overflow-y: auto;">
+
         @foreach (TicketCommentDTO comment in Comments.OrderByDescending(c => c.Created))
         {
-            <TicketComment Comment="comment" />
+            <TicketComment Comment="comment" OnEdit="OnEdit" />
         }
     </div>
 
@@ -29,6 +32,7 @@
                           Label="Add a comment"
                           @bind-Value="newComment.Content"
                           For="() => newComment.Content" />
+
             <MudIconButton Color="Color.Primary"
                            Icon="@Icons.Material.Filled.Send"
                            ButtonType="ButtonType.Submit" />
@@ -45,6 +49,9 @@
 
     [Parameter, EditorRequired]
     public EventCallback<TicketCommentDTO> OnAdd { get; set; }
+
+    [Parameter, EditorRequired]
+    public EventCallback<TicketCommentDTO> OnEdit { get; set; }
 
     [CascadingParameter]
     public Task<AuthenticationState> AuthStateTask { get; set; } = default!;
