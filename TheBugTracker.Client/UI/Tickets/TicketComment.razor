@@ -79,6 +79,9 @@
     [Parameter, EditorRequired]
     public TicketCommentDTO? Comment { get; set; }
 
+    [Parameter]
+    public EventCallback<TicketCommentDTO> OnEdit { get; set; }
+
     [CascadingParameter]
     public Task<AuthenticationState> AuthStateTask { get; set; } = default!;
     private UserInfo? userInfo;
@@ -111,6 +114,12 @@
             formComment.Content = Comment.Content;
         }
 
+        isEditing = false;
+    }
+
+    private async Task HandleSubmit()
+    {
+        await OnEdit.InvokeAsync(formComment);
         isEditing = false;
     }
 }
