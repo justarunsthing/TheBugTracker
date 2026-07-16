@@ -1,6 +1,12 @@
 ﻿@if (Comment is not null)
 {
-    <div class="d-flex gap-2 align-items-start @(Comment.UserId == userInfo?.UserId ? "flex-row-reverse" : "flex-row")">
+    <EditForm Model="formComment" 
+              class="@(Comment.UserId == userInfo?.UserId 
+                        ? "flex-row-reverse d-flex gap-2 align-items-start" 
+                        : "flex-row d-flex gap-2 align-items-start")">
+
+        <DataAnnotationsValidator />
+
         <MudAvatar>
             <MudImage Src="@Comment.User?.ImageUrl" />
         </MudAvatar>
@@ -66,7 +72,7 @@
                                OnClick="CancelEdit" />
             }
         </div>
-    </div>
+    </EditForm>
 }
 
 @code {
