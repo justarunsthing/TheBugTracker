@@ -1,6 +1,7 @@
 ﻿@if (Comment is not null)
 {
     <EditForm Model="formComment" 
+              OnValidSubmit="HandleSubmit"
               class="@(Comment.UserId == userInfo?.UserId 
                         ? "flex-row-reverse d-flex gap-2 align-items-start" 
                         : "flex-row d-flex gap-2 align-items-start")">
