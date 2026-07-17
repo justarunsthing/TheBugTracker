@@ -245,7 +245,10 @@
                 </MudText>
             </MudPaper>
 
-            <TicketCommentArea Comments="ticket.Comments" CanComment="userCanEditTicket && !ticket.IsArchived" OnAdd="HandleAddComment" />
+            <TicketCommentArea Comments="ticket.Comments" 
+                               CanComment="userCanEditTicket && !ticket.IsArchived" 
+                               OnAdd="HandleAddComment"
+                               OnEdit="HandleEditComment" />
 
             <div class="d-flex">
                 <MudButton Variant="Variant.Text" 
@@ -491,6 +494,27 @@
         {
             Console.WriteLine(ex);
             Snackbar.Add("Failed to submit comment", Severity.Error);
+        }
+    }
+
+    private async Task HandleEditComment(TicketCommentDTO comment)
+    {
+        if (comment.UserId != userInfo?.UserId)
+        {
+            return;
+        }
+
+        try
+        {
+            throw new NotImplementedException();
+            Snackbar.Add("Comment updated successfully!", Severity.Success);
+
+            ticket = await TicketService.GetTicketByIdAsync(Id, userInfo!);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            Snackbar.Add("Failed to update comment", Severity.Error);
         }
     }
 }
