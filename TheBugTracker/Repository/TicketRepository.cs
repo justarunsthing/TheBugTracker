@@ -207,6 +207,16 @@ namespace TheBugTracker.Repository
             }
         }
 
+        public async Task<TicketComment?> GetCommentByIdAsync(int id, UserInfo userInfo)
+        {
+            await using ApplicationDbContext context = contextFactory.CreateDbContext();
+
+            TicketComment? comment = await context.Comments
+                .FirstOrDefaultAsync(c => c.Id == id && c.Ticket!.Project!.CompanyId == userInfo.CompanyId);
+
+            return comment;
+        }
+
         public async Task<TicketComment> CreateCommentAsync(TicketComment comment, UserInfo userInfo)
         {
             bool canEdit = await UserCanEditTicket(comment.TicketId, userInfo);

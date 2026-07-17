@@ -68,6 +68,14 @@ namespace TheBugTracker.Interfaces
         Task UpdateTicketAsync(Ticket ticket, UserInfo userInfo);
 
         /// <summary>
+        /// Retrieves a ticket comment by its id if it exists in the current user's company
+        /// </summary>
+        /// <param name="id">The id of the comment to retrieve</param>
+        /// <param name="userInfo">The current user's claims</param>
+        /// <returns>The comment if found, otherwise null</returns>
+        Task<TicketComment?> GetCommentByIdAsync(int id, UserInfo userInfo);
+
+        /// <summary>
         /// Creates a new comment for a ticket if the user is authorized to do so
         /// </summary>
         /// <param name="comment">The details of the comment to save</param>
