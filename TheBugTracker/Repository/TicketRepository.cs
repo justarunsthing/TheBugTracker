@@ -227,6 +227,18 @@ namespace TheBugTracker.Repository
             return comment;
         }
 
+        public async Task UpdateCommentAsync(TicketComment comment, UserInfo userInfo)
+        {
+            await using ApplicationDbContext context = contextFactory.CreateDbContext();
+
+            if (await context.Comments.AnyAsync(c => c.Id == comment.Id && c.UserId == userInfo.UserId))
+            {
+                context.Comments.Update(comment);
+
+                await context.SaveChangesAsync();
+            }
+        }
+
         private async Task<bool> UserCanEditTicket(int ticketId, UserInfo userInfo)
         {
             await using ApplicationDbContext context = contextFactory.CreateDbContext();
