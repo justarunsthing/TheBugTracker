@@ -73,5 +73,12 @@ namespace TheBugTracker.Client.Interfaces
         /// <param name="userInfo">The current user's claims</param>
         /// <returns>The created comment</returns>
         Task<TicketCommentDTO> CreateCommentAsync(TicketCommentDTO comment, UserInfo userInfo);
+        
+        /// <summary>
+        /// Updates a comment for a ticket if it belongs to the current user
+        /// </summary>
+        /// <param name="comment">The updated comment information</param>
+        /// <param name="userInfo">The current user's claims</param>
+        Task UpdateCommentAsync(TicketCommentDTO comment, UserInfo userInfo);
     }
 }

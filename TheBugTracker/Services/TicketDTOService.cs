@@ -155,5 +155,19 @@ namespace TheBugTracker.Services
 
             return dbComment.ToDTO();
         }
+
+        public async Task UpdateCommentAsync(TicketCommentDTO comment, UserInfo userInfo)
+        {
+            TicketComment? dbComment = await repository.GetCommentByIdAsync(comment.Id, userInfo);
+
+            if (dbComment is null || dbComment.UserId != userInfo.UserId)
+            {
+                return;
+            }
+
+            dbComment.Content = comment.Content;
+            
+            await repository.UpdateCommentAsync(dbComment, userInfo);
+        }
     }
 }
