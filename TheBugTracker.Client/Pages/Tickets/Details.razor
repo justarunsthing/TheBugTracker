@@ -506,7 +506,8 @@
 
         try
         {
-            throw new NotImplementedException();
+            await TicketService.UpdateCommentAsync(comment, userInfo!);
+            ticket = await TicketService.GetTicketByIdAsync(Id, userInfo!);
             Snackbar.Add("Comment updated successfully!", Severity.Success);
 
             ticket = await TicketService.GetTicketByIdAsync(Id, userInfo!);
