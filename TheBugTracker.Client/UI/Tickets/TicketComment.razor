@@ -1,4 +1,6 @@
-﻿@if (Comment is not null)
+﻿@inject IDialogService DialogService
+
+@if (Comment is not null)
 {
     <EditForm Model="formComment" 
               OnValidSubmit="HandleSubmit"
@@ -57,7 +59,8 @@
                 @if (Comment.UserId == userInfo?.UserId || userInfo?.IsInRole(Role.Admin) == true)
                 {
                     <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                                   Size="Size.Small" />
+                                   Size="Size.Small"
+                                   OnClick="HandleDelete" />
                 }
             }
             else
@@ -82,6 +85,9 @@
 
     [Parameter]
     public EventCallback<TicketCommentDTO> OnEdit { get; set; }
+
+    [Parameter]
+    public EventCallback<int> OnDelete { get; set; }
 
     [CascadingParameter]
     public Task<AuthenticationState> AuthStateTask { get; set; } = default!;
@@ -122,5 +128,20 @@
     {
         await OnEdit.InvokeAsync(formComment);
         isEditing = false;
+    }
+
+    private async Task HandleDelete()
+    {
+        bool? confirmed = await DialogService.ShowMessageBoxAsync(
+            title: "Delete Comment",
+            message: "Are you sure you want to delete this comment?",
+            yesText: "Delete",
+            cancelText: "Cancel"
+        );
+
+        if (confirmed == true)
+        {
+            await OnDelete.InvokeAsync(Comment!.Id);
+        }
     }
 }
