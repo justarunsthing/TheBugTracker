@@ -113,5 +113,10 @@ namespace TheBugTracker.Client.Services
         {
             throw new NotImplementedException();
         }
+
+        public Task UpdateCommentAsync(TicketCommentDTO comment, UserInfo userInfo)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
