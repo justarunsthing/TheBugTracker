@@ -118,5 +118,10 @@ namespace TheBugTracker.Client.Services
         {
             throw new NotImplementedException();
         }
+
+        public Task DeleteCommentAsync(int commentId, UserInfo userInfo)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -169,5 +169,10 @@ namespace TheBugTracker.Services
             
             await repository.UpdateCommentAsync(dbComment, userInfo);
         }
+
+        public async Task DeleteCommentAsync(int commentId, UserInfo userInfo)
+        {
+            await repository.DeleteCommentAsync(commentId, userInfo);
+        }
     }
 }
