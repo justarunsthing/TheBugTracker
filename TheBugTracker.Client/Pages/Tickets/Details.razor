@@ -531,9 +531,9 @@
 
         try
         {
-            throw new NotImplementedException();
-
+            await TicketService.DeleteCommentAsync(commentId, userInfo!);
             ticket = await TicketService.GetTicketByIdAsync(Id, userInfo!);
+
             Snackbar.Add("Comment deleted successfully!", Severity.Success);
         }
         catch (Exception ex)
