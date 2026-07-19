@@ -248,7 +248,8 @@
             <TicketCommentArea Comments="ticket.Comments" 
                                CanComment="userCanEditTicket && !ticket.IsArchived" 
                                OnAdd="HandleAddComment"
-                               OnEdit="HandleEditComment" />
+                               OnEdit="HandleEditComment"
+                               OnDelete="HandleDeleteComment" />
 
             <div class="d-flex">
                 <MudButton Variant="Variant.Text" 
@@ -516,6 +517,29 @@
         {
             Console.WriteLine(ex);
             Snackbar.Add("Failed to update comment", Severity.Error);
+        }
+    }
+
+    private async Task HandleDeleteComment(int commentId)
+    {
+        TicketCommentDTO? comment = ticket?.Comments.FirstOrDefault(c => c.Id == commentId);
+
+        if (comment is null || (comment.UserId != userInfo!.UserId && userInfo.IsInRole(Role.Admin) == false))
+        {
+            return;
+        }
+
+        try
+        {
+            throw new NotImplementedException();
+
+            ticket = await TicketService.GetTicketByIdAsync(Id, userInfo!);
+            Snackbar.Add("Comment deleted successfully!", Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            Snackbar.Add("Failed to delete comment", Severity.Error);
         }
     }
 }
