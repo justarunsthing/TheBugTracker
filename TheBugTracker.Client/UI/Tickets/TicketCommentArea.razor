@@ -12,7 +12,7 @@
 
         @foreach (TicketCommentDTO comment in Comments.OrderByDescending(c => c.Created))
         {
-            <TicketComment Comment="comment" OnEdit="OnEdit" />
+            <TicketComment Comment="comment" OnEdit="OnEdit" OnDelete="OnDelete" />
         }
     </div>
 
@@ -52,6 +52,9 @@
 
     [Parameter, EditorRequired]
     public EventCallback<TicketCommentDTO> OnEdit { get; set; }
+
+    [Parameter, EditorRequired]
+    public EventCallback<int> OnDelete { get; set; }
 
     [CascadingParameter]
     public Task<AuthenticationState> AuthStateTask { get; set; } = default!;
