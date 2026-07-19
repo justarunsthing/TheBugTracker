@@ -249,6 +249,31 @@ namespace TheBugTracker.Repository
             }
         }
 
+        public async Task DeleteCommentAsync(int commentId, UserInfo userInfo)
+        {
+            await using ApplicationDbContext context = contextFactory.CreateDbContext();
+
+            TicketComment? comment = null;
+
+            if (userInfo.IsInRole(Role.Admin))
+            {
+                comment = await context.Comments
+                    .FirstOrDefaultAsync(c => c.Id == commentId && c.Ticket!.Project!.CompanyId == userInfo.CompanyId);
+
+            }
+            else
+            { 
+                comment = await context.Comments
+                    .FirstOrDefaultAsync(c => c.Id == commentId && c.UserId == userInfo.UserId);
+            }
+
+            if (comment is not null)
+            {
+                context.Remove(comment);
+                await context.SaveChangesAsync();
+            }
+        }
+
         private async Task<bool> UserCanEditTicket(int ticketId, UserInfo userInfo)
         {
             await using ApplicationDbContext context = contextFactory.CreateDbContext();

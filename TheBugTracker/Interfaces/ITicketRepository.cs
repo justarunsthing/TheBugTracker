@@ -89,5 +89,12 @@ namespace TheBugTracker.Interfaces
         /// <param name="comment">The updated comment information</param>
         /// <param name="userInfo">The current user's claims</param>
         Task UpdateCommentAsync(TicketComment comment, UserInfo userInfo);
+
+        /// <summary>
+        /// Deletes a comment for a ticket if it belongs to the current user or the current user is admin of the company
+        /// </summary>
+        /// <param name="commentId">The id of the comment to delete</param>
+        /// <param name="userInfo">The current user's claims</param>
+        Task DeleteCommentAsync(int commentId, UserInfo userInfo);
     }
 }
