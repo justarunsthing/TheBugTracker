@@ -109,9 +109,15 @@ namespace TheBugTracker.Client.Services
             response.EnsureSuccessStatusCode();
         }
 
-        public Task<TicketCommentDTO> CreateCommentAsync(TicketCommentDTO comment, UserInfo userInfo)
+        public async Task<TicketCommentDTO> CreateCommentAsync(TicketCommentDTO comment, UserInfo userInfo)
         {
-            throw new NotImplementedException();
+            var response = await http.PostAsJsonAsync($"api/Tickets/comments/{comment.TicketId}", comment);
+            response.EnsureSuccessStatusCode();
+
+            var createdComment = await response.Content.ReadFromJsonAsync<TicketCommentDTO>()
+                ?? throw new HttpIOException(HttpRequestError.InvalidResponse);
+
+            return createdComment;
         }
 
         public Task UpdateCommentAsync(TicketCommentDTO comment, UserInfo userInfo)
