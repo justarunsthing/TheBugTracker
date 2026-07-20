@@ -135,5 +135,39 @@ namespace TheBugTracker.Controllers
 
             return NoContent();
         }
+
+        /// <summary>
+        /// Create Comment
+        /// </summary>
+        /// <param name="ticketId">The ID of the ticket to comment on</param>
+        /// <param name="comment">The comment to create</param>
+        /// <remarks>Only the submitter, developer, project manager or admin associated with the ticket can create a comment</remarks>
+        [HttpPost("comments/{ticketId:int}"), Tags("Comments")]
+        public async Task<ActionResult<TicketCommentDTO>> CreateComment([FromRoute] int ticketId, [FromBody] TicketCommentDTO comment)
+        {
+            if (ticketId != comment.TicketId)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                TicketCommentDTO createdComment = await ticketService.CreateCommentAsync(comment, UserInfo);
+
+                return Ok(createdComment);
+            }
+            catch (ApplicationException invalidTicketException)
+            {
+                Console.WriteLine(invalidTicketException);
+
+                return Forbid();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+
+                return Problem();
+            }
+        }
     }
 }
