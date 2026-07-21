@@ -169,5 +169,25 @@ namespace TheBugTracker.Controllers
                 return Problem();
             }
         }
+
+        /// <summary>
+        /// Update Comment
+        /// </summary>
+        /// <param name="ticketId">The ID of the ticket associated with the comment</param>
+        /// <param name="commentId">The ID of the comment to update</param>
+        /// <param name="comment">The updated comment details</param>
+        /// <remarks>Updates the content of a specific comment. Comments may onlybe updated by the user who created them.</remarks>
+        [HttpPut("{ticketId:int}/comments/{commentId:int}"), Tags("Comments")]
+        public async Task<IActionResult> UpdateComment([FromRoute] int ticketId, [FromRoute] int commentId, [FromBody] TicketCommentDTO comment)
+        {
+            if (comment.TicketId != ticketId || comment.Id != commentId)
+            {
+                return BadRequest();
+            }
+
+            await ticketService.UpdateCommentAsync(comment, UserInfo);
+
+            return NoContent();
+        }
     }
 }
