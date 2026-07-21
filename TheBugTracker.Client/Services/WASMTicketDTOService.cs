@@ -120,9 +120,10 @@ namespace TheBugTracker.Client.Services
             return createdComment;
         }
 
-        public Task UpdateCommentAsync(TicketCommentDTO comment, UserInfo userInfo)
+        public async Task UpdateCommentAsync(TicketCommentDTO comment, UserInfo userInfo)
         {
-            throw new NotImplementedException();
+            var response = await http.PutAsJsonAsync($"api/Tickets/{comment.TicketId}/comments/{comment.Id}", comment);
+            response.EnsureSuccessStatusCode();
         }
 
         public Task DeleteCommentAsync(int commentId, UserInfo userInfo)
