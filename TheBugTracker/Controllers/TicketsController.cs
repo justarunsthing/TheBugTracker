@@ -189,5 +189,18 @@ namespace TheBugTracker.Controllers
 
             return NoContent();
         }
+
+        /// <summary>
+        /// Delete Comment
+        /// </summary>
+        /// <param name="id">The ID of the comment to delete</param>
+        /// <remarks>Deletes a specific comment if it exists and the user is authorized</remarks>
+        [HttpDelete("comments/{id:int}"), Tags("Comments")]
+        public async Task<IActionResult> DeleteComment([FromRoute] int id)
+        {
+            await ticketService.DeleteCommentAsync(id, UserInfo);
+
+            return NoContent();
+        }
     }
 }
