@@ -126,9 +126,10 @@ namespace TheBugTracker.Client.Services
             response.EnsureSuccessStatusCode();
         }
 
-        public Task DeleteCommentAsync(int commentId, UserInfo userInfo)
+        public async Task DeleteCommentAsync(int commentId, UserInfo userInfo)
         {
-            throw new NotImplementedException();
+            var response = await http.DeleteAsync($"api/Tickets/comments/{commentId}");
+            response.EnsureSuccessStatusCode();
         }
     }
 }
