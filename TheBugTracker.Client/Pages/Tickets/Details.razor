@@ -236,6 +236,7 @@
                 </div>
             </div>
 
+            @* Description *@
             <MudPaper Class="p-3">
                 <MudText Typo="Typo.h6" GutterBottom>
                     Description
@@ -245,12 +246,43 @@
                 </MudText>
             </MudPaper>
 
+            @* Comments *@
             <TicketCommentArea Comments="ticket.Comments" 
                                CanComment="userCanEditTicket && !ticket.IsArchived" 
                                OnAdd="HandleAddComment"
                                OnEdit="HandleEditComment"
                                OnDelete="HandleDeleteComment" />
+            @* Attachments *@
+            <MudPaper Class="p-3">
+                <MudText Typo="Typo.h6">
+                    Attachments
+                </MudText>
 
+                @if (ticket.Attachments.Any())
+                {
+                    <div>
+                        TODO: Attachments go here
+                    </div>
+                }
+                else
+                {
+                    <div class="py-5 text-center">
+                        <MudText Typo="Typo.button" Color="Color.Tertiary">
+                            No attachments yet
+                        </MudText>
+                    </div>
+                }
+
+                @if (userCanEditTicket)
+                {
+                    <MudButton StartIcon="@Icons.Material.Filled.Add"
+                               Variant="Variant.Text">
+                        Add Attachment
+                    </MudButton>
+                }
+            </MudPaper>
+
+            @* Actions *@
             <div class="d-flex">
                 <MudButton Variant="Variant.Text" 
                            Color="Color.Primary" 
