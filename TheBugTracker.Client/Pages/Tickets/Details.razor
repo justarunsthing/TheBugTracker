@@ -365,7 +365,9 @@
                        CancelText="Cancel">
 
             <MessageContent>
-                <MudFileUpload T="IBrowserFile">
+                <MudFileUpload T="IBrowserFile" 
+                               FilesChanged="HandleFileChange"
+                               MaximumFileCount="1">
                     <ActivatorContent>
                         <div class="d-flex flex-column align-items-center">
                             <MudCard>
@@ -374,7 +376,7 @@
                                 <MudCardContent>
                                     <div class="text-center">
                                         <MudText Typo="Typo.subtitle1">
-                                            No file selected
+                                            @(selectedFile?.Name ?? "No file selected")
                                         </MudText>
                                     </div>
                                 </MudCardContent>
@@ -424,6 +426,7 @@
     private MudMessageBox? archiveConfirmationBox;
     private TicketAttachmentDTO newAttachment = new() { AttachmentUrl = string.Empty };
     private MudMessageBox? attachmentDialogBox;
+    private IBrowserFile? selectedFile;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -627,5 +630,11 @@
             Console.WriteLine(ex);
             Snackbar.Add("Failed to delete comment", Severity.Error);
         }
+    }
+
+    private void HandleFileChange(IBrowserFile? file)
+    {
+        selectedFile = file;
+        newAttachment.FileName = file?.Name;
     }
 }
