@@ -279,7 +279,8 @@
                 @if (userCanEditTicket)
                 {
                     <MudButton StartIcon="@Icons.Material.Filled.Add"
-                               Variant="Variant.Text">
+                               Variant="Variant.Text"
+                               OnClick="async () => await attachmentDialogBox.ShowAsync()">
                         Add Attachment
                     </MudButton>
                 }
@@ -328,6 +329,7 @@
 
     @if (userCanEditTicket)
     {
+        @* Archive/restore dialog*@
         <MudMessageBox @ref="archiveConfirmationBox"
                        Title="@(ticket.IsArchived ? "Restore Ticket" : "Archive Ticket")"
                        CancelText="Cancel">
@@ -356,6 +358,53 @@
                 }
             </YesButton>
         </MudMessageBox>
+
+        @* Attachment dialog *@
+        <MudMessageBox @ref="attachmentDialogBox"
+                       Title="Add Attachment"
+                       CancelText="Cancel">
+
+            <MessageContent>
+                <MudFileUpload T="IBrowserFile">
+                    <ActivatorContent>
+                        <div class="d-flex flex-column align-items-center">
+                            <MudCard>
+                                @* TODO: Add image preview *@
+
+                                <MudCardContent>
+                                    <div class="text-center">
+                                        <MudText Typo="Typo.subtitle1">
+                                            No file selected
+                                        </MudText>
+                                    </div>
+                                </MudCardContent>
+                            </MudCard>
+
+                            <MudButton Variant="Variant.Filled"
+                                       Color="Color.Primary"
+                                       StartIcon="@Icons.Material.Filled.UploadFile"
+                                       Class="my-3">
+                                Select a file
+                            </MudButton>
+                        </div>
+                    </ActivatorContent>>
+                </MudFileUpload>
+
+                <MudTextField @bind-Value="newAttachment.Description"
+                              For="() => newAttachment.Description"
+                              Variant="Variant.Outlined"
+                              Label="Description" />
+            </MessageContent>
+
+            <YesButton>
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Success"
+                           StartIcon="@Icons.Material.Filled.Upload"
+                           Class="ms-2">
+                    Upload
+                </MudButton>
+            </YesButton>
+        </MudMessageBox>
     }
 }
 
@@ -373,6 +422,8 @@
     private List<BreadcrumbItem> breadcrumbs = [];
     private IEnumerable<UserDTO> developers = [];
     private MudMessageBox? archiveConfirmationBox;
+    private TicketAttachmentDTO newAttachment = new() { AttachmentUrl = string.Empty };
+    private MudMessageBox? attachmentDialogBox;
 
     protected override async Task OnParametersSetAsync()
     {
