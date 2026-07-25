@@ -274,6 +274,26 @@ namespace TheBugTracker.Repository
             }
         }
 
+        public async Task<TicketAttachment> CreateTicketAttachmentAsync(TicketAttachment attachment, UserInfo userInfo)
+        {
+            bool canUpload = await UserCanEditTicket(attachment.TicketId, userInfo);
+
+            if (!canUpload)
+            {
+                throw new ApplicationException($"User {userInfo.Email} is not authorized to upload attachments to ticket {attachment.TicketId}");
+            }
+
+            attachment.Created = DateTimeOffset.UtcNow;
+            attachment.UserId = userInfo.UserId;
+            
+            await using ApplicationDbContext context = contextFactory.CreateDbContext();
+
+            context.Add(attachment);
+            await context.SaveChangesAsync();
+
+            return attachment;
+        }
+
         private async Task<bool> UserCanEditTicket(int ticketId, UserInfo userInfo)
         {
             await using ApplicationDbContext context = contextFactory.CreateDbContext();

@@ -96,5 +96,14 @@ namespace TheBugTracker.Interfaces
         /// <param name="commentId">The id of the comment to delete</param>
         /// <param name="userInfo">The current user's claims</param>
         Task DeleteCommentAsync(int commentId, UserInfo userInfo);
+
+        /// <summary>
+        /// Uploads a new file attachment for a ticket if the user is assigned to the ticket or
+        /// is the PM or an admin.
+        /// </summary>
+        /// <param name="attachment">The attachment to save</param>
+        /// <param name="userInfo">The current user's claims</param>
+        /// <returns>The created attachment</returns>
+        Task<TicketAttachment> CreateTicketAttachmentAsync(TicketAttachment attachment, UserInfo userInfo);
     }
 }
