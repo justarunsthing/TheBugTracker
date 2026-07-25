@@ -131,5 +131,10 @@ namespace TheBugTracker.Client.Services
             var response = await http.DeleteAsync($"api/Tickets/comments/{commentId}");
             response.EnsureSuccessStatusCode();
         }
+
+        public async Task<TicketAttachmentDTO> CreateTicketAttachmentAsync(TicketAttachmentDTO attachment, byte[] fileData, string contentType, UserInfo userInfo)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
