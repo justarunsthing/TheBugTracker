@@ -652,7 +652,7 @@
                 }
                 else
                 {
-                    
+                    await HandleUploadAttachment();
                 }
             }
             else
@@ -661,6 +661,42 @@
                 newAttachment.FileName = null;
                 newAttachment.Description = null;
             }
+        }
+    }
+
+    private async Task HandleUploadAttachment()
+    {
+        if (selectedFile is null || !userCanEditTicket)
+        {
+            return;
+        }
+
+        try
+        {
+            byte[] fileData = [];
+            newAttachment.UserId = userInfo!.UserId;
+            newAttachment.TicketId = Id;
+            newAttachment.Created = DateTimeOffset.UtcNow;
+
+            await TicketService.CreateTicketAttachmentAsync(newAttachment, fileData, selectedFile.ContentType, userInfo!);
+
+            ticket = await TicketService.GetTicketByIdAsync(Id, userInfo!);
+
+            Snackbar.Add("Attachment uploaded successfully!", Severity.Success);
+
+            // Reset new attachment
+            newAttachment = new TicketAttachmentDTO()
+            {
+                UserId = userInfo!.UserId,
+                TicketId = Id,
+                Created = DateTimeOffset.UtcNow,
+                AttachmentUrl = string.Empty
+            };
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            Snackbar.Add("Failed to upload attachment", Severity.Error);
         }
     }
 }
