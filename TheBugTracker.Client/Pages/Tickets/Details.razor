@@ -637,4 +637,30 @@
         selectedFile = file;
         newAttachment.FileName = file?.Name;
     }
+
+    private async Task ShowAttachmentDialog()
+    {
+        if (userCanEditTicket && attachmentDialogBox is not null)
+        {
+            bool? result = await attachmentDialogBox.ShowAsync();
+
+            if (result == true)
+            {
+                if (selectedFile is null)
+                {
+                    Snackbar.Add("Please select a file!");
+                }
+                else
+                {
+                    
+                }
+            }
+            else
+            {
+                selectedFile = null;
+                newAttachment.FileName = null;
+                newAttachment.Description = null;
+            }
+        }
+    }
 }
