@@ -673,7 +673,8 @@
 
         try
         {
-            byte[] fileData = [];
+            byte[] fileData = await BrowserFileHelper.GetFileDataAsync(selectedFile);
+
             newAttachment.UserId = userInfo!.UserId;
             newAttachment.TicketId = Id;
             newAttachment.Created = DateTimeOffset.UtcNow;
@@ -684,6 +685,8 @@
 
             Snackbar.Add("Attachment uploaded successfully!", Severity.Success);
 
+            selectedFile = null;
+
             // Reset new attachment
             newAttachment = new TicketAttachmentDTO()
             {
@@ -692,6 +695,11 @@
                 Created = DateTimeOffset.UtcNow,
                 AttachmentUrl = string.Empty
             };
+        }
+        catch (IOException ex)
+        {
+            Console.WriteLine(ex);
+            Snackbar.Add(ex.Message, Severity.Error);
         }
         catch (Exception ex)
         {
