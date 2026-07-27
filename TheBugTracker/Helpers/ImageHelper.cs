@@ -1,4 +1,5 @@
 ﻿using TheBugTracker.Models;
+using TheBugTracker.Client.Helpers;
 
 namespace TheBugTracker.Helpers
 {
@@ -12,7 +13,7 @@ namespace TheBugTracker.Helpers
             await file.CopyToAsync(ms);
             byte[] data = ms.ToArray();
 
-            if (ms.Length > 1 * 1024 * 1024)
+            if (ms.Length > BrowserFileHelper.MaxFileSize)
             {
                 throw new Exception("The image size cannot exceed 1 MB.");
             }
