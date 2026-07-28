@@ -371,7 +371,16 @@
                     <ActivatorContent>
                         <div class="d-flex flex-column align-items-center">
                             <MudCard>
-                                <MudCardMedia Image="images/png/default.png"
+                                @{
+                                    string? extension = Path.GetExtension(selectedFile?.Name)?.Trim('.');
+
+                                    if (string.IsNullOrEmpty(extension))
+                                    {
+                                        extension = "default";
+                                    }
+                                }
+
+                                <MudCardMedia Image="@($"images/png/{extension}.png")"
                                               Height="96"
                                               Style="background-size: contain; border: 8px inset transparent;" />
 
