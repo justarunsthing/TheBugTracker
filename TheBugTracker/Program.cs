@@ -171,6 +171,17 @@ app.UseAntiforgery();
 app.UseOutputCache();
 
 app.MapStaticAssets();
+
+app.Use(async (ctx, next) =>
+{
+    await next(ctx);
+
+    if (ctx.Request.Path.StartsWithSegments("/images/png") && ctx.Response.StatusCode == 404)
+    {
+        ctx.Response.Redirect("/images/png/default.png");
+    }
+});
+
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
     .AddInteractiveWebAssemblyRenderMode()
