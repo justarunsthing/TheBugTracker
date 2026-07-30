@@ -121,8 +121,8 @@
                         {
                             <MudMenu Dense>
                                 <ActivatorContent>
-                                    <MudChip T="string" 
-                                             Label="true" 
+                                    <MudChip T="string"
+                                             Label="true"
                                              Color="ticket.Priority.GetColor()"
                                              CloseIcon="@Icons.Material.Filled.ArrowDropDown"
                                              OnClose="() => context.ToggleAsync()">
@@ -145,8 +145,8 @@
                         }
                         else
                         {
-                            <MudChip T="string" 
-                                     Label="true" 
+                            <MudChip T="string"
+                                     Label="true"
                                      Color="ticket.Priority.GetColor()">
                                 @ticket.Priority.GetDisplayName()
                             </MudChip>
@@ -250,8 +250,8 @@
             </MudPaper>
 
             @* Comments *@
-            <TicketCommentArea Comments="ticket.Comments" 
-                               CanComment="userCanEditTicket && !ticket.IsArchived" 
+            <TicketCommentArea Comments="ticket.Comments"
+                               CanComment="userCanEditTicket && !ticket.IsArchived"
                                OnAdd="HandleAddComment"
                                OnEdit="HandleEditComment"
                                OnDelete="HandleDeleteComment" />
@@ -263,9 +263,12 @@
 
                 @if (ticket.Attachments.Any())
                 {
-                    <div>
-                        TODO: Attachments go here
-                    </div>
+                    @foreach (TicketAttachmentDTO attachment in ticket.Attachments)
+                    {
+                        <div>
+                            @attachment.FileName
+                        </div>
+                    }
                 }
                 else
                 {
@@ -288,8 +291,8 @@
 
             @* Actions *@
             <div class="d-flex">
-                <MudButton Variant="Variant.Text" 
-                           Color="Color.Primary" 
+                <MudButton Variant="Variant.Text"
+                           Color="Color.Primary"
                            StartIcon="@Icons.Material.Filled.ArrowBack"
                            Class="me-auto"
                            Href="@($"projects/{ticket.ProjectId}")">
@@ -365,7 +368,7 @@
                        CancelText="Cancel">
 
             <MessageContent>
-                <MudFileUpload T="IBrowserFile" 
+                <MudFileUpload T="IBrowserFile"
                                FilesChanged="HandleFileChange"
                                MaximumFileCount="1">
                     <ActivatorContent>
@@ -449,7 +452,7 @@
 
             if (ticket is not null)
             {
-                breadcrumbs = [ new BreadcrumbItem("Home", href: "/")];
+                breadcrumbs = [new BreadcrumbItem("Home", href: "/")];
 
                 if (ticket.Project is null)
                 {
