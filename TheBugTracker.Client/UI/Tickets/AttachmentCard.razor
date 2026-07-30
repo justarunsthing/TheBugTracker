@@ -1,0 +1,41 @@
+﻿@if (Attachment is not null)
+{
+    <MudCard Class="h-100">
+        <MudCardMedia Image="@($"images/png/{extension}.png")"
+                      Style="background-size: contain; border: 8px inset transparent;"
+                      Height="96" />
+
+        <MudCardContent>
+            <MudText Typo="Typo.body1">
+                @Attachment.FileName
+            </MudText>
+            <MudText Typo="Typo.caption">
+                @Attachment.User?.FirstName
+            </MudText>
+
+            <MudCardActions>
+                <MudIconButton Icon="@Icons.Material.Filled.Download"
+                               Href="@Attachment.AttachmentUrl"
+                               Target="_blank"
+                               Size="Size.Medium" />
+
+                <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                               Color="Color.Error"
+                               Size="Size.Medium"
+                               class="ms-auto" />
+            </MudCardActions>
+        </MudCardContent>
+    </MudCard>
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public TicketAttachmentDTO? Attachment { get; set; }
+
+    string extension = "default";
+
+    protected override void OnParametersSet()
+    {
+        extension = Path.GetExtension(Attachment?.FileName)?.Trim('.') ?? "default";
+    }
+}
