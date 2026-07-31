@@ -263,12 +263,14 @@
 
                 @if (ticket.Attachments.Any())
                 {
-                    @foreach (TicketAttachmentDTO attachment in ticket.Attachments)
-                    {
-                        <div>
-                            @attachment.FileName
-                        </div>
-                    }
+                    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 my-3 g-3">
+                        @foreach (TicketAttachmentDTO attachment in ticket.Attachments)
+                        {
+                            <div class="col">
+                                <AttachmentCard Attachment="attachment" />
+                            </div>
+                        }
+                    </div>
                 }
                 else
                 {
