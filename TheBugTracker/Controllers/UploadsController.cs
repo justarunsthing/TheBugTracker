@@ -30,6 +30,7 @@ namespace TheBugTracker.Controllers
         }
 
         // New endpoint for /api/attachments
+        [SwaggerIgnore]
         [HttpGet("/api/attachments/{uploadId:guid}")]
         [Authorize]
         public async Task<ActionResult> DownloadAttachmentAsync([FromRoute] Guid uploadId)
