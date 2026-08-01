@@ -21,7 +21,7 @@ namespace TheBugTracker.Controllers
         {
             var image = await context.Uploads.FirstOrDefaultAsync(i => i.Id == id);
 
-            if (image == null)
+            if (image == null || await context.Attachments.AnyAsync(a => a.UploadId == id))
             {
                 return NotFound();
             }
