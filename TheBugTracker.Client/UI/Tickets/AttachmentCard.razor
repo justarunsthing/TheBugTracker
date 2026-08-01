@@ -9,22 +9,37 @@
             <MudText Typo="Typo.body1" class="text-truncate">
                 @Attachment.FileName
             </MudText>
+
             <MudText Typo="Typo.caption">
-                @Attachment.User?.FirstName
+                @Attachment.User?.FullName
             </MudText>
 
-            <MudCardActions>
-                <MudIconButton Icon="@Icons.Material.Filled.Download"
-                               Href="@Attachment.AttachmentUrl"
-                               Target="_blank"
-                               Size="Size.Medium" />
+            <MudCollapse Expanded="isDescriptionExpanded">
+                <MudText Typo="Typo.body2" class="py-2">
+                    @Attachment.Description
+                </MudText>
 
-                <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                               Color="Color.Error"
-                               Size="Size.Medium"
-                               class="ms-auto" />
-            </MudCardActions>
+                <MudText Typo="Typo.caption">
+                    @Attachment.Created.ToString("g")
+                </MudText>
+            </MudCollapse>
         </MudCardContent>
+
+        <MudCardActions>
+            <MudIconButton Icon="@Icons.Material.Filled.Info"
+                           Size="Size.Medium"
+                           OnClick="() => isDescriptionExpanded = !isDescriptionExpanded" />
+
+            <MudIconButton Icon="@Icons.Material.Filled.Download"
+                           Href="@Attachment.AttachmentUrl"
+                           Target="_blank"
+                           Size="Size.Medium" />
+
+            <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                           Color="Color.Error"
+                           Size="Size.Medium"
+                           class="ms-auto" />
+        </MudCardActions>
     </MudCard>
 }
 
@@ -33,6 +48,7 @@
     public TicketAttachmentDTO? Attachment { get; set; }
 
     string extension = "default";
+    bool isDescriptionExpanded = false;
 
     protected override void OnParametersSet()
     {
