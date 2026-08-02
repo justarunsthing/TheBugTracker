@@ -42,7 +42,8 @@
                 <MudIconButton Icon="@Icons.Material.Filled.Delete"
                                Color="Color.Error"
                                Size="Size.Medium"
-                               class="ms-auto" />
+                               class="ms-auto"
+                               OnClick="HandleDeleteAsync" />
             }
         </MudCardActions>
     </MudCard>
@@ -51,6 +52,9 @@
 @code {
     [Parameter, EditorRequired]
     public TicketAttachmentDTO? Attachment { get; set; }
+
+    [Parameter]
+    public EventCallback<int> OnDelete { get; set; }
 
     [CascadingParameter]
     public Task<AuthenticationState> AuthStateTask { get; set; } = default!;
@@ -78,11 +82,21 @@
 
     private async Task HandleDeleteAsync()
     {
+        if (Attachment is null)
+        {
+            return;
+        }
+
         bool? isConfirmed = await DialogService.ShowMessageBoxAsync(
             title: "Confirm Delete?",
             message: "Are you sure you want to delete this attachment?",
             yesText: "Delete",
             noText: "Cancel"
         );
+
+        if (isConfirmed == true)
+        {
+            await OnDelete.InvokeAsync(Attachment!.Id);
+        }
     }
 }
