@@ -1,4 +1,6 @@
-﻿@if (Attachment is not null)
+﻿@inject IDialogService DialogService
+
+@if (Attachment is not null)
 {
     <MudCard Class="h-100">
         <MudCardMedia Image="@($"img/png/{extension}.png")"
@@ -72,5 +74,15 @@
         {
             canDelete = false;
         }
+    }
+
+    private async Task HandleDeleteAsync()
+    {
+        bool? isConfirmed = await DialogService.ShowMessageBoxAsync(
+            title: "Confirm Delete?",
+            message: "Are you sure you want to delete this attachment?",
+            yesText: "Delete",
+            noText: "Cancel"
+        );
     }
 }
