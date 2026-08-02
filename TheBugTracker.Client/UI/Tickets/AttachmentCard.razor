@@ -35,10 +35,13 @@
                            Target="_blank"
                            Size="Size.Medium" />
 
-            <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                           Color="Color.Error"
-                           Size="Size.Medium"
-                           class="ms-auto" />
+            @if (canDelete)
+            {
+                <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                               Color="Color.Error"
+                               Size="Size.Medium"
+                               class="ms-auto" />
+            }
         </MudCardActions>
     </MudCard>
 }
@@ -47,11 +50,27 @@
     [Parameter, EditorRequired]
     public TicketAttachmentDTO? Attachment { get; set; }
 
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthStateTask { get; set; } = default!;
+    private UserInfo? userInfo;
+
     string extension = "default";
     bool isDescriptionExpanded = false;
+    bool canDelete = false;
 
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
         extension = Path.GetExtension(Attachment?.FileName)?.Trim('.') ?? "default";
+
+        userInfo ??= await UserInfoHelper.GetUserInfoAsync(AuthStateTask);
+
+        if (Attachment is not null && userInfo is not null)
+        {
+            canDelete = Attachment.UserId == userInfo.UserId || userInfo.IsInRole(Role.Admin);
+        }
+        else
+        {
+            canDelete = false;
+        }
     }
 }
