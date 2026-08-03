@@ -267,7 +267,7 @@
                         @foreach (TicketAttachmentDTO attachment in ticket.Attachments)
                         {
                             <div class="col">
-                                <AttachmentCard Attachment="attachment" />
+                                <AttachmentCard Attachment="attachment" OnDelete="HandleDeleteAttachmentAsync" />
                             </div>
                         }
                     </div>
@@ -721,6 +721,28 @@
         {
             Console.WriteLine(ex);
             Snackbar.Add("Failed to upload attachment", Severity.Error);
+        }
+    }
+
+    private async Task HandleDeleteAttachmentAsync(int attachmentId)
+    {
+        TicketAttachmentDTO? attachment = ticket?.Attachments.FirstOrDefault(a => a.Id == attachmentId);
+        bool isAdmin = userInfo?.IsInRole(Role.Admin) == true;
+
+        if (attachment is not null && (attachment.UserId == userInfo?.UserId || isAdmin))
+        {
+            try
+            {
+                await TicketService.DeleteTicketAttachmentAsync(attachmentId, userInfo!);
+                ticket = await TicketService.GetTicketByIdAsync(Id, userInfo!);
+
+                Snackbar.Add("Attachment deleted successfully!", Severity.Success);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                Snackbar.Add("Failed to delete attachment", Severity.Error);
+            }
         }
     }
 }

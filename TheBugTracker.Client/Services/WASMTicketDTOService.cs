@@ -136,5 +136,10 @@ namespace TheBugTracker.Client.Services
         {
             throw new NotImplementedException();
         }
+
+        public async Task DeleteTicketAttachmentAsync(int id, UserInfo userInfo)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
