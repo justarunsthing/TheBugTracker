@@ -105,5 +105,13 @@ namespace TheBugTracker.Interfaces
         /// <param name="userInfo">The current user's claims</param>
         /// <returns>The created attachment</returns>
         Task<TicketAttachment> CreateTicketAttachmentAsync(TicketAttachment attachment, UserInfo userInfo);
+
+        /// <summary>
+        /// Deletes a ticket attachment if the user is authorized to do so.
+        /// User must be the owner of the attachment or an admin of the company.
+        /// </summary>
+        /// <param name="id">The id of the attachment to delete</param>
+        /// <param name="userInfo">The current user's claims</param>
+        Task DeleteTicketAttachmentAsync(int id, UserInfo userInfo);
     }
 }

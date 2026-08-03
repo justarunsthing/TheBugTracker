@@ -296,6 +296,34 @@ namespace TheBugTracker.Repository
             return attachment;
         }
 
+        public async Task DeleteTicketAttachmentAsync(int id, UserInfo userInfo)
+        {
+            await using ApplicationDbContext context = contextFactory.CreateDbContext();
+
+            TicketAttachment? attachment;
+
+            if (userInfo.IsInRole(Role.Admin))
+            {
+                attachment = await context.Attachments
+                    .Include(a => a.Upload)
+                    .FirstOrDefaultAsync(a => a.Id == id && a.Ticket!.Project!.CompanyId == userInfo.CompanyId);
+            }
+            else
+            {
+                attachment = await context.Attachments
+                    .Include(a => a.Upload)
+                    .FirstOrDefaultAsync(a => a.Id == id && a.UserId == userInfo.UserId);
+            }
+
+            if (attachment is not null)
+            {
+                context.Remove(attachment);
+                context.Remove(attachment.Upload!);
+
+                await context.SaveChangesAsync();
+            }
+        }
+
         private async Task<bool> UserCanEditTicket(int ticketId, UserInfo userInfo)
         {
             await using ApplicationDbContext context = contextFactory.CreateDbContext();
