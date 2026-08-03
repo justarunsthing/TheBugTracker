@@ -197,5 +197,10 @@ namespace TheBugTracker.Services
 
             return dbAttachment.ToDTO();
         }
+
+        public async Task DeleteTicketAttachmentAsync(int id, UserInfo userInfo)
+        {
+            await repository.DeleteTicketAttachmentAsync(id, userInfo);
+        }
     }
 }
