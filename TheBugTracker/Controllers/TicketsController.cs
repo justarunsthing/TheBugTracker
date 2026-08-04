@@ -5,6 +5,7 @@ using TheBugTracker.Client.Models;
 using TheBugTracker.Client.Helpers;
 using TheBugTracker.Client.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using TheBugTracker.Helpers;
 
 namespace TheBugTracker.Controllers
 {
@@ -201,6 +202,51 @@ namespace TheBugTracker.Controllers
             await ticketService.DeleteCommentAsync(id, UserInfo);
 
             return NoContent();
+        }
+
+        /// <summary>
+        /// Upload Ticket Attachment
+        /// </summary>
+        /// <param name="ticketId">The ID of the ticket</param>
+        /// <param name="file">The file to attach</param>
+        /// <param name="attachment">The attachment's metadata</param>
+        /// <remarks>Uploads a new file atttachment to the specified ticket if the user is authorized to do so.
+        /// Users may only upload attachments to tickets they are associated with or an admin.
+        /// </remarks>
+        [HttpPost("{ticketId:int}/attachments"), Tags("Attachments")]
+        public async Task<ActionResult<TicketAttachmentDTO>> CreateAttachment([FromRoute] int ticketId, IFormFile file, [FromForm] TicketAttachmentDTO attachment)
+        {
+            if (ticketId != attachment.TicketId || file.Length > BrowserFileHelper.MaxFileSize)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                attachment.UserId = UserInfo.UserId;
+                attachment.Created = DateTimeOffset.UtcNow;
+                attachment.FileName = file.FileName;
+
+                var upload = await UploadHelper.GetFileUploadAsync(file);
+                TicketAttachmentDTO createdAttachment = await ticketService.CreateTicketAttachmentAsync(attachment, upload.Data!, upload.Type!, UserInfo);
+                
+                return Ok(createdAttachment);
+            }
+            catch (IOException ioException)
+            {
+                Console.WriteLine(ioException);
+                return BadRequest(ioException.Message);
+            }
+            catch (ApplicationException appException)
+            {
+                Console.WriteLine(appException);
+                return BadRequest("Invalid ticket Id");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return Problem();
+            }
         }
     }
 }
