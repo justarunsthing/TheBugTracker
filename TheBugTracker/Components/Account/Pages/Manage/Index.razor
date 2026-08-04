@@ -85,7 +85,7 @@
         Input.PhoneNumber ??= phoneNumber;
         Input.FirstName ??= firstName;
         Input.LastName ??= lastName;
-        profilePictureUrl = user.ProfilePictureId.HasValue ? $"/uploads/{user.ProfilePictureId}" : ImageHelper.DefaultProfilePictureUrl;
+        profilePictureUrl = user.ProfilePictureId.HasValue ? $"/uploads/{user.ProfilePictureId}" : UploadHelper.DefaultProfilePictureUrl;
     }
 
     private async Task OnValidSubmitAsync()
@@ -94,7 +94,7 @@
         {
             try
             {
-                var newProfilePic = await ImageHelper.GetImageUploadAsync(Input.ProfilePicture);
+                var newProfilePic = await UploadHelper.GetFileUploadAsync(Input.ProfilePicture);
                 DbContext.Uploads.Add(newProfilePic);
 
                 var oldProfilePic = await DbContext.Uploads.FirstOrDefaultAsync(i => i.Id == user!.ProfilePictureId);

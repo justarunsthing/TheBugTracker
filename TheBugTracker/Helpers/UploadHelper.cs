@@ -3,11 +3,11 @@ using TheBugTracker.Client.Helpers;
 
 namespace TheBugTracker.Helpers
 {
-    public static class ImageHelper
+    public static class UploadHelper
     {
         public static readonly string DefaultProfilePictureUrl = "/img/default-profile-picture.jpg";
 
-        public static async Task<FileUpload> GetImageUploadAsync(IFormFile file)
+        public static async Task<FileUpload> GetFileUploadAsync(IFormFile file)
         {
             using var ms = new MemoryStream();
             await file.CopyToAsync(ms);
@@ -15,17 +15,17 @@ namespace TheBugTracker.Helpers
 
             if (ms.Length > BrowserFileHelper.MaxFileSize)
             {
-                throw new Exception("The image size cannot exceed 1 MB.");
+                throw new IOException("The selected file exceeds the maximum allowed size.");
             }
 
-            var imageUpload = new FileUpload
+            var upload = new FileUpload
             {
                 Id = Guid.NewGuid(),
                 Data = data,
                 Type = file.ContentType
             };
 
-            return imageUpload;
+            return upload;
         }
     }
 }

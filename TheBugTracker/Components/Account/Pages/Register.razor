@@ -55,7 +55,7 @@
             </div>
             <div class="mb-3 row">
                 <div class="col-lg-4">
-                    <img src="@ImageHelper.DefaultProfilePictureUrl" class="img-fluid" id="profile-pic-preview" />
+                    <img src="@UploadHelper.DefaultProfilePictureUrl" class="img-fluid" id="profile-pic-preview" />
                 </div>
                 <div class="col-lg-8">
                     <label class="form-label" for="Input.ProfilePicture">
@@ -116,7 +116,7 @@
         {
             try
             {
-                var profilePic = await ImageHelper.GetImageUploadAsync(Input.ProfilePicture);
+                var profilePic = await UploadHelper.GetFileUploadAsync(Input.ProfilePicture);
                 user.ProfilePicture = profilePic;
 
                 Context.Uploads.Add(profilePic);
