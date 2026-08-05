@@ -134,7 +134,27 @@ namespace TheBugTracker.Client.Services
 
         public async Task<TicketAttachmentDTO> CreateTicketAttachmentAsync(TicketAttachmentDTO attachment, byte[] fileData, string contentType, UserInfo userInfo)
         {
-            throw new NotImplementedException();
+            using var formData = new MultipartFormDataContent();
+            formData.Headers.ContentDisposition = new("form-data");
+
+            using var fileContent = new ByteArrayContent(fileData);
+            fileContent.Headers.ContentType = new(contentType);
+
+            formData.Add(fileContent, "file", attachment.FileName ?? string.Empty); // Match the parameter name in the API "file"
+            formData.Add(new StringContent(attachment.FileName ?? string.Empty), nameof(attachment.FileName));
+            formData.Add(new StringContent(attachment.Description ?? string.Empty), nameof(attachment.Description));
+            formData.Add(new StringContent(attachment.Created.ToString() ?? string.Empty), nameof(attachment.Created));
+            formData.Add(new StringContent(attachment.UserId ?? string.Empty), nameof(attachment.UserId));
+            formData.Add(new StringContent(attachment.TicketId.ToString() ?? string.Empty), nameof(attachment.TicketId));
+            formData.Add(new StringContent("/api/attachments"), nameof(attachment.AttachmentUrl));
+
+            using var response = await http.PostAsync($"api/Tickets/{attachment.TicketId}/attachments", formData);
+            response.EnsureSuccessStatusCode();
+
+            var newAttachment = await response.Content.ReadFromJsonAsync<TicketAttachmentDTO>() 
+                ?? throw new HttpIOException(HttpRequestError.InvalidResponse);
+
+            return newAttachment;
         }
 
         public async Task DeleteTicketAttachmentAsync(int id, UserInfo userInfo)
