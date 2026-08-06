@@ -159,7 +159,8 @@ namespace TheBugTracker.Client.Services
 
         public async Task DeleteTicketAttachmentAsync(int id, UserInfo userInfo)
         {
-            throw new NotImplementedException();
+            var response = await http.DeleteAsync($"api/Tickets/attachments/{id}");
+            response.EnsureSuccessStatusCode();
         }
     }
 }
