@@ -1,11 +1,11 @@
 ﻿using TheBugTracker.Client;
+using TheBugTracker.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using TheBugTracker.Client.Enums;
 using TheBugTracker.Client.Models;
 using TheBugTracker.Client.Helpers;
 using TheBugTracker.Client.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using TheBugTracker.Helpers;
 
 namespace TheBugTracker.Controllers
 {
@@ -247,6 +247,21 @@ namespace TheBugTracker.Controllers
                 Console.WriteLine(ex);
                 return Problem();
             }
+        }
+
+        /// <summary>
+        /// Delete Ticket Attachment
+        /// </summary>
+        /// <param name="id">The ID of the attachment to delete</param>
+        /// <remarks>
+        /// Deletes a specific ticket attachment if it exists and the user is the attachment's author or an admin.
+        /// </remarks>
+        [HttpDelete("attachments/{id:int}"), Tags("Ticket Attachments")]
+        public async Task<IActionResult> DeleteAttachment([FromRoute] int id)
+        {
+            await ticketService.DeleteTicketAttachmentAsync(id, UserInfo);
+
+            return NoContent();
         }
     }
 }
