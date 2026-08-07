@@ -158,6 +158,8 @@ namespace TheBugTracker.Repository
 
             context.Add(ticket);
 
+            #region History
+
             TicketHistory createdEvent = new()
             {
                 Created = ticket.Created,
@@ -166,6 +168,20 @@ namespace TheBugTracker.Repository
             };
 
             ticket.History.Add(createdEvent);
+
+            if (ticket.DeveloperUser is not null)
+            {
+                TicketHistory assignedEvent = new()
+                {
+                    Created = ticket.Created,
+                    UserId = userInfo.UserId,
+                    Description = $"Ticket assigned to {ticket.DeveloperUser.FirstName} {ticket.DeveloperUser.LastName}"
+                };
+
+                ticket.History.Add(assignedEvent);
+            }
+
+            #endregion
 
             await context.SaveChangesAsync();
 
