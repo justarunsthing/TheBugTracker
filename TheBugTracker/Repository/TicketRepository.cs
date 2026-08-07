@@ -157,6 +157,16 @@ namespace TheBugTracker.Repository
             ticket.DeveloperUserId = developer?.Id;
 
             context.Add(ticket);
+
+            TicketHistory createdEvent = new()
+            {
+                Created = ticket.Created,
+                UserId = userInfo.UserId,
+                Description = "Ticket created",
+            };
+
+            ticket.History.Add(createdEvent);
+
             await context.SaveChangesAsync();
 
             return ticket;
