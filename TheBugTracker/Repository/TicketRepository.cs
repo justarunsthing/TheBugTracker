@@ -226,6 +226,20 @@ namespace TheBugTracker.Repository
                 Ticket ticket = await context.Tickets.FirstAsync(t => t.Id == ticketId);
 
                 ticket.IsArchived = false;
+
+                #region History
+
+                TicketHistory restoredEvent = new()
+                {
+                    Created = DateTimeOffset.UtcNow,
+                    UserId = userInfo.UserId,
+                    Description = "Ticket restored"
+                };
+
+                #endregion
+
+                ticket.History.Add(restoredEvent);
+
                 await context.SaveChangesAsync();
             }
         }
