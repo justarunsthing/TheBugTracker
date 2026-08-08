@@ -108,6 +108,8 @@ namespace TheBugTracker.Repository
                     .ThenInclude(c => c.User)
                 .Include(t => t.Attachments)
                     .ThenInclude(a => a.User)
+                .Include(t => t.History)
+                    .ThenInclude(h => h.User)
                 .FirstOrDefaultAsync(t => t.Id == id && t.Project!.CompanyId == userInfo.CompanyId);
 
             return ticket;
