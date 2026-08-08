@@ -199,6 +199,20 @@ namespace TheBugTracker.Repository
                 Ticket ticket = await context.Tickets.FirstAsync(t => t.Id == ticketId);
 
                 ticket.IsArchived = true;
+
+                #region
+
+                TicketHistory archivedEvent = new()
+                {
+                    Created = DateTimeOffset.UtcNow,
+                    UserId = userInfo.UserId,
+                    Description = "Ticket archived"
+                };
+
+                #endregion
+
+                ticket.History.Add(archivedEvent);
+
                 await context.SaveChangesAsync();
             }
         }
