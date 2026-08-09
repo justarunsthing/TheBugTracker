@@ -259,9 +259,13 @@ namespace TheBugTracker.Repository
                 ticket.DeveloperUser = null;
                 ticket.SubmitterUser = null;
 
+                List<TicketHistory> newHistory = await CreateTicketHistoryAsync(ticket, userInfo);
+
                 await using ApplicationDbContext context = contextFactory.CreateDbContext();
 
-                context.Update(ticket);
+                context.Tickets.Update(ticket);
+                context.TicketHistory.AddRange(newHistory);
+
                 await context.SaveChangesAsync();
             }
         }
