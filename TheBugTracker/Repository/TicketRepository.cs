@@ -5,6 +5,7 @@ using TheBugTracker.Interfaces;
 using TheBugTracker.Client.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using TheBugTracker.Client.Extensions;
 
 namespace TheBugTracker.Repository
 {
@@ -407,6 +408,102 @@ namespace TheBugTracker.Repository
             }
 
             return result;
+        }
+
+        private async Task<List<TicketHistory>> CreateTicketHistoryAsync(Ticket newTicket, UserInfo userInfo)
+        {
+            await using ApplicationDbContext context = contextFactory.CreateDbContext();
+
+            var oldTicket = await context.Tickets
+                .AsNoTracking()
+                .FirstOrDefaultAsync(t => t.Id == newTicket.Id && userInfo.CompanyId == t.Project!.CompanyId);
+
+            if (oldTicket is null)
+            {
+                return [];
+            }
+
+            List<TicketHistory> events = [];
+
+            if (oldTicket.Status != newTicket.Status)
+            {
+                TicketHistory statusChangedEvent = new()
+                {
+                    UserId = userInfo.UserId,
+                    Created = DateTimeOffset.UtcNow,
+                    TicketId = newTicket.Id,
+                    Description = $"Status changed from {oldTicket.Status.GetDisplayName()} to {newTicket.Status.GetDisplayName()}"
+                };
+
+                events.Add(statusChangedEvent);
+            }
+
+            if (oldTicket.Type != newTicket.Type)
+            {
+                TicketHistory typeChangedEvent = new()
+                {
+                    UserId = userInfo.UserId,
+                    Created = DateTimeOffset.UtcNow,
+                    TicketId = newTicket.Id,
+                    Description = $"Type changed from {oldTicket.Type.GetDisplayName()} to {newTicket.Type.GetDisplayName()}"
+                };
+
+                events.Add(typeChangedEvent);
+            }
+
+            if (oldTicket.Priority != newTicket.Priority)
+            {
+                TicketHistory priorityChangedEvent = new()
+                {
+                    UserId = userInfo.UserId,
+                    Created = DateTimeOffset.UtcNow,
+                    TicketId = newTicket.Id,
+                    Description = $"Priority changed from {oldTicket.Priority.GetDisplayName()} to {newTicket.Priority.GetDisplayName()}"
+                };
+
+                events.Add(priorityChangedEvent);
+            }
+
+            if (oldTicket.Description != newTicket.Description || oldTicket.Title != newTicket.Title)
+            {
+                TicketHistory descriptionChangedEvent = new()
+                {
+                    UserId = userInfo.UserId,
+                    Created = DateTimeOffset.UtcNow,
+                    TicketId = newTicket.Id,
+                    Description = "Title/description updated"
+                };
+
+                events.Add(descriptionChangedEvent);
+            }
+
+            if (oldTicket.DeveloperUserId != newTicket.DeveloperUserId)
+            {
+                TicketHistory developerChangedEvent = new()
+                {
+                    UserId = userInfo.UserId,
+                    Created = DateTimeOffset.UtcNow,
+                    TicketId = newTicket.Id,
+                };
+
+                if (string.IsNullOrEmpty(newTicket.DeveloperUserId))
+                {
+                    developerChangedEvent.Description = "Ticket unassigned";
+                }
+                else
+                {
+                    string? developerName = await context.Users
+                        .Where(u => u.Id == newTicket.DeveloperUserId && u.CompanyId == userInfo.CompanyId)
+                        .Select(u => $"{u.FirstName} {u.LastName}")
+                        .FirstOrDefaultAsync();
+
+                    developerChangedEvent.Description = $"Ticket assigned to {developerName ?? "a new developer"}";
+                }
+
+                events.Add(developerChangedEvent);
+            }
+
+            return events;
         }
     }
 }
