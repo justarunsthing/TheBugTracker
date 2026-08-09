@@ -177,6 +177,13 @@ namespace TheBugTracker.Repository
                 // If ticket.IsArchivedByProject == false, then the ticket was archived by a user and should remain archived
                 ticket.IsArchived = !ticket.IsArchivedByProject;
                 ticket.IsArchivedByProject = false;
+
+                ticket.History.Add(new TicketHistory
+                {
+                    UserId = user.UserId,
+                    Created = DateTimeOffset.UtcNow,
+                    Description = "Project restored"
+                });
             }
 
             await context.SaveChangesAsync();
