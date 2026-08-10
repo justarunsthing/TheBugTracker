@@ -291,6 +291,20 @@
                 }
             </MudPaper>
 
+            @* History *@
+            @if (ticket.History.Count > 0)
+            {
+                <MudPaper Class="p-3">
+                    <MudText Typo="Typo.h6" GutterBottom>
+                        History
+                    </MudText>
+
+                    <div class="px-3" style="max-height: 400px; overflow-y: scroll; border: solid 1px var(--mud-palette-gray-light); border-radius: 4px">
+                        <HistoryTimeline History="ticket.History" />
+                    </div>
+                </MudPaper>
+            }
+
             @* Actions *@
             <div class="d-flex">
                 <MudButton Variant="Variant.Text"
