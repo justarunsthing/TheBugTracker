@@ -1,0 +1,48 @@
+﻿@page "/company"
+@attribute [Authorize]
+
+<MudContainer MaxWidth="MaxWidth.Large">
+    <MudBreadcrumbs Items="@breadcrumb" />
+
+    @if (isLoading)
+    {
+        <LoadingSpinner Message="Loading your company details..." />
+    }
+    else if (company is null)
+    {
+        <p>Company not found!</p>
+    }
+    else
+    {
+        <div class="vstack gap-3">
+            <MudPaper Class="p-3">
+                Company details
+            </MudPaper>
+
+            <MudPaper Class="p-3">
+                Company members
+            </MudPaper>
+
+            <MudPaper Class="p-3">
+                Company invites
+            </MudPaper>
+        </div>
+    }
+</MudContainer>
+
+@code {
+    private static readonly List<BreadcrumbItem> breadcrumb = new()
+    {
+        new BreadcrumbItem("Home", href: "/"),
+        new BreadcrumbItem("Company", href: null, disabled: true)
+    };
+
+    bool isLoading = true;
+
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthStateTask { get; set; } = default!;
+
+    private UserInfo? userInfo;
+
+    private CompanyDTO? company;
+}
