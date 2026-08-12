@@ -45,4 +45,22 @@
     private UserInfo? userInfo;
 
     private CompanyDTO? company;
+
+    protected override async Task OnInitializedAsync()
+    {
+        isLoading = true;
+        userInfo = await UserInfoHelper.GetUserInfoAsync(AuthStateTask);
+
+        try
+        {
+            await Task.Delay(3000);
+            throw new NotImplementedException();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+
+        isLoading = false;
+    }
 }
