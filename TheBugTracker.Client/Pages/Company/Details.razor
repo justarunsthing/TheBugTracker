@@ -10,7 +10,14 @@
     }
     else if (company is null)
     {
-        <p>Company not found!</p>
+        <div class="h-100 d-flex align-items-center justify-content-center flex-column">
+            <MudText Typo="Typo.h6" GutterBottom>
+                Something went wrong loading your company
+            </MudText>
+            <MudButton Variant="Variant.Outlined" Color="Color.Tertiary" OnClick="OnInitializedAsync">
+                Try Again?
+            </MudButton>
+        </div>
     }
     else
     {
@@ -30,7 +37,7 @@
     }
 </MudContainer>
 
-@code {
+    @code {
     private static readonly List<BreadcrumbItem> breadcrumb = new()
     {
         new BreadcrumbItem("Home", href: "/"),
