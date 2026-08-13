@@ -36,5 +36,10 @@ namespace TheBugTracker.Client.Services
                 return [];
             }
         }
+
+        public Task<CompanyDTO> GetCompanyAsync(UserInfo userInfo)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

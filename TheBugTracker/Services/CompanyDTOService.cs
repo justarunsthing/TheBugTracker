@@ -39,5 +39,21 @@ namespace TheBugTracker.Services
 
             return dtos;
         }
+
+        public async Task<CompanyDTO> GetCompanyAsync(UserInfo userInfo)
+        {
+            Company company = await repository.GetCompanyAsync(userInfo);
+            CompanyDTO dto = company.ToDTO();
+
+            dto.Members.Clear();
+
+            foreach (ApplicationUser user in company.Members)
+            {
+                UserDTO userWithRole = await user.ToDTOWithRole(userManager);
+                dto.Members.Add(userWithRole);
+            }
+
+            return dto;
+        }
     }
 }

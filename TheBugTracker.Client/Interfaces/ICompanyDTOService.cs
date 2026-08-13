@@ -17,5 +17,11 @@ namespace TheBugTracker.Client.Interfaces
         /// <param name="role">The role assigned to the users</param>
         /// <param name="userInfo">The current user's claims</param>
         Task<IEnumerable<UserDTO>> GetUsersInRoleAsync(Role role, UserInfo userInfo);
+
+        /// <summary>
+        /// Get detailed information about the current user's company
+        /// </summary>
+        /// <param name="userInfo">The current user's claims</param>
+        Task<CompanyDTO> GetCompanyAsync(UserInfo userInfo);
     }
 }
