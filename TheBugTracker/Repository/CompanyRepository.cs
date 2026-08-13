@@ -28,5 +28,17 @@ namespace TheBugTracker.Repository
 
             return usersInRole;
         }
+
+        public async Task<Company> GetCompanyAsync(UserInfo userInfo)
+        {
+            await using ApplicationDbContext context = contextFactory.CreateDbContext();
+
+            Company? company = await context.Companies
+                .Include(c => c.Members)
+                .Include(c => c.Invites)
+                .FirstAsync(c => c.Id == userInfo.CompanyId);
+
+            return company;
+        }
     }
 }
