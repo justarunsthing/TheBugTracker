@@ -1,0 +1,26 @@
+﻿@if (Company is not null)
+{
+    <div class="hstack gap-3 align-items-start">
+        <MudImage Src="@Company.ImageUrl"
+                  Class="rounded-3"
+                  Height="96"
+                  Width="96"
+                  ObjectFit="ObjectFit.Cover"
+                  ObjectPosition="ObjectPosition.Center"
+                  Elevation="1" />
+
+        <div>
+            <MudText Typo="Typo.h5" GutterBottom>
+                @Company.Name
+            </MudText>
+            <MudText Typo="Typo.body1" GutterBottom>
+                @Company.Description
+            </MudText>
+        </div>
+    </div>    
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public CompanyDTO? Company { get; set; }
+}
