@@ -1,5 +1,6 @@
 ﻿@page "/company"
 @attribute [Authorize]
+@inject ICompanyDTOService CompanyService
 
 <MudContainer MaxWidth="MaxWidth.Large">
     <MudBreadcrumbs Items="@breadcrumb" />
@@ -60,8 +61,7 @@
 
         try
         {
-            await Task.Delay(3000);
-            throw new NotImplementedException();
+            company = await CompanyService.GetCompanyAsync(userInfo!);
         }
         catch (Exception ex)
         {
