@@ -7,7 +7,7 @@
                   Width="96"
                   ObjectFit="ObjectFit.Cover"
                   ObjectPosition="ObjectPosition.Center"
-                  Elevation="1" />
+                  Elevation="3" />
 
         <div>
             <MudText Typo="Typo.h5" GutterBottom>
@@ -17,7 +17,16 @@
                 @Company.Description
             </MudText>
         </div>
-    </div>    
+    </div>
+
+    <AuthorizeView Roles="@nameof(Role.Admin)">
+        <MudButton Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.Edit"
+                   Class="mt-3"
+                   Size="Size.Small">
+            Edit
+        </MudButton>
+    </AuthorizeView>
 }
 
 @code {
