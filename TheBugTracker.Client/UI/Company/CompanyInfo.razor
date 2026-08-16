@@ -33,8 +33,8 @@
     }
     else
     {
-        <EditForm Model="@Company">
-            <div class="class="hstack gap-3 align-items-start">
+        <EditForm Model="Company">
+            <div class="hstack gap-3 align-items-start">
                 <MudImage Src="@Company.ImageUrl"
                           Class="rounded-3"
                           Height="96"
@@ -43,7 +43,7 @@
                           ObjectPosition="ObjectPosition.Center"
                           Elevation="3" />
 
-                <div>
+                <div class="flex-grow-1">
                     <MudTextField @bind-Value="Company.Name"
                                   For="() => Company.Name"
                                   Variant="Variant.Outlined"
@@ -58,7 +58,7 @@
                                   MaxLines="10" />
                 </div>
             </div>
-            <div>
+            <div class="mt-3 hstack gap-2">
                 <MudButton Size="Size.Small"
                            StartIcon="@Icons.Material.Filled.Cancel"
                            ButtonType="ButtonType.Button"
@@ -69,7 +69,8 @@
                 <MudButton Size="Size.Small"
                            StartIcon="@Icons.Material.Filled.Save"
                            ButtonType="ButtonType.Submit"
-                           Variant="Variant.Filled">
+                           Variant="Variant.Filled"
+                           Color="Color.Primary">
                     Save
                 </MudButton>
             </div>
