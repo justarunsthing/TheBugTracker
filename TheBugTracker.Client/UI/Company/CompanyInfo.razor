@@ -1,4 +1,6 @@
-﻿@if (Company is not null)
+﻿@inject ISnackbar Snackbar
+
+@if (Company is not null)
 {
     if (isEditing == false)
     {
@@ -38,11 +40,12 @@
 
             <div class="hstack gap-3 align-items-start">
                 <MudFileUpload T="IBrowserFile" 
-                               Accept=".png, .jpg, .jpeg, .svg, .webp">
+                               Accept=".png, .jpg, .jpeg, .svg, .webp"
+                               FilesChanged="HandleImageSelected">
 
                     <ActivatorContent>
                         <div class="vstack gap-2 align-items-center">
-                            <MudImage Src="@formCompany.ImageUrl"
+                            <MudImage Src="@formCompany!.ImageUrl"
                                       Class="rounded-3"
                                       Height="96"
                                       Width="96"
@@ -58,8 +61,8 @@
                 </MudFileUpload>
 
                 <div class="flex-grow-1">
-                    <MudTextField @bind-Value="formCompany.Name"
-                                  For="() => formCompany.Name"
+                    <MudTextField @bind-Value="formCompany!.Name"
+                                  For="() => formCompany!.Name"
                                   Variant="Variant.Outlined"
                                   Label="Company Name" />
 
@@ -126,5 +129,27 @@
         }
 
         isEditing = false;
+    }
+
+    private async Task HandleImageSelected(IBrowserFile? file)
+    {
+        if (file is null)
+        {
+            formCompany!.ImageUrl = Company?.ImageUrl ?? formCompany.ImageUrl;
+        }
+        else
+        {
+            try
+            {
+                byte[] imageData = await BrowserFileHelper.GetFileDataAsync(file);
+                string base64String = Convert.ToBase64String(imageData);
+                formCompany!.ImageUrl = $"data:{file.ContentType};base64,{base64String}";
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                Snackbar.Add($"Please select a valid image that is less than {BrowserFileHelper.MaxFileSize} bytes.", Severity.Error);
+            }
+        }
     }
 }
