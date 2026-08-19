@@ -35,7 +35,7 @@
     }
     else
     {
-        <EditForm Model="formCompany">
+        <EditForm Model="formCompany" OnValidSubmit="HandleSaveChangesAsync">
             <DataAnnotationsValidator />
 
             <div class="hstack gap-3 align-items-start">
@@ -83,6 +83,7 @@
                            OnClick="HandleCancelChanges">
                     Cancel
                 </MudButton>
+
                 <MudButton Size="Size.Small"
                            StartIcon="@Icons.Material.Filled.Save"
                            ButtonType="ButtonType.Submit"
@@ -98,6 +99,12 @@
 @code {
     [Parameter, EditorRequired]
     public CompanyDTO? Company { get; set; }
+
+    [Parameter]
+    public EventCallback<CompanyDTO> OnSave { get; set; }
+
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthStateTask { get; set; } = default!;
 
     private CompanyDTO? formCompany = new();
 
@@ -151,5 +158,17 @@
                 Snackbar.Add($"Please select a valid image that is less than {BrowserFileHelper.MaxFileSize} bytes.", Severity.Error);
             }
         }
+    }
+
+    private async Task HandleSaveChangesAsync()
+    {
+        AuthenticationState authState = await AuthStateTask;
+
+        if (authState.User.IsInRole(nameof(Role.Admin)))
+        {
+            await OnSave.InvokeAsync(formCompany);
+        }
+
+        isEditing = false;
     }
 }
