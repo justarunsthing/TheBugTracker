@@ -1,9 +1,10 @@
 ﻿using TheBugTracker.Models;
 using TheBugTracker.Client.Helpers;
+using System.Text.RegularExpressions;
 
 namespace TheBugTracker.Helpers
 {
-    public static class UploadHelper
+    public static partial class UploadHelper
     {
         public static readonly string DefaultProfilePictureUrl = "/img/default-profile-picture.jpg";
 
@@ -27,5 +28,33 @@ namespace TheBugTracker.Helpers
 
             return upload;
         }
+
+        public static FileUpload GetFileUpload(string dataUrl)
+        {
+            GroupCollection matchGroups = DataUrlRegex().Match(dataUrl).Groups;
+
+            if (matchGroups.ContainsKey("type") && matchGroups.ContainsKey("data"))
+            {
+                string contentType = matchGroups["type"].Value;
+                string base64String = matchGroups["data"].Value;
+                byte[] imageData = Convert.FromBase64String(base64String);
+
+                if (imageData.Length <= BrowserFileHelper.MaxFileSize)
+                {
+                    FileUpload fileUpload = new FileUpload
+                    {
+                        Id = Guid.NewGuid(),
+                        Data = imageData,
+                        Type = contentType
+                    };
+                    return fileUpload;
+                }
+            }
+            
+            throw new IOException("The data url is invalid or exceeds the maximum allowed size.");
+        }
+
+        [GeneratedRegex(@"data:(?<type>.+?);base64,(?<data>.+)")]
+        private static partial Regex DataUrlRegex();
     }
 }
