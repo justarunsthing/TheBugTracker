@@ -24,5 +24,12 @@ namespace TheBugTracker.Interfaces
         /// </summary>
         /// <param name="userInfo">The current user's claims</param>
         Task<Company> GetCompanyAsync(UserInfo userInfo);
+
+        /// <summary>
+        /// Updates a company's details in the database if the user is the admin of the company
+        /// </summary>
+        /// <param name="company">The company details to update</param>
+        /// <param name="userInfo">The current user's claims</param>
+        Task UpdateCompanyAsync(Company company, UserInfo userInfo);
     }
 }

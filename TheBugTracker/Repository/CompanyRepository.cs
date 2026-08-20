@@ -40,5 +40,37 @@ namespace TheBugTracker.Repository
 
             return company;
         }
+
+        public async Task UpdateCompanyAsync(Company company, UserInfo userInfo)
+        {
+            if (!userInfo.IsInRole(Role.Admin) || company.Id != userInfo.CompanyId)
+            {
+                return;
+            }
+
+            await using ApplicationDbContext context = contextFactory.CreateDbContext();
+
+            FileUpload? oldImage = null;
+
+            if (company.Image is not null && company.Image.Id != company.ImageId)
+            {
+                oldImage = await context.Companies
+                    .Where(c => c.Id == userInfo.CompanyId)
+                    .Select(c => c.Image)
+                    .FirstOrDefaultAsync();
+
+                context.Add(company.Image);
+                company.ImageId = company.Image.Id;
+            }
+
+            context.Update(company);
+            await context.SaveChangesAsync();
+
+            if (oldImage is not null)
+            {
+                context.Remove(oldImage);
+                await context.SaveChangesAsync();
+            }
+        }
     }
 }
