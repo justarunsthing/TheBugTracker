@@ -41,5 +41,10 @@ namespace TheBugTracker.Client.Services
         {
             throw new NotImplementedException();
         }
+
+        public Task UpdateCompanyAsync(CompanyDTO company, UserInfo userInfo)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

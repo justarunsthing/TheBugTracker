@@ -41,12 +41,13 @@ namespace TheBugTracker.Helpers
 
                 if (imageData.Length <= BrowserFileHelper.MaxFileSize)
                 {
-                    FileUpload fileUpload = new FileUpload
+                    FileUpload fileUpload = new()
                     {
                         Id = Guid.NewGuid(),
                         Data = imageData,
                         Type = contentType
                     };
+
                     return fileUpload;
                 }
             }

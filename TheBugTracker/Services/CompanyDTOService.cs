@@ -1,5 +1,6 @@
 ﻿using TheBugTracker.Client;
 using TheBugTracker.Models;
+using TheBugTracker.Helpers;
 using TheBugTracker.Interfaces;
 using TheBugTracker.Client.Enums;
 using TheBugTracker.Client.Models;
@@ -54,6 +55,38 @@ namespace TheBugTracker.Services
             }
 
             return dto;
+        }
+
+        public async Task UpdateCompanyAsync(CompanyDTO company, UserInfo userInfo)
+        {
+            if (!userInfo.IsInRole(Role.Admin))
+            {
+                return;
+            }
+
+            Company dbCompany = await repository.GetCompanyAsync(userInfo);
+
+            // Clear navigational properties to avoid EF Core tracking issues
+            dbCompany.Projects.Clear();
+            dbCompany.Members.Clear();
+            dbCompany.Invites.Clear();
+
+            dbCompany.Name = company.Name;
+            dbCompany.Description = company.Description;
+
+            if (company.ImageUrl.StartsWith("data:"))
+            {
+                try
+                {
+                    dbCompany.Image = UploadHelper.GetFileUpload(company.ImageUrl);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }            
+            }
+
+            await repository.UpdateCompanyAsync(dbCompany, userInfo);
         }
     }
 }
