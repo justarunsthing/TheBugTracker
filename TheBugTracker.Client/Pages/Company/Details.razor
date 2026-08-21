@@ -1,6 +1,8 @@
 ﻿@page "/company"
+@using TheBugTracker.Client.UI.Company
 @attribute [Authorize]
 @inject ICompanyDTOService CompanyService
+@inject ISnackbar SnackBar
 
 <MudContainer MaxWidth="MaxWidth.Large">
     <MudBreadcrumbs Items="@breadcrumb" />
@@ -24,7 +26,7 @@
     {
         <div class="vstack gap-3">
             <MudPaper Class="p-3">
-                Company details
+                <CompanyInfo Company="company" OnSave="HandleUpdateCompanyAsync" />
             </MudPaper>
 
             <MudPaper Class="p-3">
@@ -69,5 +71,26 @@
         }
 
         isLoading = false;
+    }
+
+    private async Task HandleUpdateCompanyAsync(CompanyDTO updatedCompany)
+    {
+        if (userInfo?.IsInRole(Role.Admin) != true)
+        {
+            return;
+        }
+
+        try
+        {
+            await CompanyService.UpdateCompanyAsync(updatedCompany, userInfo!);
+            company = await CompanyService.GetCompanyAsync(userInfo!);
+
+            SnackBar.Add("Changes saved!", Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            SnackBar.Add("Failed to update company details!", Severity.Error);
+        }
     }
 }
