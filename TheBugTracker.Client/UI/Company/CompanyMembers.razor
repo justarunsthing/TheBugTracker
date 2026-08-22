@@ -1,0 +1,30 @@
+﻿<MudText Typo="Typo.h6">
+    Members
+</MudText>
+
+<div class="vstack gap-4">
+    @foreach (Role role in Enum.GetValues<Role>())
+    {
+        IEnumerable<UserDTO> usersInRole = Members.Where(m => m.Role == role)
+                                                  .OrderBy(m => m.FirstName)
+                                                  .ThenBy(m => m.LastName);
+
+        <div>
+            <MudText Typo="Typo.overline" GutterBottom>
+                @role.GetDisplayName()
+            </MudText>
+
+            <div class="d-flex flex-wrap">
+                @foreach (UserDTO user in usersInRole)
+                {
+                    <UserChip User="user" />
+                }
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public IEnumerable<UserDTO> Members { get; set; } = [];
+}
