@@ -2,7 +2,7 @@
     Members
 </MudText>
 
-<div class="vstack gap-4">
+<div class="vstack gap-3">
     @foreach (Role role in Enum.GetValues<Role>())
     {
         IEnumerable<UserDTO> usersInRole = Members.Where(m => m.Role == role)
@@ -10,7 +10,7 @@
                                                   .ThenBy(m => m.LastName);
 
         <div>
-            <MudText Typo="Typo.overline" GutterBottom>
+            <MudText Typo="Typo.button" GutterBottom>
                 @role.GetDisplayName()
             </MudText>
 
