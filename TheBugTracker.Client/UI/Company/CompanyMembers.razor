@@ -5,6 +5,9 @@
 <div class="vstack gap-3">
     @foreach (Role role in Enum.GetValues<Role>())
     {
+        if (role == Role.DemoUser)
+            continue;
+
         IEnumerable<UserDTO> usersInRole = Members.Where(m => m.Role == role)
                                                   .OrderBy(m => m.FirstName)
                                                   .ThenBy(m => m.LastName);
@@ -15,9 +18,18 @@
             </MudText>
 
             <div class="d-flex flex-wrap">
-                @foreach (UserDTO user in usersInRole)
+                @if (usersInRole.Any())
                 {
-                    <UserChip User="user" />
+                    @foreach (UserDTO user in usersInRole)
+                    {
+                        <UserChip User="user" />
+                    }
+                }
+                else
+                {
+                    <MudText Typo="Typo.overline" Class="my-3">
+                        No @(role.GetDisplayName())s
+                    </MudText>
                 }
             </div>
         </div>
