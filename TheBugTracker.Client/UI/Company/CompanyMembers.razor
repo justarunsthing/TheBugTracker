@@ -1,4 +1,4 @@
-﻿<MudText Typo="Typo.h6">
+﻿<MudText Typo="Typo.h6" GutterBottom>
     Members
 </MudText>
 
@@ -34,6 +34,15 @@
             </div>
         </div>
     }
+
+<AuthorizeView Roles="@nameof(Role.Admin)">
+    <MudButton Class="me-auto"
+               Size="Size.Small"
+               Color="Color.Primary"
+               StartIcon="@Icons.Material.Filled.Settings">
+        Manage Roles
+    </MudButton>
+</AuthorizeView>
 </div>
 
 @code {
