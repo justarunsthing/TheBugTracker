@@ -2,50 +2,113 @@
     Members
 </MudText>
 
-<div class="vstack gap-3">
-    @foreach (Role role in Enum.GetValues<Role>())
-    {
-        if (role == Role.DemoUser)
-            continue;
+@if (!isEditing)
+{
+    <div class="vstack gap-3">
+        @foreach (Role role in Enum.GetValues<Role>())
+        {
+            if (role == Role.DemoUser)
+                continue;
 
-        IEnumerable<UserDTO> usersInRole = Members.Where(m => m.Role == role)
-                                                  .OrderBy(m => m.FirstName)
-                                                  .ThenBy(m => m.LastName);
+            IEnumerable<UserDTO> usersInRole = Members.Where(m => m.Role == role)
+                                                      .OrderBy(m => m.FirstName)
+                                                      .ThenBy(m => m.LastName);
 
-        <div>
-            <MudText Typo="Typo.button" GutterBottom>
-                @role.GetDisplayName()
-            </MudText>
+            <div>
+                <MudText Typo="Typo.button" GutterBottom>
+                    @role.GetDisplayName()
+                </MudText>
 
-            <div class="d-flex flex-wrap">
-                @if (usersInRole.Any())
-                {
-                    @foreach (UserDTO user in usersInRole)
+                <div class="d-flex flex-wrap">
+                    @if (usersInRole.Any())
                     {
-                        <UserChip User="user" />
+                        @foreach (UserDTO user in usersInRole)
+                        {
+                            <UserChip User="user" />
+                        }
                     }
-                }
-                else
+                    else
+                    {
+                        <MudText Typo="Typo.overline" Class="my-3">
+                            No @(role.GetDisplayName())s
+                        </MudText>
+                    }
+                </div>
+            </div>
+        }
+
+        <AuthorizeView Roles="@nameof(Role.Admin)">
+            <MudButton Class="me-auto"
+                       Size="Size.Small"
+                       Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.Settings"
+                       OnClick="() => isEditing = true">
+                Manage Roles
+            </MudButton>
+        </AuthorizeView>
+    </div>
+}
+else
+{
+    <MudDropContainer T="UserDTO"
+                      Items="Members.OrderBy(m => m.FirstName).ThenBy(m => m.LastName)"
+                      ItemsSelector="(UserDTO user, string zoneId) => user.Role.HasValue && Enum.GetName(user.Role.Value) == zoneId">
+        <ItemRenderer>
+            <UserChip User="context" />
+        </ItemRenderer>
+
+        <ChildContent>
+            <div class="vstack gap-3">
+                @foreach (Role role in Enum.GetValues<Role>())
                 {
-                    <MudText Typo="Typo.overline" Class="my-3">
-                        No @(role.GetDisplayName())s
-                    </MudText>
+                    if (role == Role.DemoUser)
+                    {
+                        continue;
+                    }
+
+                    IEnumerable<UserDTO> usersInRole = Members.Where(m => m.Role == role);
+
+                    <div>
+                        <MudText Typo="Typo.button" GutterBottom>
+                            @role.GetDisplayName()
+                        </MudText>
+
+                        <MudDropZone T="UserDTO" 
+                                     Identifier="@Enum.GetName(role)"
+                                     Class="d-flex flex-wrap">
+
+                            @if (!usersInRole.Any())
+                            {
+                                <MudText Typo="Typo.overline" Class="my-3">
+                                    No @(role.GetDisplayName())s
+                                </MudText>
+                            }
+                        </MudDropZone>
+                    </div>
                 }
             </div>
-        </div>
-    }
+        </ChildContent>
+    </MudDropContainer>
 
-<AuthorizeView Roles="@nameof(Role.Admin)">
-    <MudButton Class="me-auto"
-               Size="Size.Small"
-               Color="Color.Primary"
-               StartIcon="@Icons.Material.Filled.Settings">
-        Manage Roles
-    </MudButton>
-</AuthorizeView>
-</div>
+    <div class="hstack gap-2 mt-3">
+        <MudButton Size="Size.Small"
+                   Variant="Variant.Outlined"
+                   StartIcon="@Icons.Material.Filled.Cancel"
+                   OnClick="() => isEditing = false">
+            Cancel
+        </MudButton>
+        <MudButton Size="Size.Small"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.Save"
+                   Variant="Variant.Filled">
+            Save Changes
+        </MudButton>
+    </div>
+}
 
 @code {
     [Parameter, EditorRequired]
     public IEnumerable<UserDTO> Members { get; set; } = [];
+
+    private bool isEditing = false;
 }
