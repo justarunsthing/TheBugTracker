@@ -53,7 +53,8 @@ else
     <MudDropContainer T="UserDTO"
                       Items="Members.OrderBy(m => m.FirstName).ThenBy(m => m.LastName)"
                       ItemsSelector="(UserDTO user, string zoneId) => user.Role.HasValue && Enum.GetName(user.Role.Value) == zoneId"
-                      ItemDropped="HandleUserDropped">
+                      ItemDropped="HandleUserDropped"
+                      CanDropClass="bg-secondary-subtle">
 
         <ItemRenderer>
             <UserChip User="context" />
@@ -77,7 +78,7 @@ else
 
                         <MudDropZone T="UserDTO" 
                                      Identifier="@Enum.GetName(role)"
-                                     Class="d-flex flex-wrap">
+                                     Class="d-flex flex-wrap rounded-3">
 
                             @if (!usersInRole.Any())
                             {
@@ -91,6 +92,13 @@ else
             </div>
         </ChildContent>
     </MudDropContainer>
+
+    <MudText Typo="Typo.subtitle1"
+             Class="mt-3"
+             GutterBottom>
+
+        Drag and drop to assign users a role
+    </MudText>
 
     <div class="hstack gap-2 mt-3">
         <MudButton Size="Size.Small"
