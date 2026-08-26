@@ -30,7 +30,7 @@
             </MudPaper>
 
             <MudPaper Class="p-3">
-                Company members
+                <CompanyMembers Members="company.Members" OnChanged="HandleMembersRefreshAsync" />
             </MudPaper>
 
             <MudPaper Class="p-3">
@@ -91,6 +91,24 @@
         {
             Console.WriteLine(ex);
             SnackBar.Add("Failed to update company details!", Severity.Error);
+        }
+    }
+
+    private async Task HandleMembersRefreshAsync()
+    {
+        if (company is null || userInfo is null)
+        {
+            return;
+        }
+
+        try
+        {
+            company.Members = [.. await CompanyService.GetUsersAsync(userInfo)];
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            SnackBar.Add("Failed to fetch company members", Severity.Error);
         }
     }
 }

@@ -120,6 +120,9 @@ else
     [Parameter, EditorRequired]
     public IEnumerable<UserDTO> Members { get; set; } = [];
 
+    [Parameter]
+    public EventCallback OnChanged { get; set; }
+
     private bool isEditing = false;
 
     private void HandleUserDropped(MudItemDropInfo<UserDTO> dropEvent)
