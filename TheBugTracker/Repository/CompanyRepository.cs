@@ -72,5 +72,52 @@ namespace TheBugTracker.Repository
                 await context.SaveChangesAsync();
             }
         }
+
+        public async Task AssignUserRoleAsync(string userId, Role newRole, UserInfo userInfo)
+        {
+            if (!userInfo.IsInRole(Role.Admin) || newRole == Role.DemoUser || userId == userInfo.UserId)
+            {
+                return;
+            }
+
+            ApplicationUser? userToAssign = await userManager.FindByIdAsync(userId);
+
+            if (userToAssign?.CompanyId != userInfo.CompanyId)
+            {
+                return;
+            }
+
+            var originalRoles = await userManager.GetRolesAsync(userToAssign);
+
+            if (originalRoles.Any(roleName => roleName == nameof(Role.DemoUser) || roleName == Enum.GetName(newRole)))
+            {
+                return;
+            }
+
+            try
+            {
+                var removedResult = await userManager.RemoveFromRolesAsync(userToAssign, originalRoles);
+
+                if (!removedResult.Succeeded)
+                {
+                    throw new ApplicationException(string.Join(", ", removedResult.Errors.Select(e => e.Description)));
+                }
+
+                var addedResult = await userManager.AddToRoleAsync(userToAssign, Enum.GetName(newRole)!);
+
+                if (!addedResult.Succeeded)
+                {
+                    throw new ApplicationException(string.Join(", ", removedResult.Errors.Select(e => e.Description)));
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+
+                await userManager.AddToRolesAsync(userToAssign, originalRoles);
+
+                throw;
+            }
+        }
     }
 }
