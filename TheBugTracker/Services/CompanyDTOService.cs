@@ -88,5 +88,13 @@ namespace TheBugTracker.Services
 
             await repository.UpdateCompanyAsync(dbCompany, userInfo);
         }
+
+        public async Task AssignUserRoleAsync(string userId, Role newRole, UserInfo userInfo)
+        {
+            if (userInfo.IsInRole(Role.Admin))
+            {
+                await repository.AssignUserRoleAsync(userId, newRole, userInfo);
+            }
+        }
     }
 }

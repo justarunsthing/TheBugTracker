@@ -30,5 +30,16 @@ namespace TheBugTracker.Client.Interfaces
         /// <param name="company">The company details to update</param>
         /// <param name="userInfo">The current user's claims</param>
         Task UpdateCompanyAsync(CompanyDTO company, UserInfo userInfo);
+
+
+        /// <summary>
+        /// Assigns a user to a new role, removing them from any previous ones.
+        /// Only admins may reassign user's roles within their company. Demo users may never be assigned.
+        /// </summary>
+        /// <param name="userId">The id of the user to assign a new role</param>
+        /// <param name="newRole">The role to assign to the user</param>
+        /// <param name="userInfo">The current user's claims</param>
+        /// <returns></returns>
+        Task AssignUserRoleAsync(string userId, Role newRole, UserInfo userInfo);
     }
 }

@@ -46,5 +46,10 @@ namespace TheBugTracker.Client.Services
         {
             throw new NotImplementedException();
         }
+
+        public async Task AssignUserRoleAsync(string userId, Role newRole, UserInfo userInfo)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
