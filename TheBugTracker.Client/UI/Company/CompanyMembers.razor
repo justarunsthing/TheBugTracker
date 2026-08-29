@@ -113,7 +113,8 @@ else
         <MudButton Size="Size.Small"
                    Color="Color.Primary"
                    StartIcon="@Icons.Material.Filled.Save"
-                   Variant="Variant.Filled">
+                   Variant="Variant.Filled"
+                   OnClick="HandleSaveChangesAsync">
             Save Changes
         </MudButton>
     </div>
@@ -126,7 +127,17 @@ else
     [Parameter]
     public EventCallback OnChanged { get; set; }
 
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthStateTask { get; set; } = default!;
+
+    private UserInfo? userInfo;
+
     private bool isEditing = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        userInfo = await UserInfoHelper.GetUserInfoAsync(AuthStateTask);
+    }
 
     private void HandleUserDropped(MudItemDropInfo<UserDTO> dropEvent)
     {
@@ -140,5 +151,41 @@ else
     {
         await OnChanged.InvokeAsync();
         isEditing = false;
+    }
+
+    private async Task HandleSaveChangesAsync()
+    {
+        if (userInfo?.IsInRole(Role.Admin) == true)
+        {
+            try
+            {
+                var currentMembers = await CompanyService.GetUsersAsync(userInfo);
+
+                foreach (UserDTO member in Members)
+                {
+                    if (member.Id == userInfo.UserId)
+                    {
+                        continue;
+                    }
+
+                    var currentRole = currentMembers.FirstOrDefault(u => u.Id == member.Id)?.Role;
+
+                    if (currentRole.HasValue && member.Role.HasValue && currentRole != member.Role)
+                    {
+                        await CompanyService.AssignUserRoleAsync(member.Id, member.Role.Value, userInfo);
+                    }
+                }
+
+                SnackBar.Add("Changes saved", Severity.Success);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                SnackBar.Add("An error occured updating the user roles, some changes may have not been saved.", Severity.Error);
+            }
+        }
+
+        isEditing = false;
+        await OnChanged.InvokeAsync();
     }
 }
