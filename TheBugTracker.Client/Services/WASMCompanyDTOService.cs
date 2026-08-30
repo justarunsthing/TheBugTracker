@@ -37,9 +37,12 @@ namespace TheBugTracker.Client.Services
             }
         }
 
-        public Task<CompanyDTO> GetCompanyAsync(UserInfo userInfo)
+        public async Task<CompanyDTO> GetCompanyAsync(UserInfo userInfo)
         {
-            throw new NotImplementedException();
+            CompanyDTO company = await http.GetFromJsonAsync<CompanyDTO>("api/company")
+                ?? throw new HttpIOException(HttpRequestError.InvalidResponse);
+
+            return company;
         }
 
         public Task UpdateCompanyAsync(CompanyDTO company, UserInfo userInfo)
