@@ -43,5 +43,19 @@ namespace TheBugTracker.Controllers
                 return Ok(users);
             }
         }
+
+        /// <summary>
+        /// Get Company
+        /// </summary>
+        /// <remarks>
+        /// Fetch detailed information about the current user's company including company's members and invites.
+        /// </remarks>
+        [HttpGet]
+        public async Task<ActionResult<CompanyDTO>> GetCompany()
+        {
+            CompanyDTO company = await companyService.GetCompanyAsync(UserInfo);
+
+            return company;
+        }
     }
 }
