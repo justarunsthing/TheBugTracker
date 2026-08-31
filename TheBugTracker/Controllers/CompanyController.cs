@@ -57,5 +57,23 @@ namespace TheBugTracker.Controllers
 
             return company;
         }
+
+        /// <summary>
+        /// Update Company
+        /// </summary>
+        /// <param name="company">
+        /// The updated company details
+        /// </param>
+        /// <remarks>
+        /// Updates the name, description and/or image of the current user's company. 
+        /// Only company admins may update their company
+        /// </remarks>
+        [HttpPut, Authorize(Roles = nameof(Role.Admin))]
+        public async Task<IActionResult> UpdateCompany([FromBody] CompanyDTO company)
+        {
+            await companyService.UpdateCompanyAsync(company, UserInfo);
+
+            return NoContent();
+        }
     }
 }
