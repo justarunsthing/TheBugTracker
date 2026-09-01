@@ -45,9 +45,10 @@ namespace TheBugTracker.Client.Services
             return company;
         }
 
-        public Task UpdateCompanyAsync(CompanyDTO company, UserInfo userInfo)
+        public async Task UpdateCompanyAsync(CompanyDTO company, UserInfo userInfo)
         {
-            throw new NotImplementedException();
+            var response = await http.PutAsJsonAsync("api/company", company);
+            response.EnsureSuccessStatusCode();
         }
 
         public async Task AssignUserRoleAsync(string userId, Role newRole, UserInfo userInfo)
