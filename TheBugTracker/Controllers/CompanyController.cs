@@ -75,5 +75,27 @@ namespace TheBugTracker.Controllers
 
             return NoContent();
         }
+
+        /// <summary>
+        /// Assign User Role
+        /// </summary>
+        /// <param name="id">The ID of the user</param>
+        /// <param name="user">The user ID and role to be assigned</param>
+        /// <remarks>
+        /// Assigns a user to a new role, removing them from their previous role.
+        /// Only company admins may assign roles to users. Admins cannot change their own role.
+        /// </remarks>
+        [HttpPut("users/{id}"), Authorize(Roles = nameof(Role.Admin))]
+        public async Task<IActionResult> AssignUserRole([FromRoute] string id, [FromBody] UserDTO user)
+        {
+            if (user.Id != id || user.Role is null)
+            {
+                return BadRequest();
+            }
+
+            await companyService.AssignUserRoleAsync(id, user.Role.Value, UserInfo);
+
+            return NoContent();
+        }
     }
 }
