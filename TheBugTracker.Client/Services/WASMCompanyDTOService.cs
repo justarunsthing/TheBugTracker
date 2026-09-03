@@ -53,7 +53,16 @@ namespace TheBugTracker.Client.Services
 
         public async Task AssignUserRoleAsync(string userId, Role newRole, UserInfo userInfo)
         {
-            throw new NotImplementedException();
+            UserDTO dto = new()
+            {
+                Id = userId,
+                Role = newRole,
+                FirstName = "",
+                LastName = "",
+            };
+
+            var response = await http.PutAsJsonAsync($"api/company/users/{userId}", dto);
+            response.EnsureSuccessStatusCode();
         }
     }
 }
