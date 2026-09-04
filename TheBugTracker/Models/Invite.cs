@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using TheBugTracker.Client.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace TheBugTracker.Models
 {
@@ -41,5 +42,31 @@ namespace TheBugTracker.Models
         public virtual ApplicationUser? Invitor { get; set; }
         public string? InviteeId { get; set; }
         public virtual ApplicationUser? Invitee { get; set; }
+    }
+
+    public static class InviteExtensions
+    {
+        public static InviteDTO ToDTO(this Invite invite)
+        {
+            InviteDTO dto = new()
+            {
+                Id = invite.Id,
+                InviteDate = invite.InviteDate,
+                JoinDate = invite.JoinDate,
+                InviteeEmail = invite.InviteeEmail,
+                InviteeFirstName = invite.InviteeFirstName,
+                InviteeLastName = invite.InviteeLastName,
+                Message = invite.Message,
+                IsValid = invite.IsValid,
+                ProjectId = invite.ProjectId,
+                Project = invite.Project?.ToDTO(),
+                InvitorId = invite.InvitorId,
+                Invitor = invite.Invitor?.ToDTO(),
+                InviteeId = invite.InviteeId,
+                Invitee = invite.Invitee?.ToDTO()
+            };
+
+            return dto;
+        }
     }
 }

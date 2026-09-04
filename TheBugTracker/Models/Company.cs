@@ -31,7 +31,8 @@ namespace TheBugTracker.Models
                     ? $"uploads/{company.ImageId}" 
                     : $"https://api.dicebear.com/9.x/glass/svg?seed={company.Name}",
                 Projects = [.. company.Projects.Select(p => p.ToDTO())],
-                Members = [.. company.Members.Select(m => m.ToDTO())]
+                Members = [.. company.Members.Select(m => m.ToDTO())],
+                Invites = [.. company.Invites.Select(i => i.ToDTO())]
             };
         }
     }
