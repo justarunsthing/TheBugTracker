@@ -4,7 +4,6 @@
 @inject ICompanyDTOService CompanyService
 @inject ISnackbar SnackBar
 
-
 <PageTitle>My Company | The Bug Tracker</PageTitle>
 
 <MudContainer MaxWidth="MaxWidth.Large">
@@ -37,7 +36,18 @@
             </MudPaper>
 
             <MudPaper Class="p-3">
-                Company invites
+                <div>
+                    Company invites
+                </div>
+
+                <AuthorizeView Roles="@nameof(Role.Admin)">
+                    <MudButton Size="Size.Small"
+                               Color="Color.Primary"
+                               StartIcon="@Icons.Material.Filled.PersonAdd"
+                               Href="company/invite">
+                        Invite New User
+                    </MudButton>
+                </AuthorizeView>
             </MudPaper>
         </div>
     }
