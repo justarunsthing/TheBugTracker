@@ -19,8 +19,66 @@
 
         <MudDivider Light DividerType="DividerType.FullWidth" Class="my-3" />
 
-        <EditForm>
-        
+        <EditForm Model="invite"
+                  class="v-stack gap-3">
+            <DataAnnotationsValidator />
+            
+            @* First/last name *@
+            <div class="row row-cols-1 row-cols-md-2">
+                <div class="col">
+                    <MudTextField @bind-Value="invite.InviteeFirstName"
+                                  For="() => invite.InviteeFirstName"
+                                  Variant="Variant.Outlined"
+                                  Label="First Name" />
+                </div>
+                <div class="col">
+                    <MudTextField @bind-Value="invite.InviteeLastName"
+                                  For="() => invite.InviteeLastName"
+                                  Variant="Variant.Outlined"
+                                  Label="Last Name" />
+                </div>
+            </div>
+
+            @* Email *@
+            <MudTextField @bind-Value="invite.InviteeEmail"
+                          For="() => invite.InviteeEmail"
+                          Variant="Variant.Outlined"
+                          Label="Email" />
+
+            @* Project *@
+            <MudSelect @bind-Value="invite.ProjectId"
+                       For="() => invite.ProjectId"
+                       Variant="Variant.Outlined"
+                       Label="Project">
+
+                <MudSelectItem Value="0">
+                    Select a project...
+                </MudSelectItem>
+            </MudSelect>
+
+            @* Message *@
+            <MudTextField @bind-Value="invite.Message"
+                          For="() => invite.Message"
+                          Variant="Variant.Outlined"
+                          Label="Message (optional)"
+                          Lines="4"
+                          AutoGrow
+                          MaxLines="8" />
+            
+            <div class="d-flex justify-content-between">
+                <MudButton Variant="Variant.Text"
+                           StartIcon="@Icons.Material.Filled.ArrowBack"
+                           Href="company">
+                    Back to Company
+                </MudButton>
+
+                <MudButton Color="Color.Primary"
+                           StartIcon="@Icons.Material.Filled.Send"
+                           Variant="Variant.Filled"
+                           ButtonType="ButtonType.Submit">
+                    Send Invite
+                </MudButton>
+            </div>
         </EditForm>
     </MudPaper>
 </MudContainer>
@@ -32,4 +90,6 @@
         new BreadcrumbItem("Company", href: "/company"),
         new BreadcrumbItem("Invite User", href: null, disabled: true)
     };
+
+    private InviteDTO invite = new();
 }
