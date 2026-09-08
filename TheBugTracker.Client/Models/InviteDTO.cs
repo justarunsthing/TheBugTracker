@@ -46,8 +46,9 @@ namespace TheBugTracker.Client.Models
 
         // Navigational Properties
 
+        [Required(ErrorMessage = "Please select a project")]
         [Description("The id of the project associated with the invite")]
-        public int ProjectId { get; set; }
+        public int? ProjectId { get; set; }
 
         [Description("The project associated with the invite")]
         public ProjectDTO? Project { get; set; }

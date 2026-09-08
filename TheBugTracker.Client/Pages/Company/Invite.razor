@@ -51,11 +51,12 @@
             <MudSelect @bind-Value="invite.ProjectId"
                        For="() => invite.ProjectId"
                        Variant="Variant.Outlined"
-                       Label="Project">
+                       Label="Project"
+                       Placeholder="Select a project">
                        
-                @foreach(ProjectDTO project in projects)
+                @foreach (ProjectDTO project in projects)
                 {
-                    <MudSelectItem Value="project.Id">
+                    <MudSelectItem T="int?" Value="project.Id">
                         @project.Name
                     </MudSelectItem>
                 }
