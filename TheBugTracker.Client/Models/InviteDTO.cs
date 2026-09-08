@@ -26,15 +26,15 @@ namespace TheBugTracker.Client.Models
             set => _joinDate = value?.ToUniversalTime();
         }
 
-        [Required, EmailAddress]
+        [Required(ErrorMessage = "The email address is required"), EmailAddress]
         [Description("The email address of the invitee")]
         public string? InviteeEmail { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "The first name is required")]
         [Description("The first name of the invitee")]
         public string? InviteeFirstName { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "The last name is required")]
         [Description("The last name of the invitee")]
         public string? InviteeLastName { get; set; }
 
