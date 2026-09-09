@@ -31,13 +31,15 @@
                     <MudTextField @bind-Value="invite.InviteeFirstName"
                                   For="() => invite.InviteeFirstName"
                                   Variant="Variant.Outlined"
-                                  Label="First Name" />
+                                  Label="First Name"
+                                  OnlyValidateIfDirty="true" />
                 </div>
                 <div class="col">
                     <MudTextField @bind-Value="invite.InviteeLastName"
                                   For="() => invite.InviteeLastName"
                                   Variant="Variant.Outlined"
-                                  Label="Last Name" />
+                                  Label="Last Name"
+                                  OnlyValidateIfDirty="true" />
                 </div>
             </div>
 
@@ -45,7 +47,8 @@
             <MudTextField @bind-Value="invite.InviteeEmail"
                           For="() => invite.InviteeEmail"
                           Variant="Variant.Outlined"
-                          Label="Email" />
+                          Label="Email"
+                          OnlyValidateIfDirty="true" />
 
             @* Project *@
             <MudSelect @bind-Value="invite.ProjectId"
