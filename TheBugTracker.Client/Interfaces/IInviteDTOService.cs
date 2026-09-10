@@ -10,6 +10,6 @@ namespace TheBugTracker.Client.Interfaces
         /// <param name="invite">The details of the invite to create</param>
         /// <param name="userInfo">The current user's claims</param>
         /// <returns>The created invite</returns>
-        Task<InviteDTO> CreateInviteAsync(InviteDTO invite, UserInfo userInfo);
+        Task<InviteDTO> CreateInviteAsync(InviteDTO dto, UserInfo userInfo);
     }
 }
