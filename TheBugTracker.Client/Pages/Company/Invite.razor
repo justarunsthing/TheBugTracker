@@ -2,6 +2,7 @@
 @attribute [Authorize(Roles = nameof(Role.Admin))]
 @inject IProjectDTOService ProjectService
 @inject ISnackbar Snackbar
+@inject IInviteDTOService InviteService
 
 <PageTitle>Invite User | The Bug Tracker</PageTitle>
 
@@ -110,7 +111,16 @@
     protected override async Task OnInitializedAsync()
     {
         userInfo = await UserInfoHelper.GetUserInfoAsync(AuthStateTask);
-        projects = await ProjectService.GetProjectsAsync(userInfo!);
+
+        try
+        {
+            projects = await ProjectService.GetProjectsAsync(userInfo!);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            Snackbar.Add("Failed to load projects", Severity.Error);
+        }
 
         invite.InviteDate = DateTimeOffset.Now;
         invite.InvitorId = userInfo!.UserId;
