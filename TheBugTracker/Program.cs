@@ -137,6 +137,9 @@ builder.Services.AddScoped<ICompanyDTOService, CompanyDTOService>();
 builder.Services.AddScoped<ITicketRepository, TicketRepository>();
 builder.Services.AddScoped<ITicketDTOService, TicketDTOService>();
 
+builder.Services.AddScoped<IInviteRepository, InviteRepository>();
+builder.Services.AddScoped<IInviteDTOService, InviteDTOService>();
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
