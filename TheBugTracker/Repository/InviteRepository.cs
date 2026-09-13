@@ -9,6 +9,28 @@ namespace TheBugTracker.Repository
 {
     public class InviteRepository(IDbContextFactory<ApplicationDbContext> contextFactory) : IInviteRepository
     {
+        public async Task<IEnumerable<Invite>> GetInvitesAsync(UserInfo userInfo)
+        {
+            await using ApplicationDbContext context = contextFactory.CreateDbContext();
+
+            IEnumerable<Invite> invites = await context.Invites
+                .Where(i => i.CompanyId == userInfo.CompanyId)
+                .Include(i => i.Invitor)
+                .Include(i => i.Invitee)
+                .Include(i => i.Project)
+                .ToListAsync();
+
+            foreach (Invite invite in invites)
+            {
+                invite.IsValid = ValidateInvite(invite);
+            }
+
+            // Save the updated IsValid status to the database
+            await context.SaveChangesAsync();
+
+            return invites;
+        }
+
         public async Task<Invite> CreateInviteAsync(Invite invite, UserInfo userInfo)
         {
             if (!userInfo.IsInRole(Role.Admin))
@@ -40,6 +62,16 @@ namespace TheBugTracker.Repository
             await context.SaveChangesAsync();
 
             return invite;
+        }
+
+        private bool ValidateInvite(Invite invite)
+        {
+            bool isValid = invite.IsValid
+                && DateTimeOffset.UtcNow < invite.InviteDate.AddDays(7)
+                && invite.JoinDate is null
+                && string.IsNullOrEmpty(invite.InviteeId);
+
+            return isValid;
         }
     }
 }
