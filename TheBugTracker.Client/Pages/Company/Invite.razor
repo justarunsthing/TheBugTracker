@@ -3,6 +3,7 @@
 @inject IProjectDTOService ProjectService
 @inject ISnackbar Snackbar
 @inject IInviteDTOService InviteService
+@inject NavigationManager Nav
 
 <PageTitle>Invite User | The Bug Tracker</PageTitle>
 
@@ -85,7 +86,8 @@
                 <MudButton Color="Color.Primary"
                            StartIcon="@Icons.Material.Filled.Send"
                            Variant="Variant.Filled"
-                           ButtonType="ButtonType.Submit">
+                           ButtonType="ButtonType.Submit"
+                           OnClick="HandleSubmitAsync">
                     Send Invite
                 </MudButton>
             </div>
@@ -124,5 +126,30 @@
 
         invite.InviteDate = DateTimeOffset.Now;
         invite.InvitorId = userInfo!.UserId;
+    }
+
+    private async Task HandleSubmitAsync()
+    {
+        bool created = false;
+
+        try
+        {
+            await InviteService.CreateInviteAsync(invite, userInfo!);
+            created = true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+
+        if (created)
+        {
+            Snackbar.Add("Invite sent successfully", Severity.Success);
+            Nav.NavigateTo("/company");
+        }
+        else
+        {
+            Snackbar.Add("An error occurred while sending the invite", Severity.Error);
+        }
     }
 }
