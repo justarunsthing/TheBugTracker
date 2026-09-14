@@ -35,7 +35,6 @@ namespace TheBugTracker.Repository
 
             Company? company = await context.Companies
                 .Include(c => c.Members)
-                .Include(c => c.Invites)
                 .FirstAsync(c => c.Id == userInfo.CompanyId);
 
             return company;

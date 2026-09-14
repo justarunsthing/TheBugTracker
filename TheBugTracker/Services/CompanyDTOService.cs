@@ -9,7 +9,7 @@ using TheBugTracker.Client.Interfaces;
 
 namespace TheBugTracker.Services
 {
-    public class CompanyDTOService(ICompanyRepository repository, UserManager<ApplicationUser> userManager) : ICompanyDTOService
+    public class CompanyDTOService(ICompanyRepository repository, UserManager<ApplicationUser> userManager, IInviteRepository inviteRepository) : ICompanyDTOService
     {
         public async Task<IEnumerable<UserDTO>> GetUsersAsync(UserInfo userInfo)
         {
@@ -44,6 +44,7 @@ namespace TheBugTracker.Services
         public async Task<CompanyDTO> GetCompanyAsync(UserInfo userInfo)
         {
             Company company = await repository.GetCompanyAsync(userInfo);
+            company.Invites = [..await inviteRepository.GetInvitesAsync(userInfo)];
             CompanyDTO dto = company.ToDTO();
 
             dto.Members.Clear();
