@@ -8,6 +8,14 @@ namespace TheBugTracker.Services
 {
     public class InviteDTOService(IInviteRepository repository) : IInviteDTOService
     {
+        public async Task<IEnumerable<InviteDTO>> GetInvitesAsync(UserInfo userInfo)
+        {
+            IEnumerable<Invite> invites = await repository.GetInvitesAsync(userInfo);
+            IEnumerable<InviteDTO> dtos = invites.Select(i => i.ToDTO());
+
+            return dtos;
+        }
+
         public async Task<InviteDTO> CreateInviteAsync(InviteDTO dto, UserInfo userInfo)
         {
             Invite invite = new()
