@@ -1,0 +1,29 @@
+﻿<MudTabs>
+    <MudTabPanel Text="Pending">
+        <MudDataGrid Items="PendingInvites">
+            <Columns>
+                <PropertyColumn Title="Invitee" Property="i => i.InviteeFirstName"></PropertyColumn>
+                <PropertyColumn Title="Project" Property="@(i => i.Project != null ? i.Project.Name : "Unknown")"></PropertyColumn>
+                <PropertyColumn Title="Sent" Property="@(i => i.InviteDate)"></PropertyColumn>
+            </Columns>
+            <NoRecordsContent>
+                <div class="py-3 text-center">
+                    <MudText Typo="Typo.button" Color="Color.Tertiary">
+                        No Pending Invites
+                    </MudText>
+                </div>
+            </NoRecordsContent>
+        </MudDataGrid>
+    </MudTabPanel>
+    <MudTabPanel Text="Accepted"></MudTabPanel>
+    <MudTabPanel Text="Cancelled/Expired"></MudTabPanel>
+</MudTabs>
+
+@code {
+    [Parameter, EditorRequired]
+    public IEnumerable<InviteDTO> Invites { get; set; } = [];
+
+    private IEnumerable<InviteDTO> PendingInvites => Invites.Where(i => i.IsValid);
+    private IEnumerable<InviteDTO> AcceptedInvites => Invites.Where(i => i.JoinDate.HasValue || !string.IsNullOrEmpty(i.InviteeId));
+    private IEnumerable<InviteDTO> ExpiredInvites => Invites.Where(i => !i.IsValid && !i.JoinDate.HasValue);
+}
