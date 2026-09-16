@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Text.Json.Serialization;
 using System.ComponentModel.DataAnnotations;
 
 namespace TheBugTracker.Client.Models
@@ -37,6 +38,9 @@ namespace TheBugTracker.Client.Models
         [Required(ErrorMessage = "The last name is required")]
         [Description("The last name of the invitee")]
         public string? InviteeLastName { get; set; }
+
+        [JsonIgnore]
+        public string InviteeFullName => $"{InviteeFirstName} {InviteeLastName}";
 
         [Description("An optional message for the invite")]
         public string? Message { get; set; }

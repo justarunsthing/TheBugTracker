@@ -35,16 +35,15 @@
                 <CompanyMembers Members="company.Members" OnChanged="HandleMembersRefreshAsync" />
             </MudPaper>
 
-            <MudPaper Class="p-3">
-                <div>
-                    Company invites
-                </div>
+            <MudPaper Class="overflow-hidden">
+                <InviteTabs Invites="company.Invites" />
 
                 <AuthorizeView Roles="@nameof(Role.Admin)">
                     <MudButton Size="Size.Small"
                                Color="Color.Primary"
                                StartIcon="@Icons.Material.Filled.PersonAdd"
-                               Href="company/invite">
+                               Href="company/invite"
+                               Class="m-3">
                         Invite New User
                     </MudButton>
                 </AuthorizeView>
