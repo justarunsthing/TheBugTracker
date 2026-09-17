@@ -26,8 +26,60 @@
             </NoRecordsContent>
         </MudDataGrid>
     </MudTabPanel>
-    <MudTabPanel Text="Accepted"></MudTabPanel>
-    <MudTabPanel Text="Cancelled/Expired"></MudTabPanel>
+    <MudTabPanel Text="Accepted">
+        <MudDataGrid Items="AcceptedInvites" Elevation="0">
+            <Columns>
+                <PropertyColumn Title="Invitee" Property="i => i.InviteeFullName">
+                    <CellTemplate>
+                        <div class="vstack">
+                            <MudText Typo="Typo.body1">
+                                @context.Item.InviteeFullName
+                            </MudText>
+                            <MudText Typo="Typo.caption" Style="line-height: 1em">
+                                @context.Item.InviteeEmail
+                            </MudText>
+                        </div>
+                    </CellTemplate>
+                </PropertyColumn>
+                <PropertyColumn Title="Project" Property="@(i => i.Project != null ? i.Project.Name : "Unknown")" />
+                <PropertyColumn Title="Sent" Property="i => i.InviteDate" Format="g" />
+            </Columns>
+            <NoRecordsContent>
+                <div class="py-3 text-center">
+                    <MudText Typo="Typo.button" Color="Color.Tertiary">
+                        No Accepted Invites
+                    </MudText>
+                </div>
+            </NoRecordsContent>
+        </MudDataGrid>
+    </MudTabPanel>
+    <MudTabPanel Text="Cancelled/Expired">
+        <MudDataGrid Items="ExpiredInvites" Elevation="0">
+            <Columns>
+                <PropertyColumn Title="Invitee" Property="i => i.InviteeFullName">
+                    <CellTemplate>
+                        <div class="vstack">
+                            <MudText Typo="Typo.body1">
+                                @context.Item.InviteeFullName
+                            </MudText>
+                            <MudText Typo="Typo.caption" Style="line-height: 1em">
+                                @context.Item.InviteeEmail
+                            </MudText>
+                        </div>
+                    </CellTemplate>
+                </PropertyColumn>
+                <PropertyColumn Title="Project" Property="@(i => i.Project != null ? i.Project.Name : "Unknown")" />
+                <PropertyColumn Title="Sent" Property="i => i.InviteDate" Format="g" />
+            </Columns>
+            <NoRecordsContent>
+                <div class="py-3 text-center">
+                    <MudText Typo="Typo.button" Color="Color.Tertiary">
+                        No Cancelled/Expired Invites
+                    </MudText>
+                </div>
+            </NoRecordsContent>
+        </MudDataGrid>
+    </MudTabPanel>
 </MudTabs>
 
 @code {
