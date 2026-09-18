@@ -2,6 +2,22 @@
     <MudTabPanel Text="Pending">
         <MudDataGrid Items="PendingInvites" Elevation="0">
             <Columns>
+                <TemplateColumn>
+                    <CellTemplate>
+                        <AuthorizeView Roles="@nameof(Role.Admin)" Context="authContext">
+                            <MudMenu Icon="@Icons.Material.Filled.MoreVert"
+                                     Dense
+                                     Size="Size.Small">
+                                <MudMenuItem Icon="@Icons.Material.Filled.Mail">
+                                    Resend
+                                </MudMenuItem>
+                                <MudMenuItem Icon="@Icons.Material.Filled.Cancel" IconColor="Color.Error">
+                                    Cancel
+                                </MudMenuItem>
+                            </MudMenu>
+                        </AuthorizeView>
+                    </CellTemplate>
+                </TemplateColumn>
                 <PropertyColumn Title="Invitee" Property="i => i.InviteeFullName">
                     <CellTemplate>
                         <div class="vstack">
