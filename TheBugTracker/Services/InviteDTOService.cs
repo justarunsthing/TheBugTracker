@@ -1,6 +1,7 @@
 ﻿using TheBugTracker.Client;
 using TheBugTracker.Models;
 using TheBugTracker.Interfaces;
+using TheBugTracker.Client.Enums;
 using TheBugTracker.Client.Models;
 using TheBugTracker.Client.Interfaces;
 
@@ -33,6 +34,14 @@ namespace TheBugTracker.Services
             Invite createdInvite = await repository.CreateInviteAsync(invite, userInfo);
 
             return createdInvite.ToDTO();
+        }
+
+        public async Task CancelInviteAsync(int inviteId, UserInfo userInfo)
+        {
+            if (userInfo.IsInRole(Role.Admin))
+            {
+                await repository.CancelInviteAsync(inviteId, userInfo);
+            }        
         }
     }
 }
