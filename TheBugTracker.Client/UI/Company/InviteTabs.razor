@@ -1,4 +1,7 @@
-﻿<MudTabs>
+﻿@inject ISnackbar Snackbar
+@inject IInviteDTOService InviteDTOService
+
+<MudTabs>
     <MudTabPanel Text="Pending">
         <MudDataGrid Items="PendingInvites" Elevation="0">
             <Columns>
@@ -11,7 +14,9 @@
                                 <MudMenuItem Icon="@Icons.Material.Filled.Mail">
                                     Resend
                                 </MudMenuItem>
-                                <MudMenuItem Icon="@Icons.Material.Filled.Cancel" IconColor="Color.Error">
+                                <MudMenuItem Icon="@Icons.Material.Filled.Cancel" 
+                                             IconColor="Color.Error"
+                                             OnClick="async () => await HandleCancelInviteAsync(context.Item.Id)">
                                     Cancel
                                 </MudMenuItem>
                             </MudMenu>
@@ -102,7 +107,32 @@
     [Parameter, EditorRequired]
     public IEnumerable<InviteDTO> Invites { get; set; } = [];
 
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthStateTask { get; set; } = default!;
+    private UserInfo? userInfo;
+
     private IEnumerable<InviteDTO> PendingInvites => Invites.Where(i => i.IsValid);
     private IEnumerable<InviteDTO> AcceptedInvites => Invites.Where(i => i.JoinDate.HasValue || !string.IsNullOrEmpty(i.InviteeId));
     private IEnumerable<InviteDTO> ExpiredInvites => Invites.Where(i => !i.IsValid && !i.JoinDate.HasValue);
+
+    private async Task HandleCancelInviteAsync(int inviteId)
+    {
+        userInfo ??= await UserInfoHelper.GetUserInfoAsync(AuthStateTask);
+
+        if (userInfo is null || !userInfo.IsInRole(Role.Admin))
+        {
+            return;
+        }
+
+        try
+        {
+            await InviteDTOService.CancelInviteAsync(inviteId, userInfo);
+            Snackbar.Add("Invite cancelled successfully!", Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            Snackbar.Add("An error occurred cancelling the invite!", Severity.Error);
+        }
+    }
 }
