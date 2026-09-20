@@ -64,6 +64,27 @@ namespace TheBugTracker.Repository
             return invite;
         }
 
+        public async Task CancelInviteAsync(int inviteId, UserInfo userInfo)
+        {
+            if (!userInfo.IsInRole(Role.Admin))
+            {
+                return;
+            }
+            
+            await using ApplicationDbContext context = contextFactory.CreateDbContext();
+
+            Invite? invite = await context.Invites
+                .FirstOrDefaultAsync(i => i.Id == inviteId 
+                                          && i.CompanyId == userInfo.CompanyId
+                                          && i.IsValid == true);
+
+            if (invite is not null)
+            {
+                invite.IsValid = false;
+                await context.SaveChangesAsync();
+            }
+        }
+
         private bool ValidateInvite(Invite invite)
         {
             bool isValid = invite.IsValid
