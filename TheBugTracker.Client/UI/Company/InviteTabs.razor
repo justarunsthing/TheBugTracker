@@ -111,6 +111,9 @@
     public Task<AuthenticationState> AuthStateTask { get; set; } = default!;
     private UserInfo? userInfo;
 
+    [Parameter]
+    public EventCallback OnChange { get; set; }
+
     private IEnumerable<InviteDTO> PendingInvites => Invites.Where(i => i.IsValid);
     private IEnumerable<InviteDTO> AcceptedInvites => Invites.Where(i => i.JoinDate.HasValue || !string.IsNullOrEmpty(i.InviteeId));
     private IEnumerable<InviteDTO> ExpiredInvites => Invites.Where(i => !i.IsValid && !i.JoinDate.HasValue);
@@ -128,6 +131,8 @@
         {
             await InviteDTOService.CancelInviteAsync(inviteId, userInfo);
             Snackbar.Add("Invite cancelled successfully!", Severity.Success);
+
+            await OnChange.InvokeAsync();
         }
         catch (Exception ex)
         {
