@@ -3,6 +3,7 @@
 @attribute [Authorize]
 @inject ICompanyDTOService CompanyService
 @inject ISnackbar SnackBar
+@inject IInviteDTOService InviteService
 
 <PageTitle>My Company | The Bug Tracker</PageTitle>
 
@@ -36,7 +37,7 @@
             </MudPaper>
 
             <MudPaper Class="overflow-hidden">
-                <InviteTabs Invites="company.Invites" />
+                <InviteTabs Invites="company.Invites" OnChange="HandleInvitesRefreshAsync" />
 
                 <AuthorizeView Roles="@nameof(Role.Admin)">
                     <MudButton Size="Size.Small"
@@ -121,6 +122,24 @@
         {
             Console.WriteLine(ex);
             SnackBar.Add("Failed to fetch company members", Severity.Error);
+        }
+    }
+
+    private async Task HandleInvitesRefreshAsync()
+    {
+        if (company is null || userInfo is null)
+        {
+            return;
+        }
+
+        try
+        {
+            company.Invites = [.. await InviteService.GetInvitesAsync(userInfo)];
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            SnackBar.Add("Failed to fetch company invites", Severity.Error);
         }
     }
 }
