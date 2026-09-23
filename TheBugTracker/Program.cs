@@ -14,6 +14,7 @@ using TheBugTracker.Interfaces;
 using TheBugTracker.Models;
 using TheBugTracker.Repository;
 using TheBugTracker.Services;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -126,7 +127,8 @@ builder.Services.AddIdentityCore<ApplicationUser>(options =>
     .AddSignInManager()
     .AddDefaultTokenProviders();
 
-builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
+builder.Services.AddSingleton<IEmailSender<ApplicationUser>, SendGridService>();
+builder.Services.AddSingleton<IEmailSender, SendGridService>();
 
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<IProjectDTOService, ProjectDTOService>();
