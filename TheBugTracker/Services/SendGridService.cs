@@ -1,10 +1,9 @@
-﻿using Azure;
-using SendGrid;
-using System.Net.Mail;
+﻿using SendGrid;
 using TheBugTracker.Models;
 using SendGrid.Helpers.Mail;
 using Microsoft.AspNetCore.Identity;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace TheBugTracker.Services
 {
