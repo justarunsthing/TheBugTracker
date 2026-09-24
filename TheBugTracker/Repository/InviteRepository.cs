@@ -4,14 +4,34 @@ using TheBugTracker.Models;
 using TheBugTracker.Interfaces;
 using TheBugTracker.Client.Enums;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace TheBugTracker.Repository
 {
-    public class InviteRepository(IDbContextFactory<ApplicationDbContext> contextFactory) : IInviteRepository
+    public class InviteRepository : IInviteRepository
     {
+        private readonly IDbContextFactory<ApplicationDbContext> _contextFactory;
+        private readonly IEmailSender _emailSender;
+        private readonly IDataProtector _protector;
+
+        public InviteRepository(IDbContextFactory<ApplicationDbContext> contextFactory,
+                                IEmailSender emailSender,
+                                IDataProtectionProvider protectionProvider,
+                                IConfiguration config)
+        {
+            _contextFactory = contextFactory;
+            _emailSender = emailSender;
+
+            string protectionPurpose = config["InviteProtectionKey"]
+                ?? throw new ApplicationException("InviteProtectionKey not found in configuration!");
+
+            _protector = protectionProvider.CreateProtector(protectionPurpose);
+        }
+
         public async Task<IEnumerable<Invite>> GetInvitesAsync(UserInfo userInfo)
         {
-            await using ApplicationDbContext context = contextFactory.CreateDbContext();
+            await using ApplicationDbContext context = _contextFactory.CreateDbContext();
 
             IEnumerable<Invite> invites = await context.Invites
                 .Where(i => i.CompanyId == userInfo.CompanyId)
@@ -38,7 +58,7 @@ namespace TheBugTracker.Repository
                 throw new ApplicationException($"{userInfo.Email} is not authorized to create invites.");
             }
 
-            await using ApplicationDbContext context = contextFactory.CreateDbContext();
+            await using ApplicationDbContext context = _contextFactory.CreateDbContext();
 
             if (await context.Users.AnyAsync(u => u.Email!.ToUpper() == invite.InviteeEmail!.ToUpper()))
             {
@@ -71,7 +91,7 @@ namespace TheBugTracker.Repository
                 return;
             }
             
-            await using ApplicationDbContext context = contextFactory.CreateDbContext();
+            await using ApplicationDbContext context = _contextFactory.CreateDbContext();
 
             Invite? invite = await context.Invites
                 .FirstOrDefaultAsync(i => i.Id == inviteId 
@@ -83,6 +103,11 @@ namespace TheBugTracker.Repository
                 invite.IsValid = false;
                 await context.SaveChangesAsync();
             }
+        }
+
+        public async Task<bool> SendInviteAsync(Uri baseUri, int inviteId, UserInfo userInfo)
+        {
+
         }
 
         private bool ValidateInvite(Invite invite)
