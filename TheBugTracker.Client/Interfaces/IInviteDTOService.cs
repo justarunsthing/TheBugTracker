@@ -25,5 +25,14 @@ namespace TheBugTracker.Client.Interfaces
         /// <param name="inviteId">The ID of the invite to cancel</param>
         /// <param name="userInfo">The current user's claims</param>
         Task CancelInviteAsync(int inviteId, UserInfo userInfo);
+
+        /// <summary>
+        /// Sends a unique invite registration link email to the specified user.
+        /// </summary>
+        /// <param name="baseUri">The base URL to the application</param>
+        /// <param name="inviteId">The ID of the invite to send</param>
+        /// <param name="userInfo">The current user's claims</param>
+        /// <returns>True if the invite was sent successfully, otherwise false</returns>
+        Task<bool> SendInviteAsync(Uri baseUri, int inviteId, UserInfo userInfo);
     }
 }

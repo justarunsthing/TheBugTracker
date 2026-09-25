@@ -43,5 +43,15 @@ namespace TheBugTracker.Services
                 await repository.CancelInviteAsync(inviteId, userInfo);
             }        
         }
+
+        public async Task<bool> SendInviteAsync(Uri baseUri, int inviteId, UserInfo userInfo)
+        {
+            if (userInfo.IsInRole(Role.Admin))
+            {
+                return await repository.SendInviteAsync(baseUri, inviteId, userInfo);
+            }
+
+            return false;
+        }
     }
 }
