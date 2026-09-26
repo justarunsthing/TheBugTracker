@@ -1,5 +1,6 @@
 ﻿@inject ISnackbar Snackbar
 @inject IInviteDTOService InviteDTOService
+@inject NavigationManager Nav
 
 <MudTabs>
     <MudTabPanel Text="Pending">
@@ -11,7 +12,8 @@
                             <MudMenu Icon="@Icons.Material.Filled.MoreVert"
                                      Dense
                                      Size="Size.Small">
-                                <MudMenuItem Icon="@Icons.Material.Filled.Mail">
+                                <MudMenuItem Icon="@Icons.Material.Filled.Mail"
+                                             OnClick="async () => await HandleResendInviteAsync(context.Item.Id)">
                                     Resend
                                 </MudMenuItem>
                                 <MudMenuItem Icon="@Icons.Material.Filled.Cancel" 
@@ -138,6 +140,33 @@
         {
             Console.WriteLine(ex);
             Snackbar.Add("An error occurred cancelling the invite!", Severity.Error);
+        }
+    }
+
+    private async Task HandleResendInviteAsync(int inviteId)
+    {
+        userInfo ??= await UserInfoHelper.GetUserInfoAsync(AuthStateTask);
+
+        if (userInfo is null || !userInfo.IsInRole(Role.Admin))
+        {
+            return;
+        }
+
+        try
+        {
+            bool sent = await InviteDTOService.SendInviteAsync(new Uri(Nav.BaseUri), inviteId, userInfo);
+
+            if (!sent)
+            {
+                throw new ApplicationException("SendInviteAsync returned false");
+            }
+
+            Snackbar.Add("Invite resent successfully!", Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            Snackbar.Add("An error occurred resending the invite!", Severity.Error);
         }
     }
 }
