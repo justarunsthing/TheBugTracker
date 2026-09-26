@@ -131,25 +131,36 @@
     private async Task HandleSubmitAsync()
     {
         bool created = false;
+        bool sent = false;
 
         try
         {
-            await InviteService.CreateInviteAsync(invite, userInfo!);
+            InviteDTO createdInvite = await InviteService.CreateInviteAsync(invite, userInfo!);
             created = true;
+
+            sent = await InviteService.SendInviteAsync(new Uri(Nav.BaseUri), createdInvite.Id, userInfo!);
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex);
         }
 
-        if (created)
+        if (sent)
         {
-            Snackbar.Add("Invite sent successfully", Severity.Success);
-            Nav.NavigateTo("/company");
+            Snackbar.Add("Invite sent successfully!", Severity.Success);
+        }
+        else if (created)
+        {
+            Snackbar.Add("Your invite was created but failed to send!", Severity.Warning);
         }
         else
         {
-            Snackbar.Add("An error occurred while sending the invite", Severity.Error);
+            Snackbar.Add("An error occurred while creating the invite!", Severity.Error);
+        }
+
+        if (sent || created)
+        {
+            Nav.NavigateTo("/company");
         }
     }
 }
