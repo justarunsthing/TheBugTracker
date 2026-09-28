@@ -20,6 +20,25 @@
 
 <div class="d-flex align-items-center justify-content-center p-3 h-100">
     <div class="col-lg-6">
+        <MudPaper Class="p-3" Elevation="4">
+            <MudText Typo="Typo.h6" GutterBottom>
+                You've been invited to join <strong>{SOME COMPANY}</strong> by <strong>{SOME USER}</strong>
+            </MudText>
+
+            <div class="hstack gap-3 align-items-start">
+                <MudIcon Icon="@Icons.Material.Filled.FormatQuote" Size="Size.Large" />
+                
+                <div class="vstack">
+                    <MudText Typo="Typo.body2" GutterBottom>
+                        THis is a placeholder message from the invite.
+                    </MudText>
+                    <MudText Typo="Typo.caption">
+                        - {SOME USER}
+                    </MudText>
+                </div>
+            </div>
+        </MudPaper>
+
         <StatusMessage Message="@Message" />
         <EditForm Model="Input" method="post" OnValidSubmit="RegisterUser" FormName="register" enctype="multipart/form-data" >
             <DataAnnotationsValidator />
