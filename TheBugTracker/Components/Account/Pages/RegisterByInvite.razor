@@ -19,7 +19,7 @@
 <PageTitle>Register | The Bug Tracker</PageTitle>
 
 <div class="d-flex align-items-center justify-content-center p-3 h-100">
-    <div class="col-lg-6">
+    <MudPaper Class="p-3" Style="max-width: 768px">
         <MudPaper Class="p-3 mb-5" Elevation="4">
             <MudText Typo="Typo.h6" GutterBottom>
                 You've been invited to join <strong>{SOME COMPANY}</strong> by <strong>{SOME USER}</strong>
@@ -126,7 +126,7 @@
                        Register
             </MudButton>
         </EditForm>
-    </div>
+    </MudPaper>
 </div>
 
 @code {
@@ -137,6 +137,15 @@
 
     [SupplyParameterFromQuery]
     private string? ReturnUrl { get; set; }
+
+    [SupplyParameterFromQuery]
+    private string? Token { get; set; }
+
+    [SupplyParameterFromQuery]
+    private string? Email { get; set; }
+
+    [SupplyParameterFromQuery]
+    private string? Company { get; set; }
 
     private string? Message => identityErrors is null ? null : $"Error: {string.Join(", ", identityErrors.Select(error => error.Description))}";
 
