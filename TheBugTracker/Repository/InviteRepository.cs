@@ -188,6 +188,54 @@ namespace TheBugTracker.Repository
             return false;
         }
 
+        public async Task<Invite?> GetValidInviteAsync(string protectedToken, string protectedEmail, string protectedCompanyId)
+        {
+            try
+            {
+                string strToken = _protector.Unprotect(protectedToken);
+                Guid token = Guid.Parse(strToken);
+
+                string email = _protector.Unprotect(protectedEmail);
+
+                string strCompanyId = _protector.Unprotect(protectedCompanyId);
+                int companyId = int.Parse(strCompanyId);
+
+                await using ApplicationDbContext context = _contextFactory.CreateDbContext();
+
+                Invite? invite = await context.Invites
+                    .Include(i => i.Company)
+                    .Include(i => i.Invitor)
+                    .Include(i => i.Project)
+                    .FirstOrDefaultAsync(i => i.CompanyId == companyId
+                                              && i.CompanyToken == token
+                                              && i.InviteeEmail == email
+                                              && i.IsValid == true);
+
+                if (invite is null)
+                {
+                    return null;
+                }
+
+                bool isValid = ValidateInvite(invite);
+
+                if (isValid == false)
+                {
+                    invite.IsValid = false;
+                    await context.SaveChangesAsync();
+
+                    return null;
+                }
+
+                return invite;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+
+            return null;
+        }
+
         private bool ValidateInvite(Invite invite)
         {
             bool isValid = invite.IsValid

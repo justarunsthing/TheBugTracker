@@ -35,5 +35,14 @@ namespace TheBugTracker.Interfaces
         /// <param name="userInfo">The current user's claims</param>
         /// <returns>True if the invite was sent successfully, otherwise false</returns>
         Task<bool> SendInviteAsync(Uri baseUri, int inviteId, UserInfo userInfo);
+
+        /// <summary>
+        /// Gets a valid invite based on the provided protected token, email, and company ID. Returns null if the invite is invalid or not found.
+        /// </summary>
+        /// <param name="protectedToken">The protected token of the invite</param>
+        /// <param name="protectedEmail">The protected email of the invite</param>
+        /// <param name="protectedCompanyId">The protected company ID of the invite</param>
+        /// <returns>The valid invite if found, otherwise null</returns>
+        Task<Invite?> GetValidInviteAsync(string protectedToken, string protectedEmail, string protectedCompanyId);
     }
 }
