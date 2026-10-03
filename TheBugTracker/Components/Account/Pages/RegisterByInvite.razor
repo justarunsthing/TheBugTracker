@@ -6,6 +6,7 @@
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.WebUtilities
 @using TheBugTracker.Data
+@using TheBugTracker.Interfaces
 
 @inject UserManager<ApplicationUser> UserManager
 @inject IUserStore<ApplicationUser> UserStore
@@ -15,125 +16,148 @@
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
 @inject ApplicationDbContext Context
+@inject IInviteRepository InviteRepository
 
 <PageTitle>Register | The Bug Tracker</PageTitle>
 
 <div class="d-flex align-items-center justify-content-center p-3 h-100">
     <MudPaper Class="p-3" Style="max-width: 768px">
-        <MudPaper Class="p-3 mb-5" Elevation="4">
-            <MudText Typo="Typo.h6" GutterBottom>
-                You've been invited to join <strong>{SOME COMPANY}</strong> by <strong>{SOME USER}</strong>
-            </MudText>
 
-            <div class="hstack gap-3 align-items-start">
-                <MudIcon Icon="@Icons.Material.Filled.FormatQuote" Size="Size.Large" />
-                
-                <div class="vstack">
-                    <MudText Typo="Typo.body2" GutterBottom>
-                        THis is a placeholder message from the invite.
-                    </MudText>
-                    <MudText Typo="Typo.caption">
-                        - {SOME USER}
-                    </MudText>
-                </div>
+        @if (inviteError)
+        {
+            <div class="vstack gap-2">
+                <MudText Typo="Typo.h3" GutterBottom>
+                    Uh Oh!
+                </MudText>
+                <MudText Typo="Typo.body1" GutterBottom>
+                    It looks like you clicked an invalid invite link. If you intended to join an existing company on
+                    The Bug Tracker, please contact the person who invited you to receive a new link.
+                </MudText>
+                <MudText Typo="Typo.body1" GutterBottom>
+                    If you'd like to register your own company on The Bug Tracker as an administrator,
+                    <MudLink Href="Account/Register">click here</MudLink>
+                    to register a new company and create an administrator account.
+                </MudText>
             </div>
-        </MudPaper>
+        }
+        else if (invite is not null && Input is not null)
+        {
+            <MudPaper Class="p-3 mb-5" Elevation="4">
+                <MudText Typo="Typo.h6" GutterBottom>
+                    You've been invited to join <strong>@invite.Company?.Name</strong> by <strong>{SOME USER}</strong>
+                </MudText>
 
-        <StatusMessage Message="@Message" />
+                <div class="hstack gap-3 align-items-start">
+                    <MudIcon Icon="@Icons.Material.Filled.FormatQuote" Size="Size.Large" />
 
-        <MudDivider DividerType="DividerType.FullWidth" Light Class="my-3" />
-
-        <EditForm Model="Input" method="post" OnValidSubmit="RegisterUser" FormName="register" enctype="multipart/form-data" >
-            <DataAnnotationsValidator />
-
-            <MudText Typo="Typo.h5" GutterBottom>
-                Create An Account
-            </MudText>
-
-            <div class="my-3">
-                <MudTextField @bind-Value="Input.FirstName" 
-                              id="Input.FirstName"
-                              aria-required="true" 
-                              Variant="Variant.Outlined"
-                              Label="First Name"
-                              For="() => Input.FirstName"
-                              ShrinkLabel />
-            </div>
-
-            <div class="mb-3">
-                <MudTextField @bind-Value="Input.LastName" 
-                              id="Input.LastName"
-                              aria-required="true" 
-                              Variant="Variant.Outlined"
-                              Label="Last Name"
-                              For="() => Input.LastName"
-                              ShrinkLabel />
-            </div>
-
-            <div class="mb-3">
-                <MudTextField @bind-Value="Input.Email" 
-                              id="Input.Email"
-                              aria-required="true"
-                              autocomplete="username"
-                              Variant="Variant.Outlined"
-                              Label="Email"
-                              For="() => Input.Email"
-                              ShrinkLabel />
-            </div>
-
-            <div class="mb-3">
-                <MudTextField @bind-Value="Input.Password"
-                              InputType="InputType.Password"
-                              id="Input.Password"
-                              aria-required="true"
-                              autocomplete="new-password"
-                              Variant="Variant.Outlined"
-                              Label="Password"
-                              For="() => Input.Password"
-                              ShrinkLabel />
-            </div>
-
-            <div class="mb-3">
-                <MudTextField @bind-Value="Input.ConfirmPassword"
-                              InputType="InputType.Password"
-                              id="Input.ConfirmPassword"
-                              aria-required="true"
-                              autocomplete="new-password"
-                              Variant="Variant.Outlined"
-                              Label="Confirm Password"
-                              For="() => Input.ConfirmPassword"
-                              ShrinkLabel />
-            </div>
-
-            <MudField Class="mb-3" Label="Profile Picture" Variant="Variant.Outlined">
-                <div class="hstack gap-3">
-                    <img src="@UploadHelper.DefaultProfilePictureUrl" id="profile-pic-preview" style="object-fit: cover; height: 48px; width: 48px; border-radius: 4px" />
-
-                    <div>
-                        <input type="file" class="form-control" name="Input.ProfilePicture" accept=".jpg, .jpeg, .png, .svg, .gif"
-                               onchange="document.getElementById('profile-pic-preview').src = window.URL.createObjectURL(this.files[0])" />
+                    <div class="vstack">
+                        <MudText Typo="Typo.body2" GutterBottom>
+                            THis is a placeholder message from the invite.
+                        </MudText>
+                        <MudText Typo="Typo.caption">
+                            - @invite.Invitor.FirstName @invite.Invitor.LastName
+                        </MudText>
                     </div>
                 </div>
-            </MudField>
+            </MudPaper>
+
+            <StatusMessage Message="@Message" />
 
             <MudDivider DividerType="DividerType.FullWidth" Light Class="my-3" />
 
-            <MudButton ButtonType="ButtonType.Submit"
-                       Variant="Variant.Filled"
-                       Color="Color.Secondary"
-                       Size="Size.Large"
-                       FullWidth>
-                       Register
-            </MudButton>
-        </EditForm>
+            <EditForm Model="Input" method="post" OnValidSubmit="RegisterUser" FormName="register" enctype="multipart/form-data">
+                <DataAnnotationsValidator />
+
+                <MudText Typo="Typo.h5" GutterBottom>
+                    Create An Account
+                </MudText>
+
+                <div class="my-3">
+                    <MudTextField @bind-Value="Input.FirstName"
+                                  id="Input.FirstName"
+                                  aria-required="true"
+                                  Variant="Variant.Outlined"
+                                  Label="First Name"
+                                  For="() => Input.FirstName"
+                                  ShrinkLabel />
+                </div>
+
+                <div class="mb-3">
+                    <MudTextField @bind-Value="Input.LastName"
+                                  id="Input.LastName"
+                                  aria-required="true"
+                                  Variant="Variant.Outlined"
+                                  Label="Last Name"
+                                  For="() => Input.LastName"
+                                  ShrinkLabel />
+                </div>
+
+                <div class="mb-3">
+                    <MudTextField @bind-Value="Input.Email"
+                                  id="Input.Email"
+                                  aria-required="true"
+                                  autocomplete="username"
+                                  Variant="Variant.Outlined"
+                                  Label="Email"
+                                  For="() => Input.Email"
+                                  ShrinkLabel />
+                </div>
+
+                <div class="mb-3">
+                    <MudTextField @bind-Value="Input.Password"
+                                  InputType="InputType.Password"
+                                  id="Input.Password"
+                                  aria-required="true"
+                                  autocomplete="new-password"
+                                  Variant="Variant.Outlined"
+                                  Label="Password"
+                                  For="() => Input.Password"
+                                  ShrinkLabel />
+                </div>
+
+                <div class="mb-3">
+                    <MudTextField @bind-Value="Input.ConfirmPassword"
+                                  InputType="InputType.Password"
+                                  id="Input.ConfirmPassword"
+                                  aria-required="true"
+                                  autocomplete="new-password"
+                                  Variant="Variant.Outlined"
+                                  Label="Confirm Password"
+                                  For="() => Input.ConfirmPassword"
+                                  ShrinkLabel />
+                </div>
+
+                <MudField Class="mb-3" Label="Profile Picture" Variant="Variant.Outlined">
+                    <div class="hstack gap-3">
+                        <img src="@UploadHelper.DefaultProfilePictureUrl" id="profile-pic-preview" style="object-fit: cover; height: 48px; width: 48px; border-radius: 4px" />
+
+                        <div>
+                            <input type="file" class="form-control" name="Input.ProfilePicture" accept=".jpg, .jpeg, .png, .svg, .gif"
+                                   onchange="document.getElementById('profile-pic-preview').src = window.URL.createObjectURL(this.files[0])" />
+                        </div>
+                    </div>
+                </MudField>
+
+                <MudDivider DividerType="DividerType.FullWidth" Light Class="my-3" />
+
+                <MudButton ButtonType="ButtonType.Submit"
+                           Variant="Variant.Filled"
+                           Color="Color.Secondary"
+                           Size="Size.Large"
+                           FullWidth>
+                    Register
+                </MudButton>
+            </EditForm>
+        }
     </MudPaper>
 </div>
 
 @code {
     private IEnumerable<IdentityError>? identityErrors;
+    private Invite? invite;
 
     [SupplyParameterFromForm]
-    private InputModel Input { get; set; } = default!;
+    private InputModel? Input { get; set; }
 
     [SupplyParameterFromQuery]
     private string? ReturnUrl { get; set; }
@@ -149,9 +173,30 @@
 
     private string? Message => identityErrors is null ? null : $"Error: {string.Join(", ", identityErrors.Select(error => error.Description))}";
 
-    protected override void OnInitialized()
+    private bool inviteError;
+
+    protected override async Task OnInitializedAsync()
     {
-        Input ??= new();
+        if (string.IsNullOrWhiteSpace(Token) || string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Company))
+        {
+            inviteError = true;
+            return;
+        }
+
+        invite = await InviteRepository.GetValidInviteAsync(Token, Email, Company);
+
+        if (invite is null)
+        {
+            inviteError = true;
+            return;
+        }
+
+        Input ??= new InputModel
+        {
+            Email = invite.InviteeEmail!,
+            FirstName = invite.InviteeFirstName!,
+            LastName = invite.InviteeLastName!
+        };
     }
 
     public async Task RegisterUser(EditContext editContext)
