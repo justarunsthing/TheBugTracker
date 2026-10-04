@@ -42,23 +42,28 @@
         }
         else if (invite is not null && Input is not null)
         {
+            @* Invite postcard *@
             <MudPaper Class="p-3 mb-5" Elevation="4">
                 <MudText Typo="Typo.h6" GutterBottom>
-                    You've been invited to join <strong>@invite.Company?.Name</strong> by <strong>{SOME USER}</strong>
+                    You've been invited to join <strong>@invite.Company?.Name</strong> by 
+                    <strong>@invite.Invitor?.FirstName @invite.Invitor?.LastName</strong>
                 </MudText>
 
-                <div class="hstack gap-3 align-items-start">
-                    <MudIcon Icon="@Icons.Material.Filled.FormatQuote" Size="Size.Large" />
+                @if (!string.IsNullOrEmpty(invite.Message))
+                {
+                    <div class="hstack gap-3 align-items-start">
+                        <MudIcon Icon="@Icons.Material.Filled.FormatQuote" Size="Size.Large" />
 
-                    <div class="vstack">
-                        <MudText Typo="Typo.body2" GutterBottom>
-                            THis is a placeholder message from the invite.
-                        </MudText>
-                        <MudText Typo="Typo.caption">
-                            - @invite.Invitor.FirstName @invite.Invitor.LastName
-                        </MudText>
+                        <div class="vstack">
+                            <MudText Typo="Typo.body2" GutterBottom>
+                                @invite.Message
+                            </MudText>
+                            <MudText Typo="Typo.caption">
+                                - @invite.Invitor?.FirstName @invite.Invitor?.LastName
+                            </MudText>
+                        </div>
                     </div>
-                </div>
+                }
             </MudPaper>
 
             <StatusMessage Message="@Message" />
