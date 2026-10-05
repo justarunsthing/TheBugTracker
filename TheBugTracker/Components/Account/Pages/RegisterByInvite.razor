@@ -70,6 +70,7 @@
 
             <MudDivider DividerType="DividerType.FullWidth" Light Class="my-3" />
 
+            @* Registration form *@
             <EditForm Model="Input" method="post" OnValidSubmit="RegisterUser" FormName="register" enctype="multipart/form-data">
                 <DataAnnotationsValidator />
 
@@ -78,7 +79,8 @@
                 </MudText>
 
                 <div class="my-3">
-                    <MudTextField @bind-Value="Input.FirstName"
+                    <MudTextField Value="Input.FirstName"
+                                  name="Input.FirstName"
                                   id="Input.FirstName"
                                   aria-required="true"
                                   Variant="Variant.Outlined"
@@ -88,7 +90,8 @@
                 </div>
 
                 <div class="mb-3">
-                    <MudTextField @bind-Value="Input.LastName"
+                    <MudTextField Value="Input.LastName"
+                                  name="Input.LastName"
                                   id="Input.LastName"
                                   aria-required="true"
                                   Variant="Variant.Outlined"
@@ -98,7 +101,8 @@
                 </div>
 
                 <div class="mb-3">
-                    <MudTextField @bind-Value="Input.Email"
+                    <MudTextField Value="Input.Email"
+                                  name="Input.Email"
                                   id="Input.Email"
                                   aria-required="true"
                                   autocomplete="username"
@@ -109,7 +113,8 @@
                 </div>
 
                 <div class="mb-3">
-                    <MudTextField @bind-Value="Input.Password"
+                    <MudTextField Value="Input.Password"
+                                  name="Input.Password"
                                   InputType="InputType.Password"
                                   id="Input.Password"
                                   aria-required="true"
@@ -121,7 +126,8 @@
                 </div>
 
                 <div class="mb-3">
-                    <MudTextField @bind-Value="Input.ConfirmPassword"
+                    <MudTextField Value="Input.ConfirmPassword"
+                                  name="Input.ConfirmPassword"
                                   InputType="InputType.Password"
                                   id="Input.ConfirmPassword"
                                   aria-required="true"
