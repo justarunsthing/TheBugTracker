@@ -1,10 +1,13 @@
 ﻿@page "/Account/Register/Invite"
 
 @using System.ComponentModel.DataAnnotations
+@using System.Security.Claims
 @using System.Text
 @using System.Text.Encodings.Web
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.WebUtilities
+@using TheBugTracker.Client.Enums
+@using TheBugTracker.Client.Helpers
 @using TheBugTracker.Data
 @using TheBugTracker.Interfaces
 
@@ -17,6 +20,8 @@
 @inject IdentityRedirectManager RedirectManager
 @inject ApplicationDbContext Context
 @inject IInviteRepository InviteRepository
+@inject IProjectRepository ProjectRepository
+@inject IUserClaimsPrincipalFactory<ApplicationUser> ClaimsFactory
 
 <PageTitle>Register | The Bug Tracker</PageTitle>
 
@@ -212,9 +217,17 @@
 
     public async Task RegisterUser(EditContext editContext)
     {
+        if (invite is null)
+        {
+            inviteError = true;
+            return;
+        }
+
         var user = CreateUser();
-        user.FirstName = Input.FirstName;
+
+        user.FirstName = Input!.FirstName;
         user.LastName = Input.LastName;
+        user.CompanyId = invite.CompanyId;
 
         await UserStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
         var emailStore = GetEmailStore();
@@ -226,6 +239,8 @@
             identityErrors = result.Errors;
             return;
         }
+
+        await UserManager.AddToRoleAsync(user, nameof(Role.Submitter));
 
         Logger.LogInformation("User created a new account with password.");
 
@@ -250,11 +265,18 @@
         var userId = await UserManager.GetUserIdAsync(user);
         var code = await UserManager.GenerateEmailConfirmationTokenAsync(user);
         code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+
         var callbackUrl = NavigationManager.GetUriWithQueryParameters(
             NavigationManager.ToAbsoluteUri("Account/ConfirmEmail").AbsoluteUri,
             new Dictionary<string, object?> { ["userId"] = userId, ["code"] = code, ["returnUrl"] = ReturnUrl });
 
         await EmailSender.SendConfirmationLinkAsync(user, Input.Email, HtmlEncoder.Default.Encode(callbackUrl));
+
+        ApplicationUser admin = (invite.Invitor ?? await UserManager.FindByIdAsync(invite.InvitorId!))!;
+        ClaimsPrincipal adminClaims = await ClaimsFactory.CreateAsync(admin);
+        UserInfo adminUserInfo = UserInfoHelper.GetUserInfo(adminClaims)!;
+
+        await ProjectRepository.AddProjectMemberAsync(invite.ProjectId, userId, adminUserInfo);
 
         if (UserManager.Options.SignIn.RequireConfirmedAccount)
         {
