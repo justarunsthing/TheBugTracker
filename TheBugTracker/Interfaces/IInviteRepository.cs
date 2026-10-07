@@ -44,5 +44,13 @@ namespace TheBugTracker.Interfaces
         /// <param name="protectedCompanyId">The protected company ID of the invite</param>
         /// <returns>The valid invite if found, otherwise null</returns>
         Task<Invite?> GetValidInviteAsync(string protectedToken, string protectedEmail, string protectedCompanyId);
+
+        /// <summary>
+        /// Accepts and invalidates an invite on behalf of an invitee.
+        /// </summary>
+        /// <param name="inviteId">The ID of the invite to accept</param>
+        /// <param name="invitee">The user accepting the invite</param>
+        /// <returns></returns>
+        Task AcceptInviteAsync(int inviteId, ApplicationUser invitee);
     }
 }

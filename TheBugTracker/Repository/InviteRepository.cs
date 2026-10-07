@@ -236,6 +236,23 @@ namespace TheBugTracker.Repository
             return null;
         }
 
+        public async Task AcceptInviteAsync(int inviteId, ApplicationUser invitee)
+        {
+            await using ApplicationDbContext context = _contextFactory.CreateDbContext();
+
+            Invite? invite = await context.Invites
+                .FirstOrDefaultAsync(i => i.Id == inviteId && i.CompanyId == invitee.CompanyId);
+
+            if (invite is not null && ValidateInvite(invite))
+            {
+                invite.JoinDate = DateTimeOffset.UtcNow;
+                invite.InviteeId = invitee.Id;
+                invite.IsValid = false;
+
+                await context.SaveChangesAsync();
+            }
+        }
+
         private bool ValidateInvite(Invite invite)
         {
             bool isValid = invite.IsValid
