@@ -278,6 +278,8 @@
 
         await ProjectRepository.AddProjectMemberAsync(invite.ProjectId, userId, adminUserInfo);
 
+        await InviteRepository.AcceptInviteAsync(invite.Id, user);
+
         if (UserManager.Options.SignIn.RequireConfirmedAccount)
         {
             RedirectManager.RedirectTo(
