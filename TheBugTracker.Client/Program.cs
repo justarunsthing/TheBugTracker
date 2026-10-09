@@ -14,5 +14,6 @@ builder.Services.AddMudServices();
 builder.Services.AddScoped<IProjectDTOService, WASMProjectDTOService>();
 builder.Services.AddScoped<ICompanyDTOService, WASMCompanyDTOService>();
 builder.Services.AddScoped<ITicketDTOService, WASMTicketDTOService>();
+builder.Services.AddScoped<IInviteDTOService, WASMInviteDTOService>();
 
 await builder.Build().RunAsync();
