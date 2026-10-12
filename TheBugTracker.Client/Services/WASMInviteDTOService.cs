@@ -13,7 +13,7 @@ namespace TheBugTracker.Client.Services
 
         public async Task<InviteDTO> CreateInviteAsync(InviteDTO dto, UserInfo userInfo)
         {
-            var response = await http.PostAsJsonAsync("api/invite", dto);
+            var response = await http.PostAsJsonAsync("api/invites", dto);
             response.EnsureSuccessStatusCode();
 
             InviteDTO createdInvite = await response.Content.ReadFromJsonAsync<InviteDTO>() 
