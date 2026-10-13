@@ -6,6 +6,7 @@ using TheBugTracker.Client.Models;
 using TheBugTracker.Client.Helpers;
 using TheBugTracker.Client.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Extensions;
 
 namespace TheBugTracker.Controllers
 {
@@ -47,6 +48,26 @@ namespace TheBugTracker.Controllers
                 Console.WriteLine(ex);
                 return Problem();
             }
+        }
+
+        /// <summary>
+        /// Send Invite
+        /// </summary>
+        /// <param name="inviteId">The ID of the invite to send</param>
+        /// <remarks>
+        /// Sends a previously created invite email to that invite's InviteeEmail.
+        /// Only admins may send invites.
+        /// </remarks>
+        [HttpPost("{inviteId:int}/send")]
+        [Authorize(Roles = nameof(Role.Admin))]
+        public async Task<IActionResult> SendInviteAsync([FromRoute] int inviteId)
+        {
+            Uri requestUri = new Uri(Request.GetEncodedUrl());
+            Uri baseUri = new Uri(requestUri.GetLeftPart(UriPartial.Authority));
+
+            bool sent = await inviteService.SendInviteAsync(baseUri, inviteId, UserInfo);
+
+            return sent ? NoContent() : BadRequest();
         }
     }
 }
