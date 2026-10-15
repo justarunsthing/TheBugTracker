@@ -69,5 +69,21 @@ namespace TheBugTracker.Controllers
 
             return sent ? NoContent() : BadRequest();
         }
+
+        /// <summary>
+        /// Cancel Invite
+        /// </summary>
+        /// <param name="inviteId">The ID of the invite to cancel</param>
+        /// <remarks>
+        /// Marks an invite as invalid, only admins may cancel pending invitations and only pending invitations may be cancelled.
+        /// </remarks>
+        [HttpDelete("{inviteId:int}")]
+        [Authorize(Roles = nameof(Role.Admin))]
+        public async Task<IActionResult> CancelInviteAsync([FromRoute] int inviteId)
+        {
+            await inviteService.CancelInviteAsync(inviteId, UserInfo);
+
+            return NoContent();
+        }
     }
 }
