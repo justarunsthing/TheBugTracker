@@ -38,9 +38,10 @@ namespace TheBugTracker.Client.Services
             }
         }
 
-        public Task CancelInviteAsync(int inviteId, UserInfo userInfo)
+        public async Task CancelInviteAsync(int inviteId, UserInfo userInfo)
         {
-            throw new NotImplementedException();
+            var response = await http.DeleteAsync($"api/invites/{inviteId}");
+            response.EnsureSuccessStatusCode();
         }
     }
 }
