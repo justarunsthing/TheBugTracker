@@ -18,6 +18,20 @@ namespace TheBugTracker.Controllers
         private UserInfo UserInfo => UserInfoHelper.GetUserInfo(User)!;
 
         /// <summary>
+        /// Get Invites
+        /// </summary>
+        /// <remarks>
+        /// Gets all invites for the user's company
+        /// </remarks>
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<InviteDTO>>> GetInvitesAsync()
+        {
+            IEnumerable<InviteDTO> invites = await inviteService.GetInvitesAsync(UserInfo);
+
+            return Ok(invites);
+        }
+
+        /// <summary>
         /// Create Invite
         /// </summary>
         /// <param name="invite">The details of the invite to create</param>
