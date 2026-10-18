@@ -65,7 +65,7 @@
                     </CellTemplate>
                 </PropertyColumn>
                 <PropertyColumn Title="Project" Property="@(i => i.Project != null ? i.Project.Name : "Unknown")" />
-                <PropertyColumn Title="Sent" Property="i => i.InviteDate" Format="g" />
+                <PropertyColumn Title="Joined" Property="i => i.JoinDate" Format="g" />
             </Columns>
             <NoRecordsContent>
                 <div class="py-3 text-center">
