@@ -6,9 +6,12 @@ namespace TheBugTracker.Client.Services
 {
     public class WASMInviteDTOService(HttpClient http) : IInviteDTOService
     {
-        public Task<IEnumerable<InviteDTO>> GetInvitesAsync(UserInfo userInfo)
+        public async Task<IEnumerable<InviteDTO>> GetInvitesAsync(UserInfo userInfo)
         {
-            throw new NotImplementedException();
+            IEnumerable<InviteDTO> invites = await http.GetFromJsonAsync<List<InviteDTO>>("api/invites")
+                ?? throw new HttpIOException(HttpRequestError.InvalidResponse);
+
+            return invites;
         }
 
         public async Task<InviteDTO> CreateInviteAsync(InviteDTO dto, UserInfo userInfo)
