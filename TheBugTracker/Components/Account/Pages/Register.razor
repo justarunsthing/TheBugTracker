@@ -16,58 +16,102 @@
 @inject IdentityRedirectManager RedirectManager
 @inject ApplicationDbContext Context
 
-<PageTitle>Register</PageTitle>
-
-<h1>Register</h1>
-
-<div class="row">
-    <div class="col-lg-6">
+<div class="d-flex align-items-center justify-content-center p-3 h-100">
+    <MudPaper Class="p-3" Style="max-width: 768px">
         <StatusMessage Message="@Message" />
-        <EditForm Model="Input" method="post" OnValidSubmit="RegisterUser" FormName="register" enctype="multipart/form-data" >
+
+        <MudDivider DividerType="DividerType.FullWidth" Light Class="my-3" />
+
+        @* Registration form *@
+        <EditForm Model="Input" method="post" OnValidSubmit="RegisterUser" FormName="register" enctype="multipart/form-data">
             <DataAnnotationsValidator />
-            <h2>Create a new account.</h2>
-            <hr />
-            <ValidationSummary class="text-danger" role="alert" />
-            <div class="form-floating mb-3">
-                <InputText @bind-Value="Input.FirstName" id="Input.FirstName" class="form-control" autocomplete="given-name" aria-required="true" placeholder="First Name" />
-                <label for="Input.FirstName">First Name</label>
-                <ValidationMessage For="() => Input.FirstName" class="text-danger" />
+
+            <MudText Typo="Typo.h5" GutterBottom>
+                Create An Account
+            </MudText>
+
+            <div class="my-3">
+                <MudTextField Value="Input.FirstName"
+                              name="Input.FirstName"
+                              id="Input.FirstName"
+                              aria-required="true"
+                              Variant="Variant.Outlined"
+                              Label="First Name"
+                              For="() => Input.FirstName"
+                              ShrinkLabel />
             </div>
-            <div class="form-floating mb-3">
-                <InputText @bind-Value="Input.LastName" id="Input.LastName" class="form-control" autocomplete="family-name" aria-required="true" placeholder="Last Name" />
-                <label for="Input.LastName">Last Name</label>
-                <ValidationMessage For="() => Input.LastName" class="text-danger" />
+
+            <div class="mb-3">
+                <MudTextField Value="Input.LastName"
+                              name="Input.LastName"
+                              id="Input.LastName"
+                              aria-required="true"
+                              Variant="Variant.Outlined"
+                              Label="Last Name"
+                              For="() => Input.LastName"
+                              ShrinkLabel />
             </div>
-            <div class="form-floating mb-3">
-                <InputText @bind-Value="Input.Email" id="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                <label for="Input.Email">Email</label>
-                <ValidationMessage For="() => Input.Email" class="text-danger" />
+
+            <div class="mb-3">
+                <MudTextField Value="Input.Email"
+                              name="Input.Email"
+                              id="Input.Email"
+                              aria-required="true"
+                              autocomplete="username"
+                              Variant="Variant.Outlined"
+                              Label="Email"
+                              For="() => Input.Email"
+                              ShrinkLabel />
             </div>
-            <div class="form-floating mb-3">
-                <InputText type="password" @bind-Value="Input.Password" id="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label for="Input.Password">Password</label>
-                <ValidationMessage For="() => Input.Password" class="text-danger" />
+
+            <div class="mb-3">
+                <MudTextField Value="Input.Password"
+                              name="Input.Password"
+                              InputType="InputType.Password"
+                              id="Input.Password"
+                              aria-required="true"
+                              autocomplete="new-password"
+                              Variant="Variant.Outlined"
+                              Label="Password"
+                              For="() => Input.Password"
+                              ShrinkLabel />
             </div>
-            <div class="form-floating mb-3">
-                <InputText type="password" @bind-Value="Input.ConfirmPassword" id="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label for="Input.ConfirmPassword">Confirm Password</label>
-                <ValidationMessage For="() => Input.ConfirmPassword" class="text-danger" />
+
+            <div class="mb-3">
+                <MudTextField Value="Input.ConfirmPassword"
+                              name="Input.ConfirmPassword"
+                              InputType="InputType.Password"
+                              id="Input.ConfirmPassword"
+                              aria-required="true"
+                              autocomplete="new-password"
+                              Variant="Variant.Outlined"
+                              Label="Confirm Password"
+                              For="() => Input.ConfirmPassword"
+                              ShrinkLabel />
             </div>
-            <div class="mb-3 row">
-                <div class="col-lg-4">
-                    <img src="@UploadHelper.DefaultProfilePictureUrl" class="img-fluid" id="profile-pic-preview" />
+
+            <MudField Class="mb-3" Label="Profile Picture" Variant="Variant.Outlined">
+                <div class="hstack gap-3">
+                    <img src="@UploadHelper.DefaultProfilePictureUrl" id="profile-pic-preview" style="object-fit: cover; height: 48px; width: 48px; border-radius: 4px" />
+
+                    <div>
+                        <input type="file" class="form-control" name="Input.ProfilePicture" accept=".jpg, .jpeg, .png, .svg, .gif"
+                               onchange="document.getElementById('profile-pic-preview').src = window.URL.createObjectURL(this.files[0])" />
+                    </div>
                 </div>
-                <div class="col-lg-8">
-                    <label class="form-label" for="Input.ProfilePicture">
-                        Profile Picture
-                    </label>
-                    <input type="file" class="form-control" name="Input.ProfilePicture" accept=".jpg, .jpeg, .png, .svg, .gif"
-                           onchange="document.getElementById('profile-pic-preview').src = window.URL.createObjectURL(this.files[0])" />
-                </div>
-            </div>
-            <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
+            </MudField>
+
+            <MudDivider DividerType="DividerType.FullWidth" Light Class="my-3" />
+
+            <MudButton ButtonType="ButtonType.Submit"
+                       Variant="Variant.Filled"
+                       Color="Color.Secondary"
+                       Size="Size.Large"
+                       FullWidth>
+                Register
+            </MudButton>
         </EditForm>
-    </div>
+    </MudPaper>
 </div>
 
 @code {
