@@ -125,6 +125,40 @@
                     <MudText Typo="Typo.h5" GutterBottom>
                         Create A Company
                     </MudText>
+
+                    <div class="my-3">
+                        <MudTextField Value="Input.CompanyName"
+                                      name="Input.CompanyName"
+                                      id="Input.CompanyName"
+                                      aria-required="true"
+                                      Variant="Variant.Outlined"
+                                      Label="Company Name"
+                                      For="() => Input.CompanyName"
+                                      ShrinkLabel />
+                    </div>
+
+                    <div class="my-3">
+                        <MudTextField Value="Input.CompanyDescription"
+                                      name="Input.CompanyDescription"
+                                      id="Input.CompanyDescription"
+                                      aria-required="true"
+                                      Variant="Variant.Outlined"
+                                      Label="Company Description"
+                                      For="() => Input.CompanyDescription"
+                                      ShrinkLabel
+                                      Lines="5" />
+                    </div>
+
+                    <MudField Class="mb-3" Label="Company Image" Variant="Variant.Outlined">
+                        <div class="hstack gap-3">
+                            <img src="@UploadHelper.DefaultProfilePictureUrl" id="company-image-preview" style="object-fit: cover; height: 48px; width: 48px; border-radius: 4px" />
+
+                            <div>
+                                <input type="file" class="form-control" name="Input.CompanyImage" accept=".jpg, .jpeg, .png, .svg, .gif"
+                                       onchange="document.getElementById('company-image-preview').src = window.URL.createObjectURL(this.files[0])" />
+                            </div>
+                        </div>
+                    </MudField>
                 </div>
             </div>
 
