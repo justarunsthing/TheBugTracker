@@ -6,7 +6,7 @@ namespace TheBugTracker.Helpers
 {
     public static partial class UploadHelper
     {
-        public static readonly string DefaultProfilePictureUrl = "/img/default-profile-picture.jpg";
+        public static readonly string DefaultProfilePictureUrl = "https://api.dicebear.com/9.x/glass/svg";
 
         public static async Task<FileUpload> GetFileUploadAsync(IFormFile file)
         {
