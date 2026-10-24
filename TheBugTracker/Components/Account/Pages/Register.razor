@@ -5,6 +5,7 @@
 @using System.Text.Encodings.Web
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.WebUtilities
+@using TheBugTracker.Client.Enums
 @using TheBugTracker.Data
 
 @inject UserManager<ApplicationUser> UserManager
@@ -204,13 +205,35 @@
 
     public async Task RegisterUser(EditContext editContext)
     {
-        var user = CreateUser();
+        ApplicationUser user = CreateUser();
+
         user.FirstName = Input.FirstName;
         user.LastName = Input.LastName;
 
+        user.Company = new Company
+        {
+            Name = Input.CompanyName,
+            Description = Input.CompanyDescription
+        };
+
+        if (Input.CompanyImage is not null)
+        {
+            try
+            {
+                FileUpload image = await UploadHelper.GetFileUploadAsync(Input.CompanyImage);
+                user.Company.Image = image;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+        }
+
         await UserStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+
         var emailStore = GetEmailStore();
         await emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+
         var result = await UserManager.CreateAsync(user, Input.Password);
 
         if (!result.Succeeded)
@@ -218,6 +241,8 @@
             identityErrors = result.Errors;
             return;
         }
+
+        await UserManager.AddToRoleAsync(user, nameof(Role.Admin));
 
         Logger.LogInformation("User created a new account with password.");
 
