@@ -1,7 +1,7 @@
 ﻿@inherits LayoutComponentBase
 
 @* Required *@
-<MudThemeProvider Theme="_theme" />
+<MudThemeProvider Theme="Theme" />
 <MudPopoverProvider />
 
 @* Needed for dialogs *@
@@ -38,7 +38,7 @@
 @code {
     bool _drawerOpen = true;
 
-    private static MudTheme _theme = new MudTheme()
+    public static MudTheme Theme { get; } = new MudTheme()
     {
         PaletteLight = new PaletteLight()
         {
