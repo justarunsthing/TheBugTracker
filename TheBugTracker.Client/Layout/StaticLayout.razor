@@ -5,9 +5,43 @@
 
 <MudLayout>
     <MudAppBar Elevation="1">
-        <a href="/">
-            <img src="img/app-logo.svg" height="30" />
-        </a>
+        <div class="d-flex justify-content-between align-items-center w-100">
+            <a href="/">
+                <img src="img/app-logo.svg" height="30" />
+            </a>
+            <div>
+                <AuthorizeView>
+                    <Authorized>
+                        <MudButton Variant="Variant.Text"
+                                   StartIcon="@Icons.Material.Filled.Dashboard"
+                                   Href="/"
+                                   Color="Color.Inherit">
+                            Dashboard
+                        </MudButton>
+                        <MudButton Variant="Variant.Text"
+                                   StartIcon="@Icons.Material.Filled.Logout"
+                                   Href="Account/Logout"
+                                   Color="Color.Inherit">
+                            Logout
+                        </MudButton>
+                    </Authorized>
+                    <NotAuthorized>
+                        <MudButton Variant="Variant.Text"
+                                   StartIcon="@Icons.Material.Filled.Login"
+                                   Href="Account/Login"
+                                   Color="Color.Inherit">
+                            Login
+                        </MudButton>
+                        <MudButton Variant="Variant.Text"
+                                   StartIcon="@Icons.Material.Filled.PersonAdd"
+                                   Href="Account/Register"
+                                   Color="Color.Inherit">
+                            Register
+                        </MudButton>
+                    </NotAuthorized>
+                </AuthorizeView>
+            </div>
+        </div>
     </MudAppBar>
     <MudMainContent Class="h-100 d-flex flex-column">
         <main class="flex-grow-1 pb-3">
