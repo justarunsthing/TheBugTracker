@@ -18,12 +18,19 @@
                                    Color="Color.Inherit">
                             Dashboard
                         </MudButton>
-                        <MudButton Variant="Variant.Text"
-                                   StartIcon="@Icons.Material.Filled.Logout"
-                                   Href="Account/Logout"
-                                   Color="Color.Inherit">
-                            Logout
-                        </MudButton>
+
+                        <form id="logoutForm" class="d-inline" action="Account/Logout" method="post">
+                            <AntiforgeryToken />
+
+                            <input type="hidden" name="ReturnUrl" value="" />
+
+                            <MudButton Variant="Variant.Text"
+                                       StartIcon="@Icons.Material.Filled.Logout"
+                                       ButtonType="ButtonType.Submit"
+                                       Color="Color.Inherit">
+                                Logout
+                            </MudButton>
+                        </form>
                     </Authorized>
                     <NotAuthorized>
                         <MudButton Variant="Variant.Text"
