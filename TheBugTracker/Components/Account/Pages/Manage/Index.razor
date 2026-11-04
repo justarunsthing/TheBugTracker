@@ -61,14 +61,14 @@
             </div>
         </div>
         <div class="col-md-6">
-            <img src="@profilePictureUrl" class="img-fluid p-3 rounded" id="profile-pic-preview" />
+            <MudField Label="Profile Picture" Variant="Variant.Outlined">
+                <div class="vstack gap-3 align-items-center">
+                    <img src="@profilePictureUrl" id="profile-pic-preview" style="height: 100px; width: 100px; object-fit: cover; object-position: center; border-radius: .5rem;" />
 
-            <div class="form-floating mb-3">
-                <label for="Input.ProfilePicture" class="form-label">Profile Picture</label>
-
-                <input type="file" class="form-control" name="Input.ProfilePicture" accept=".jpg, .jpeg, .png, .svg, .gif"
-                       onchange="document.getElementById('profile-pic-preview').src = window.URL.createObjectURL(this.files[0])" />
-            </div>
+                    <input type="file" class="form-control" name="Input.ProfilePicture" accept=".jpg, .jpeg, .png, .svg, .gif"
+                           onchange="document.getElementById('profile-pic-preview').src = window.URL.createObjectURL(this.files[0])" />
+                </div>
+            </MudField>
         </div>
     </div>
 </EditForm>
