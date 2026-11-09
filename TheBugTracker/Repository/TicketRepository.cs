@@ -9,7 +9,9 @@ using TheBugTracker.Client.Extensions;
 
 namespace TheBugTracker.Repository
 {
-    public class TicketRepository(IDbContextFactory<ApplicationDbContext> contextFactory, UserManager<ApplicationUser> userManager) : ITicketRepository
+    public class TicketRepository(IDbContextFactory<ApplicationDbContext> contextFactory, 
+                                  UserManager<ApplicationUser> userManager,
+                                  IProjectRepository projectRepository) : ITicketRepository
     {
         public async Task<IEnumerable<Ticket>> GetOpenTicketsAsync(UserInfo userInfo)
         {
@@ -182,6 +184,46 @@ namespace TheBugTracker.Repository
                 };
 
                 ticket.History.Add(assignedEvent);
+            }
+
+            #endregion
+
+            #region Notifications
+
+            // Notify PM
+            ApplicationUser? projectManager = await projectRepository.GetProjectManagerAsync(ticket.ProjectId, userInfo);
+
+            if (projectManager is not null && projectManager.Id != userInfo.UserId)
+            {
+                Notification pmNotification = new()
+                {
+                    Title = "New Ticket Created",
+                    Message = $"A new ticket has been created for your project: {project.Name}.",
+                    Created = DateTimeOffset.UtcNow,
+                    Type = NotificationType.Ticket,
+                    Ticket = ticket,
+                    RecipientId = projectManager.Id,
+                    SenderId = userInfo.UserId
+                };
+
+                context.Notifications.Add(pmNotification);
+            }
+
+            // Notify Developer if assigned
+            if (ticket.DeveloperUser is not null)
+            {
+                Notification developerNotification = new()
+                {
+                    Title = "New Ticket Assigned",
+                    Message = $"A new ticket has been assigned to you: {ticket.Title}.",
+                    Created = DateTimeOffset.UtcNow,
+                    Type = NotificationType.Ticket,
+                    Ticket = ticket,
+                    RecipientId = ticket.DeveloperUserId,
+                    SenderId = userInfo.UserId
+                };
+
+                context.Notifications.Add(developerNotification);
             }
 
             #endregion
