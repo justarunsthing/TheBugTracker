@@ -124,13 +124,9 @@ namespace TheBugTracker.Repository
 
             Project? project = await context.Projects
                 .Include(p => p.Members)
-                .FirstOrDefaultAsync(p => p.Id == ticket.ProjectId && p.CompanyId == userInfo.CompanyId);
-
-            if (project is null)
-            {
-                throw new ApplicationException("Project does not exist");
-            }
-
+                .FirstOrDefaultAsync(p => p.Id == ticket.ProjectId && p.CompanyId == userInfo.CompanyId)
+                ?? throw new ApplicationException("Project does not exist");
+            
             ticket.Status = TicketStatus.New;
             ticket.Created = DateTimeOffset.UtcNow;
             ticket.SubmitterUserId = userInfo.UserId;
@@ -190,9 +186,9 @@ namespace TheBugTracker.Repository
 
             #region Notifications
 
-            // Notify PM
             ApplicationUser? projectManager = await projectRepository.GetProjectManagerAsync(ticket.ProjectId, userInfo);
 
+            // Notify PM
             if (projectManager is not null && projectManager.Id != userInfo.UserId)
             {
                 Notification pmNotification = new()
