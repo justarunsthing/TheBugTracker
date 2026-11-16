@@ -528,7 +528,7 @@
                     else
                     {
                         await TicketService.ArchiveTicketAsync(ticket.Id, userInfo!);
-                        Snackbar.Add("The ticke has been successfully archived!", Severity.Success);
+                        Snackbar.Add("The ticket has been successfully archived!", Severity.Success);
                     }
 
                     ticket = await TicketService.GetTicketByIdAsync(ticket.Id, userInfo!);
