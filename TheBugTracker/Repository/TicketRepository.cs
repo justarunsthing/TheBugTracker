@@ -239,7 +239,7 @@ namespace TheBugTracker.Repository
 
                 ticket.IsArchived = true;
 
-                #region
+                #region History
 
                 TicketHistory archivedEvent = new()
                 {
@@ -247,6 +247,44 @@ namespace TheBugTracker.Repository
                     UserId = userInfo.UserId,
                     Description = "Ticket archived"
                 };
+
+                #endregion
+
+                #region Notifications
+
+                // Notify submitter
+                if (ticket.SubmitterUserId != userInfo.UserId)
+                {
+                    var submitterNotification = new Notification
+                    {
+                        Title = "Ticket Archived",
+                        Message = $"Your ticket \"{ticket.Title}\" has been archived",
+                        RecipientId = ticket.SubmitterUserId,
+                        SenderId = userInfo.UserId,
+                        Type = NotificationType.Ticket,
+                        TicketId = ticket.Id,
+                        Created = DateTimeOffset.UtcNow
+                    };
+
+                    context.Notifications.Add(submitterNotification);
+                }
+
+                // Notify developer, if any
+                if (!string.IsNullOrEmpty(ticket.DeveloperUserId) && ticket.DeveloperUserId != userInfo.UserId)
+                {
+                    var developerNotification = new Notification
+                    {
+                        Title = "Ticket Archived",
+                        Message = $"A ticket assigned to you has been archived: \"{ticket.Title}\"",
+                        RecipientId = ticket.DeveloperUserId,
+                        SenderId = userInfo.UserId,
+                        Type = NotificationType.Ticket,
+                        TicketId = ticket.Id,
+                        Created = DateTimeOffset.UtcNow
+                    };
+
+                    context.Notifications.Add(developerNotification);
+                }
 
                 #endregion
 
