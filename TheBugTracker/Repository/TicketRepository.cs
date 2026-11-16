@@ -315,6 +315,44 @@ namespace TheBugTracker.Repository
 
                 #endregion
 
+                #region Notifications
+
+                // Notify submitter
+                if (ticket.SubmitterUserId != userInfo.UserId)
+                {
+                    var submitterNotification = new Notification
+                    {
+                        Title = "Ticket Restored",
+                        Message = $"Your ticket \"{ticket.Title}\" has been restored",
+                        RecipientId = ticket.SubmitterUserId,
+                        SenderId = userInfo.UserId,
+                        Type = NotificationType.Ticket,
+                        TicketId = ticket.Id,
+                        Created = DateTimeOffset.UtcNow
+                    };
+
+                    context.Notifications.Add(submitterNotification);
+                }
+
+                // Notify developer, if any
+                if (!string.IsNullOrEmpty(ticket.DeveloperUserId) && ticket.DeveloperUserId != userInfo.UserId)
+                {
+                    var developerNotification = new Notification
+                    {
+                        Title = "Ticket Restored",
+                        Message = $"A ticket assigned to you has been restored: \"{ticket.Title}\"",
+                        RecipientId = ticket.DeveloperUserId,
+                        SenderId = userInfo.UserId,
+                        Type = NotificationType.Ticket,
+                        TicketId = ticket.Id,
+                        Created = DateTimeOffset.UtcNow
+                    };
+
+                    context.Notifications.Add(developerNotification);
+                }
+
+                #endregion
+
                 ticket.History.Add(restoredEvent);
 
                 await context.SaveChangesAsync();
