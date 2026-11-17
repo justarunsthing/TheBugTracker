@@ -620,6 +620,24 @@ namespace TheBugTracker.Repository
 
                 events.Add(developerChangedEvent);
             }
+            else if (events.Count > 0
+                     && !string.IsNullOrEmpty(newTicket.DeveloperUserId)
+                     && newTicket.DeveloperUserId != userInfo.UserId)
+            {
+                // The ticket was assigned to a developer and the ticket has been changes but the developer didn't change
+                var developerNotification = new Notification
+                {
+                    Title = "Ticket Updated",
+                    Message = $"A ticket you were assigned has been updated: \"{newTicket.Title}\"",
+                    RecipientId = newTicket.DeveloperUserId,
+                    SenderId = userInfo.UserId,
+                    Created = DateTimeOffset.UtcNow,
+                    Type = NotificationType.Ticket,
+                    TicketId = oldTicket.Id
+                };
+
+                context.Add(developerNotification);
+            }
 
             // Notify the submitter if there were changes
             if (events.Count > 0 && oldTicket.SubmitterUserId != userInfo.UserId)
