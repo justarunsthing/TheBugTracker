@@ -621,6 +621,25 @@ namespace TheBugTracker.Repository
                 events.Add(developerChangedEvent);
             }
 
+            // Notify the submitter if there were changes
+            if (events.Count > 0 && oldTicket.SubmitterUserId != userInfo.UserId)
+            {
+                var submitterNotification = new Notification
+                {
+                    Title = "Ticket Updated",
+                    Message = $"Your ticket \"{newTicket.Title}\" has been updated",
+                    RecipientId = oldTicket.SubmitterUserId,
+                    SenderId = userInfo.UserId,
+                    Created = DateTimeOffset.UtcNow,
+                    Type = NotificationType.Ticket,
+                    TicketId = oldTicket.Id
+                };
+
+                context.Add(submitterNotification);
+            }
+
+            await context.SaveChangesAsync();
+
             return events;
         }
     }
