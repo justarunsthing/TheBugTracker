@@ -633,6 +633,20 @@ namespace TheBugTracker.Repository
                         .FirstOrDefaultAsync();
 
                     developerChangedEvent.Description = $"Ticket assigned to {developerName ?? "a new developer"}";
+
+                    // Notify the new developer that they have been assigned
+                    var newDeveloperNotification = new Notification
+                    {
+                        Title = "Ticket Assigned",
+                        Message = $"You have been assigned to the ticket: \"{newTicket.Title}\"",
+                        RecipientId = newTicket.DeveloperUserId,
+                        SenderId = userInfo.UserId,
+                        Created = DateTimeOffset.UtcNow,
+                        Type = NotificationType.Ticket,
+                        TicketId = newTicket.Id
+                    };
+
+                    context.Add(newDeveloperNotification);
                 }
 
                 events.Add(developerChangedEvent);
