@@ -604,6 +604,23 @@ namespace TheBugTracker.Repository
                     TicketId = newTicket.Id,
                 };
 
+                // Notify the previous developer that they have been unassigned if there is one
+                if (!string.IsNullOrEmpty(oldTicket.DeveloperUserId))
+                {
+                    var previousDeveloperNotification = new Notification
+                    {
+                        Title = "Ticket Unassigned",
+                        Message = $"You have been unassigned from the ticket: \"{newTicket.Title}\"",
+                        RecipientId = oldTicket.DeveloperUserId,
+                        SenderId = userInfo.UserId,
+                        Created = DateTimeOffset.UtcNow,
+                        Type = NotificationType.Ticket,
+                        TicketId = oldTicket.Id
+                    };
+
+                    context.Add(previousDeveloperNotification);
+                }
+
                 if (string.IsNullOrEmpty(newTicket.DeveloperUserId))
                 {
                     developerChangedEvent.Description = "Ticket unassigned";
