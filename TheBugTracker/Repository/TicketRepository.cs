@@ -409,6 +409,45 @@ namespace TheBugTracker.Repository
             await using ApplicationDbContext context = contextFactory.CreateDbContext();
 
             context.Comments.Add(comment);
+
+            #region Notifications
+
+            // Notify submitter, dec, and anyone who commented
+            List<string> recipientIds = await context.Comments
+                .Where(c => c.TicketId == comment.TicketId)
+                .Select(c => c.UserId!)
+                .ToListAsync();
+
+            Ticket ticket = await context.Tickets.FirstAsync(t => t.Id == comment.TicketId);
+
+            recipientIds.Add(ticket.SubmitterUserId!);
+
+            if (!string.IsNullOrEmpty(ticket.DeveloperUserId))
+            {
+                recipientIds.Add(ticket.DeveloperUserId);
+            }
+
+            foreach (string recipientId in recipientIds.Distinct())
+            {
+                if (recipientId != userInfo.UserId)
+                {
+                    var notification = new Notification
+                    {
+                        Title = "New Comment on Ticket",
+                        Message = $"{userInfo.FullName} has left a new comment on \"{ticket.Title}\"",
+                        RecipientId = recipientId,
+                        SenderId = userInfo.UserId,
+                        Created = DateTimeOffset.UtcNow,
+                        Type = NotificationType.Ticket,
+                        TicketId = comment.TicketId,
+                    };
+
+                    context.Notifications.Add(notification);
+                }
+            }
+
+            #endregion
+
             await context.SaveChangesAsync();
 
             return comment;
