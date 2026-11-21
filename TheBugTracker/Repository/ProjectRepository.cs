@@ -8,7 +8,9 @@ using Microsoft.AspNetCore.Identity;
 
 namespace TheBugTracker.Repository
 {
-    public class ProjectRepository(IDbContextFactory<ApplicationDbContext> contextFactory, UserManager<ApplicationUser> userManager) : IProjectRepository
+    public class ProjectRepository(IDbContextFactory<ApplicationDbContext> contextFactory, 
+                                   UserManager<ApplicationUser> userManager,
+                                   ICompanyRepository companyRepository) : IProjectRepository
     {
         public async Task<Project?> GetProjectByIdAsync(int projectId, UserInfo user)
         {
@@ -97,6 +99,36 @@ namespace TheBugTracker.Repository
             }
 
             context.Add(project);
+
+            #region Notifications
+
+            // Notify company admins and project members
+            var admins = await companyRepository.GetUsersInRoleAsync(Role.Admin, user);
+            List<string> recipientIds = [.. admins.Select(a => a.Id)];
+
+            recipientIds.AddRange(project.Members.Select(m => m.Id));
+
+            foreach (string recipientId in recipientIds.Distinct())
+            {
+                if (recipientId != user.UserId)
+                {
+                    var notification = new Notification
+                    {
+                        Title = "New Project Created",
+                        Message = $"Project '{project.Name}' has been created by {user.FullName}.",
+                        Created = DateTimeOffset.UtcNow,
+                        RecipientId = recipientId,
+                        SenderId = user.UserId,
+                        Type = NotificationType.Project,
+                        Project = project
+                    };
+
+                    context.Notifications.Add(notification);
+                }
+            }
+
+            #endregion
+
             await context.SaveChangesAsync();
 
             return project;
