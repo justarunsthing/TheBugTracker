@@ -505,6 +505,47 @@ namespace TheBugTracker.Repository
             await using ApplicationDbContext context = contextFactory.CreateDbContext();
 
             context.Add(attachment);
+
+            #region Notifications
+
+            // Notify submitter
+            Ticket ticket = await context.Tickets.FirstAsync(t => t.Id == attachment.TicketId);
+
+            if (ticket.SubmitterUserId != userInfo.UserId)
+            {
+                var submitterNotification = new Notification
+                {
+                    Title = "New Attachment on Ticket",
+                    Message = $"{userInfo.FullName} has uploaded {attachment.FileName} to your ticket: \"{ticket.Title}\"",
+                    RecipientId = ticket.SubmitterUserId,
+                    SenderId = userInfo.UserId,
+                    Created = DateTimeOffset.UtcNow,
+                    Type = NotificationType.Ticket,
+                    TicketId = ticket.Id
+                };
+
+                context.Notifications.Add(submitterNotification);
+            }
+
+            // Notify developer, if any
+            if (!string.IsNullOrEmpty(ticket.DeveloperUserId) && ticket.DeveloperUserId != userInfo.UserId)
+            {
+                var developerNotification = new Notification
+                {
+                    Title = "New Attachment on Ticket",
+                    Message = $"{userInfo.FullName} has uploaded {attachment.FileName} to a ticket assigned to you: \"{ticket.Title}\"",
+                    RecipientId = ticket.DeveloperUserId,
+                    SenderId = userInfo.UserId,
+                    Created = DateTimeOffset.UtcNow,
+                    Type = NotificationType.Ticket,
+                    TicketId = ticket.Id
+                };
+
+                context.Notifications.Add(developerNotification);
+            }
+
+            #endregion
+
             await context.SaveChangesAsync();
 
             return attachment;
