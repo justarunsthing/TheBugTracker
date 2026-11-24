@@ -5,6 +5,7 @@ using TheBugTracker.Interfaces;
 using TheBugTracker.Client.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 
 namespace TheBugTracker.Repository
 {
@@ -147,6 +148,30 @@ namespace TheBugTracker.Repository
                 project.Tickets = [];
 
                 context.Projects.Update(project);
+
+                #region Notifications
+
+                // Notify PM
+                var projectManager = await GetProjectManagerAsync(project.Id, user);
+
+                if (projectManager is not null && projectManager.Id != user.UserId)
+                {
+                    var notification = new Notification
+                    {
+                        Title = "Project Updated",
+                        Message = $"Project '{project.Name}' has been updated by {user.FullName}.",
+                        Created = DateTimeOffset.UtcNow,
+                        RecipientId = projectManager.Id,
+                        SenderId = user.UserId,
+                        Type = NotificationType.Project,
+                        ProjectId = project.Id
+                    };
+
+                    context.Notifications.Add(notification);
+                }
+
+                #endregion
+
                 await context.SaveChangesAsync();
             }
         }
