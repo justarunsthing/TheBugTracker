@@ -249,6 +249,7 @@ namespace TheBugTracker.Repository
 
             Project project = await context.Projects
                 .Include(p => p.Tickets)
+                .Include(p => p.Members)
                 .FirstAsync(p => p.Id == projectId && p.CompanyId == user.CompanyId);
 
             project.IsArchived = false;
@@ -267,6 +268,30 @@ namespace TheBugTracker.Repository
                     Description = "Project restored"
                 });
             }
+
+            #region Notifications
+
+            // Notify project members
+            foreach (ApplicationUser member in project.Members)
+            {
+                if (member.Id != user.UserId)
+                {
+                    var notification = new Notification
+                    {
+                        Title = "Project Restored",
+                        Message = $"Project '{project.Name}' has been restored by {user.FullName}.",
+                        RecipientId = member.Id,
+                        SenderId = user.UserId,
+                        Type = NotificationType.Project,
+                        ProjectId = project.Id,
+                        Created = DateTimeOffset.UtcNow
+                    };
+
+                    context.Notifications.Add(notification);
+                }
+            }
+
+            #endregion
 
             await context.SaveChangesAsync();
         }
