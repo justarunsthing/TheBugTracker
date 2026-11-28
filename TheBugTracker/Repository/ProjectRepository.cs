@@ -488,9 +488,38 @@ namespace TheBugTracker.Repository
             {
                 ApplicationUser userToRemove = project.Members.First(m => m.Id == oldManager.Id);
                 project.Members.Remove(userToRemove);
+
+                // Notify the old PM
+                var oldPmNotification = new Notification
+                {
+                    Title = "Project Unassigned",
+                    Message = $"You have been removed as the Project Manager of {project.Name} by {user.FullName}",
+                    RecipientId = userToRemove.Id,
+                    SenderId = user.UserId,
+                    Created = DateTimeOffset.UtcNow,
+                    Type = NotificationType.Project,
+                    ProjectId = projectId
+                };
+
+                context.Notifications.Add(oldPmNotification);
             }
 
             project.Members.Add(newManager);
+
+            // Notify the new PM
+            var newPmNotification = new Notification
+            {
+                Title = "New Project Assigned",
+                Message = $"You have been assigned as the Project Manager of {project.Name} by {user.FullName}",
+                RecipientId = managerId,
+                SenderId = user.UserId,
+                Created = DateTimeOffset.UtcNow,
+                Type = NotificationType.Project,
+                ProjectId = projectId
+            };
+
+            context.Notifications.Add(newPmNotification);
+
             await context.SaveChangesAsync();
         }
 
