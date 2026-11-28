@@ -329,6 +329,46 @@ namespace TheBugTracker.Repository
 
             project.Members.Add(newMember);
 
+            #region Notifications
+
+            // Notify new member
+            var memberNotification = new Notification
+            {
+                Title = "Added to Project",
+                Message = $"You have been added to project '{project.Name}' by {user.FullName}.",
+                RecipientId = userId,
+                SenderId = user.UserId,
+                Created = DateTimeOffset.UtcNow,
+                Type = NotificationType.Project,
+                ProjectId = project.Id
+            };
+
+            context.Notifications.Add(memberNotification);
+
+            // Notify project manager if admin added the member
+            if (user.IsInRole(Role.Admin))
+            {
+                ApplicationUser? projectManager = await GetProjectManagerAsync(projectId, user);
+
+                if (projectManager is not null)
+                {
+                    var pmNotification = new Notification
+                    {
+                        Title = "New Project Member Added",
+                        Message = $"{newMember.FirstName} {newMember.LastName} has been added to your project '{project.Name}' by {user.FullName}.",
+                        RecipientId = projectManager.Id,
+                        SenderId = user.UserId,
+                        Created = DateTimeOffset.UtcNow,
+                        Type = NotificationType.Project,
+                        ProjectId = project.Id
+                    };
+
+                    context.Notifications.Add(pmNotification);
+                }
+            }
+
+            #endregion
+
             await context.SaveChangesAsync();
         }
 
