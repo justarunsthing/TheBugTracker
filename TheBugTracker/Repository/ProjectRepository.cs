@@ -397,6 +397,46 @@ namespace TheBugTracker.Repository
 
             project.Members.Remove(member);
 
+            #region Notifications
+
+            // Notify removed member
+            var memberNotification = new Notification
+            {
+                Title = "Removed from Project",
+                Message = $"You have been removed from project '{project.Name}' by {user.FullName}.",
+                RecipientId = member.Id,
+                SenderId = user.UserId,
+                Created = DateTimeOffset.UtcNow,
+                Type = NotificationType.Project,
+                ProjectId = project.Id
+            };
+
+            context.Notifications.Add(memberNotification);
+
+            // Notify project manager if admin removed the member
+            if (user.IsInRole(Role.Admin))
+            {
+                ApplicationUser? projectManager = await GetProjectManagerAsync(projectId, user);
+
+                if (projectManager is not null)
+                {
+                    var pmNotification = new Notification
+                    {
+                        Title = "Member Removed from Project",
+                        Message = $"{member.FirstName} {member.LastName} has been removed from your project '{project.Name}' by {user.FullName}.",
+                        RecipientId = projectManager.Id,
+                        SenderId = user.UserId,
+                        Created = DateTimeOffset.UtcNow,
+                        Type = NotificationType.Project,
+                        ProjectId = project.Id
+                    };
+
+                    context.Notifications.Add(pmNotification);
+                }
+            }
+
+            #endregion
+
             await context.SaveChangesAsync();
         }
 
