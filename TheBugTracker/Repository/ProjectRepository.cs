@@ -543,6 +543,21 @@ namespace TheBugTracker.Repository
                 if (await userManager.IsInRoleAsync(member, nameof(Role.ProjectManager)))
                 {
                     project.Members.Remove(member);
+
+                    // Notify the old PM
+                    var notification = new Notification
+                    {
+                        Title = "Project Unassigned",
+                        Message = $"You have been removed as the Project Manager of {project.Name} by {user.FullName}",
+                        RecipientId = member.Id,
+                        SenderId = user.UserId,
+                        Created = DateTimeOffset.UtcNow,
+                        Type = NotificationType.Project,
+                        ProjectId = projectId
+                    };
+
+                    context.Notifications.Add(notification);
+
                     await context.SaveChangesAsync();
 
                     return;
